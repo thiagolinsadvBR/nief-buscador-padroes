@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NIEF - Sistema de Identificação</title>
+    <style>
+        :root { --primary: #1a1a1a; --accent: #e6b800; --text: #ffffff; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--primary); color: var(--text); margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+        
+        /* Estilo da Tela de Login */
+        #loginScreen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; width: 100%; }
+        .login-box { background: #252525; padding: 40px; border-radius: 15px; border: 2px solid var(--accent); box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center; }
+        .login-box input { padding: 15px; width: 250px; border-radius: 8px; border: none; margin-bottom: 20px; font-size: 1rem; text-align: center; }
+        .login-box button { background: var(--accent); color: var(--primary); border: none; padding: 15px 30px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 1rem; }
+
+        /* Estilo da App (Escondido inicialmente) */
+        #appContent { display: none; width: 100%; padding: 20px; flex-direction: column; align-items: center; }
+        
+        /* (Mantenha aqui todos os estilos anteriores da Galeria e Modal) */
+        h2 { border-bottom: 2px solid var(--accent); padding-bottom: 10px; margin-bottom: 40px; }
+        #searchContainer { width: 100%; max-width: 600px; margin-bottom: 30px; }
+        #searchInput { width: 100%; padding: 18px; font-size: 1.3rem; border-radius: 12px; border: 2px solid #333; background: #252525; color: white; box-shadow: 0 10px 20px rgba(0,0,0,0.4); }
+        #gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; width: 100%; max-width: 1100px; }
+        .thumbnail { cursor: pointer; border-radius: 8px; overflow: hidden; background: #222; border: 1px solid #444; }
+        .thumbnail img { width: 100%; height: 130px; object-fit: cover; display: block; }
+        .thumbnail p { font-size: 0.75rem; margin: 8px; text-align: center; word-break: break-all; color: #ccc; }
+        
+        #modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 1000; justify-content: center; align-items: center; overflow: hidden; }
+        #imageContainer { width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; cursor: grab; position: relative; }
+        #modalImg { max-width: 95%; max-height: 95%; transform-origin: center center; transition: transform 0.1s ease-out; user-select: none; pointer-events: none; }
+        #closeBtn { position: absolute; top: 20px; right: 20px; background: var(--accent); color: var(--primary); border: none; font-size: 2rem; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; z-index: 1001; }
+        .action-buttons { position: absolute; bottom: 20px; right: 20px; display: flex; gap: 10px; z-index: 1001; }
+        .btn-action { background: #252525; color: var(--accent); border: 2px solid var(--accent); padding: 10px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <div id="loginScreen">
+        <div class="login-box">
+            <h2 style="border:none; margin-bottom: 20px;">NIEF - ACESSO RESTRITO</h2>
+            <p style="color: #aaa; margin-bottom: 20px;">Digite a senha autorizada para Campina Grande e Região</p>
+            <input type="password" id="passInput" placeholder="Senha do Agente">
+            <br>
+            <button onclick="checkPass()">Entrar no Sistema</button>
+        </div>
+    </div>
+
+    <div id="appContent">
+        <h2>NIEF - Inspeção Veicular</h2>
+        <div id="searchContainer">
+            <input type="text" id="searchInput" placeholder="Digite a sequência (ex: 9BD...)" autocomplete="off">
+        </div>
+        <div id="gallery"></div>
+    </div>
+
+    <div id="modal">
+        <button id="closeBtn" onclick="closeModal()">×</button>
+        <div id="imageContainer"><img id="modalImg" src=""></div>
+        <div class="action-buttons">
+            <button class="btn-action" onclick="downloadImage()">Baixar</button>
+            <button class="btn-action" onclick="shareImage()">Copiar para WhatsApp</button>
+        </div>
+    </div>
+
+    <canvas id="conversionCanvas" style="display:none;"></canvas>
+
+    <script>
+        // SENHA HASHED (Para maior segurança, usamos um simples check aqui)
+        const SENHA_CORRETA = "NIEF2026"; 
+
+        function checkPass() {
+            const input = document.getElementById('passInput').value;
+            if (input === SENHA_CORRETA) {
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('appContent').style.display = 'flex';
+                document.getElementById('searchInput').focus();
+            } else {
+                alert("Senha incorreta. Acesso negado.");
+            }
+        }
+
+        // Adicionar evento para entrar com a tecla "Enter"
+        document.getElementById('passInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') checkPass();
+        });
+
+        // --- LISTA DE ARQUIVOS (O SEU SCRIPT PYTHON CONTINUA ATUALIZANDO ESTA PARTE) ---
+        // LISTA DE ARQUIVOS
+        const imagens = [
+        "10DBSS0080629.png",
+        "139FMB11026503.jpg",
+        "139FMB11A21265.jpg",
+        "139FMB14A04318.jpg",
+        "139FMB8R401856.jpg",
+        "162FMJ3DA061791.jpg",
+        "162FMJ3FA050703.jpg",
+        "1P39FMADE058828.jpg",
+        "1P39FMAEA147964.jpg",
+        "1P39FMAFA051831.jpg",
+        "1P39FMALA076030.JPG",
+        "1P39FMBA3001486.jpg",
+        "1P39FMBAA047601.jpg",
+        "1P39FMBAA048084.jpg",
+        "1P39FMBBA137889.jpg",
+        "1P39FMBCA128088.jpg",
+        "1P39FMBCB051937.jpg",
+        "1P39FMBDB057533.jpg",
+        "1P39FMBDB060980.jpg",
+        "1P54FMIBRD054356.JPG",
+        "4112818.jpg",
+        "4D0037037.jpg",
+        "5617552.jpg",
+        "7735226.jpg",
+        "7903076.jpg",
+        "8AGSU19F0ER100458 1.jpg",
+        "8AGSU19F0ER100458 2.jpg",
+        "8AGSU19F0ER100458 3.jpg",
+        "8AGSU19F0ER100458.jpg",
+        "8AGSU19F0FR144937 2.JPG",
+        "8AGSU19F0FR144937.JPG",
+        "8AGSU19FCFR144937.JPG",
+        "8AJBA3FS6H0241667.jpg",
+        "8AJFZ29G886062409.jpg",
+        "8AP178530W4101769.jpg",
+        "8N0000125.jpg",
+        "8N1DK3CD2EL217767.JPG",
+        "92EC10AGPRM021124.jpg",
+        "9362MKFWXBB008482 2.jpg",
+        "9362MKFWXBB008482.jpg",
+        "93HRV2890HZ231361.JPG",
+        "94J1XFBD77M049128.jpg",
+        "95VAC1C288M003250.jpg",
+        "95VAC1C288M003914.jpg",
+        "95VAC2G89AM001335.jpg",
+        "95VGA1G288M027371.jpg",
+        "988611132LK306067.jpg",
+        "9BD17106G85168505.jpg",
+        "9BD17164LA5519975.jpg",
+        "9BD17241T73262087.JPG",
+        "9BD17350TA4336511.jpg",
+        "9BD178096W0606948.jpg",
+        "9BD197132F3230534.jpg",
+        "9BD2651JHM9164317.JPG",
+        "9BD376A11RYB63433.JPG",
+        "9BD376A31PYB11294.jpg",
+        "9BFZF55P0B8164724.jpg",
+        "9BFZK53A19B126734REM.jpg",
+        "9BFZZZFHAWB198141.jpg",
+        "9BGEB48A0PG221070 1.JPG",
+        "9BGEB48A0PG221070 2.JPG",
+        "9BGEB48A0PG221070.JPG",
+        "9BGKL48U0KB254661 2.jpg",
+        "9BGKL48U0KB254661.jpg",
+        "9BGKS69V0KG136709.JPG",
+        "9BGKT69L0FG244756 1.jpg",
+        "9BGKT69L0FG244756.jpg",
+        "9BGRD08X03G179593.jpg",
+        "9BGSU19F0CB133653.jpg",
+        "9BRBDWHE4G0268116 2.jpg",
+        "9BRBDWHE4G0268116.jpg",
+        "9BRBL42EXD4754854 1.jpg",
+        "9BRBL42EXD4754854 2.jpg",
+        "9BRBL42EXD4754854 3.jpg",
+        "9BRBL42EXD4754854.jpg",
+        "9BRBLWHE6G0038385 2.jpg",
+        "9BRBLWHE6G0038385.jpg",
+        "9BWAA05W0AP042570.jpg",
+        "9BWAA45U4EP191348.jpg",
+        "9C2HA0710YR211113.jpg",
+        "9C2HB0210CR412498.jpg",
+        "9C2HB0210ER430414.jpg",
+        "9C2JA 0101SRS80917.JPG",
+        "9C2JA0101MR210110.jpg",
+        "9C2JA04208R077618.jpg",
+        "9C2JB0100KR312146.jpg",
+        "9C2JB0100KXX33622.jpg",
+        "9C2JB0100NR073104.jpg",
+        "9C2JB0100RR061084.jpg",
+        "9C2JB0100RR201898.jpg",
+        "9C2JC18011R548167.jpg",
+        "9C2JC1801HR111094.JPG",
+        "9C2JC1801HR132559.JPG",
+        "9C2JC1801HR135051.jpg",
+        "9C2JC1801HR136774.JPG",
+        "9C2JC1801JR135947.jpg",
+        "9C2JC1801KR213736.jpg",
+        "9C2JC1801KR408006.jpg",
+        "9C2JC1801KR408541.jpg",
+        "9C2JC1801LR509487.jpg",
+        "9C2JC1801LR532470.jpg",
+        "9C2JC1801MR218929.JPG",
+        "9C2JC1801RRR09123.jpg",
+        "9C2JC2500SRS49797.jpg",
+        "9C2JC2500XR119328.jpg",
+        "9C2JC2500XR151864.jpg",
+        "9C2JC2501SRS66016.jpg",
+        "9C2JC250VVR181045.jpg",
+        "9C2JC250WVR033812.jpg",
+        "9C2JC250WWR131509.jpg",
+        "9C2JC30101R011027.jpg",
+        "9C2JC30101R013951.jpg",
+        "9C2JC30102R107064.jpg",
+        "9C2JC30103R039010.jpg",
+        "9C2JC3010YR009087.jpg",
+        "9C2JC3010YR090325.jpg",
+        "9C2JC30705R006377.JPG",
+        "9C2JC30708R249126.jpg",
+        "9C2JC30708R732742.jpg",
+        "9C2JC4110BR774616.jpg",
+        "9C2JC4110DR751770.jpg",
+        "9C2JC4110FR114891.jpg",
+        "9C2JC4120ER027016.jpg",
+        "9C2JC4130DR008834.jpg",
+        "9C2JC42209R111632.jpg",
+        "9C2JD20204R008569.jpg",
+        "9C2KC08105R047142.jpg",
+        "9C2KC08106R939022.JPG",
+        "9C2KC08106R982930.jpg",
+        "9C2KC08205R039577.jpg",
+        "9C2KC08205R053001.jpg",
+        "9C2KC1610AR027431.jpg",
+        "9C2KC1620AR029130.jpg",
+        "9C2KC1620AR034895.JPG",
+        "9C2KC1650CR544884.jpg",
+        "9C2KC1660DR533453.jpg",
+        "9C2KC1670DR455101.jpg",
+        "9C2KC1670DR463298.jpg",
+        "9C2KC1670DR466463.jpg",
+        "9C2KC2200PR038051.jpg",
+        "9C2KC2200PR064953.jpg",
+        "9C2KC2200PR068251.jpg",
+        "9C2KC2200PR327958.jpg",
+        "9C2KC2210JR038692.jpg",
+        "9C2KC2500GR021768.jpg",
+        "9C2KC2500HR003592.jpg",
+        "9C2KC2500KR072834.jpg",
+        "9C2KC2500MR015244.jpg",
+        "9C2KC2500MR034697.jpg",
+        "9C2KC2500NR065520.jpg",
+        "9C2KC2500PR017004.jpg",
+        "9C2KC2500RR122644.jpg",
+        "9C2KC2500RR122798.jpg",
+        "9C2KC2500SR172314.JPG",
+        "9C2KD0550ER223553.jpg",
+        "9C2KD0810GR411290.jpg",
+        "9C2MC35002R016748.jpg",
+        "9C2MC35003R000426.jpg",
+        "9C2NC4310AR028569.JPG",
+        "9C2ND07001R011840.jpg",
+        "9C2PC4820GR100299.jpg",
+        "9C6DG25F0S0014304.jpg",
+        "9C6RH0940R0009135.png",
+        "A1C8003404.jpg",
+        "A2G9001394.jpg",
+        "AP042570 1.jpg",
+        "AP042570.jpg",
+        "C3G8028028.jpg",
+        "C4AW198141.jpg",
+        "CCP146828.jpg",
+        "CG1251020902.jpg",
+        "CG125BR-1227220.jpg",
+        "CG125BR-1404547.jpg",
+        "CG125BR1138748.JPG",
+        "CG125BR1170379.jpg",
+        "CG125BR1190015.jpg",
+        "CG125BR1306281.jpg",
+        "CG125BR1310774.jpg",
+        "CG125BR1343406.jpg",
+        "CG125BR1378936.jpg",
+        "CG125BR1404561.jpg",
+        "CG125BR1411313.jpg",
+        "CG125BR1462704.JPG",
+        "CG125BR1506288.jpg",
+        "CG125BR2026241.jpg",
+        "CG125BRE 1413341.JPG",
+        "CG125BRE1429782.JPG",
+        "CG125BRE1429824.JPG",
+        "CG125BRE1439792.jpg",
+        "CG125BRE1470832.jpg",
+        "CG125BRE1473543.jpg",
+        "CG125BRE14908X5.jpg",
+        "CG125BRE1535835.JPG",
+        "CG125BRE1561742.jpg",
+        "CG125E1122376.jpg",
+        "D2EL217767.JPG",
+        "E3G9E114879.JPG",
+        "G3W5E-028169.jpg",
+        "GCB012483.jpg",
+        "HA07E14043957.jpg",
+        "HA07EY211113.jpg",
+        "HB02E1C412498.jpg",
+        "HB02E1E430414.jpg",
+        "JB01E0G000120.JPG",
+        "JBD7062109.jpg",
+        "JC25EY050023.jpg",
+        "JC30E76864080.JPG",
+        "JC30E78249126.jpg",
+        "JL1P39FMB081005287.jpg",
+        "JL1P39FMB09A012291.jpg",
+        "JL1P39FMB10T013409.jpg",
+        "JL1P39FMB10T020030.jpg",
+        "JL1P39FMB11T007441.jpg",
+        "JTS083574.jpg",
+        "KC08E16939022.JPG",
+        "KC08E25053001.jpg",
+        "KC16E6D533453.jpg",
+        "KC22E0P038167.jpg",
+        "KC22E0P065199.jpg",
+        "KC25E0K072878.jpg",
+        "KC25E0S171758.JPG",
+        "KD08E1G411290.jpg",
+        "KNAKU811BC5217326.jpg",
+        "LHJXCBLA0EB403221.jpg",
+        "LHJXCBLD4B0220485.jpg",
+        "LIJ-223085092-.JPG",
+        "LTEXCBLB4D3001994 2.jpg",
+        "LTEXCBLB4D3001994.jpg",
+        "LWYMCA201E6014887.jpg",
+        "LWYMCA201F6A01402.jpg",
+        "LWYMCA203D6002030.jpg",
+        "LWYMCA203E6014258.jpg",
+        "LWYMCA204D6050765.jpg",
+        "LWYMCA206C6A2050.jpg",
+        "LWYMCA207E6002078.jpg",
+        "LWYMCA208E6013641.jpg",
+        "LWYMCA208G6005722.jpg",
+        "LWYMCA209D6012609.jpg",
+        "LXYPCBL02C0277412.jpg",
+        "LXYPCKL05D0390658.jpg",
+        "LXYPCKL06F0240917.jpg",
+        "LXYXCBL00F0242095.jpg",
+        "LXYXCBL00F0366089.jpg",
+        "LXYXCBL03A0224201.jpg",
+        "LXYXCBL04A0234364.jpg",
+        "LXYXCBL05D0436456.jpg",
+        "LXYXCBL05D0478349.jpg",
+        "LXYXCBL06E0224358.jpg",
+        "LXYXCBL08B0254103.jpg",
+        "LXYXCBL08D0439111.jpg",
+        "LXYXCBL0XC0539970.jpg",
+        "LXYXCBL0XD0453155.jpg",
+        "MC1P021257.jpg",
+        "NAA165899.jpg",
+        "NAAM03138 2.jpg",
+        "NAAM03138.jpg",
+        "NC43E1A028569.JPG",
+        "ND11E1E025414.JPG",
+        "WY139FMA12812133.jpg",
+        "WY139FMA12818513.jpg",
+        "WY139FMA12826077.jpg",
+        "WY139FMA12832749.jpg",
+        "WY139FMA13336502.jpg",
+        "WY139FMA13339518.jpg",
+        "WY139FMA13340360.jpg",
+        "WY139FMA13358851.jpg",
+        "WY139FMA13360592.jpg",
+        "WY139FMA13360629.jpg",
+        "WY139FMA13361214.jpg",
+        "WY139FMA13362004.jpg",
+        "WY139FMA13362786.jpg",
+        "WY139FMA15255112.jpg",
+        "WY139FMA15260652.jpg",
+        "X70556763.jpg",
+        "XNKAG8327485.JPG"
+];
+
+        // (Mantenha aqui todas as funções de Busca, Zoom, Navegação e Compartilhamento já criadas)
+        // [Funções renderGallery, openModal, navigateModal, shareImage, etc...]
+    </script>
+</body>
+</html>
