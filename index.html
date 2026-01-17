@@ -7,7 +7,7 @@
     <style>
         :root {
             --primary: #1a1a1a;
-            --accent: #e6b800; /* Amarelo STTP */
+            --accent: #7CFC00; /* Cor ajustada para #7CFC00 */
             --text: #ffffff;
         }
 
@@ -139,6 +139,10 @@
 <body>
 
     <h2>NIEF - Inspeção Veicular</h2>
+
+    <div style="font-size: 0.75rem; color: #666; margin-bottom: 10px; text-align: center;">
+        Desenvolvido por Thiago Lins - Agente de Trânsito STTP Campina Grande
+    </div>
 
     <div id="searchContainer">
         <input type="text" id="searchInput" placeholder="Digite a sequência (ex: 9BD...)" autofocus autocomplete="off">
@@ -307,6 +311,7 @@
         "9C2JC30303R101884.jpg",
         "9C2JC30705R006377.JPG",
         "9C2JC30708R249126.jpg",
+        "9C2JC30708R732742.jpg",
         "9C2JC30708R732742.jpg",
         "9C2JC4110BR509642.jpg",
         "9C2JC4110BR774616.jpg",
@@ -638,7 +643,7 @@
         "WY139FMA15260652.jpg",
         "X70556763.jpg",
         "XNKAG8327485.JPG"
-];
+        ];
 
         const gallery = document.getElementById('gallery');
         const searchInput = document.getElementById('searchInput');
@@ -694,17 +699,14 @@
             updateModalImage(currentFilteredList[currentImageIndex]);
         }
 
-        // --- NOVA FUNÇÃO DE COPIAR (COMPATÍVEL) ---
         async function shareImage() {
             const originalText = shareBtn.innerText;
             try {
-                // Criar um canvas para converter JPG em PNG
                 const ctx = canvas.getContext('2d');
                 canvas.width = modalImg.naturalWidth;
                 canvas.height = modalImg.naturalHeight;
                 ctx.drawImage(modalImg, 0, 0);
 
-                // Exportar como Blob PNG (necessário para o clipboard)
                 canvas.toBlob(async (blob) => {
                     try {
                         await navigator.clipboard.write([
@@ -721,7 +723,6 @@
             }
         }
 
-        // --- FUNÇÃO DE DOWNLOAD (GARANTIDA) ---
         function downloadImage() {
             const link = document.createElement('a');
             link.href = modalImg.src;
@@ -731,7 +732,6 @@
             document.body.removeChild(link);
         }
 
-        // Teclado
         document.addEventListener('keydown', (e) => {
             if (modal.style.display === 'flex') {
                 if (e.key === 'ArrowRight') navigateModal(1);
