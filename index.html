@@ -3,89 +3,165 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NIEF - Sistema de Identificação</title>
+    <title>NIEF - Inspeção Veicular</title>
     <style>
-        :root { --primary: #1a1a1a; --accent: #e6b800; --text: #ffffff; }
-        body { font-family: 'Segoe UI', sans-serif; background-color: var(--primary); color: var(--text); margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
-        
-        /* Estilo da Tela de Login */
-        #loginScreen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; width: 100%; }
-        .login-box { background: #252525; padding: 40px; border-radius: 15px; border: 2px solid var(--accent); box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center; }
-        .login-box input { padding: 15px; width: 250px; border-radius: 8px; border: none; margin-bottom: 20px; font-size: 1rem; text-align: center; }
-        .login-box button { background: var(--accent); color: var(--primary); border: none; padding: 15px 30px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 1rem; }
+        :root {
+            --primary: #1a1a1a;
+            --accent: #e6b800; /* Amarelo STTP */
+            --text: #ffffff;
+        }
 
-        /* Estilo da App (Escondido inicialmente) */
-        #appContent { display: none; width: 100%; padding: 20px; flex-direction: column; align-items: center; }
-        
-        /* (Mantenha aqui todos os estilos anteriores da Galeria e Modal) */
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--primary);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overscroll-behavior: none;
+        }
+
         h2 { border-bottom: 2px solid var(--accent); padding-bottom: 10px; margin-bottom: 40px; }
-        #searchContainer { width: 100%; max-width: 600px; margin-bottom: 30px; }
-        #searchInput { width: 100%; padding: 18px; font-size: 1.3rem; border-radius: 12px; border: 2px solid #333; background: #252525; color: white; box-shadow: 0 10px 20px rgba(0,0,0,0.4); }
-        #gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; width: 100%; max-width: 1100px; }
-        .thumbnail { cursor: pointer; border-radius: 8px; overflow: hidden; background: #222; border: 1px solid #444; }
+
+        #searchContainer {
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 30px;
+        }
+
+        #searchInput {
+            width: 100%;
+            padding: 18px;
+            font-size: 1.3rem;
+            border-radius: 12px;
+            border: 2px solid #333;
+            background: #252525;
+            color: white;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+            transition: border-color 0.3s;
+        }
+
+        #searchInput:focus { outline: none; border-color: var(--accent); }
+
+        #gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 20px;
+            width: 100%;
+            max-width: 1100px;
+            padding-bottom: 50px;
+        }
+
+        .thumbnail {
+            cursor: pointer;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #222;
+            border: 1px solid #444;
+            animation: fadeIn 0.2s ease-in;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .thumbnail:hover { border-color: var(--accent); transform: translateY(-2px); transition: 0.2s; }
         .thumbnail img { width: 100%; height: 130px; object-fit: cover; display: block; }
         .thumbnail p { font-size: 0.75rem; margin: 8px; text-align: center; word-break: break-all; color: #ccc; }
+
+        /* MODAL E LUPA */
+        #modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        #imageContainer {
+            width: 100%; height: 100%;
+            display: flex; justify-content: center; align-items: center;
+            cursor: grab; position: relative;
+        }
         
-        #modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 1000; justify-content: center; align-items: center; overflow: hidden; }
-        #imageContainer { width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; cursor: grab; position: relative; }
-        #modalImg { max-width: 95%; max-height: 95%; transform-origin: center center; transition: transform 0.1s ease-out; user-select: none; pointer-events: none; }
-        #closeBtn { position: absolute; top: 20px; right: 20px; background: var(--accent); color: var(--primary); border: none; font-size: 2rem; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; z-index: 1001; }
-        .action-buttons { position: absolute; bottom: 20px; right: 20px; display: flex; gap: 10px; z-index: 1001; }
-        .btn-action { background: #252525; color: var(--accent); border: 2px solid var(--accent); padding: 10px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        #imageContainer:active { cursor: grabbing; }
+
+        #modalImg {
+            max-width: 95%; max-height: 95%;
+            transform-origin: center center;
+            transition: transform 0.1s ease-out;
+            user-select: none; pointer-events: none;
+        }
+
+        #closeBtn {
+            position: absolute; top: 20px; right: 20px;
+            background: var(--accent); color: var(--primary);
+            border: none; font-size: 2rem; width: 50px; height: 50px;
+            border-radius: 50%; cursor: pointer; z-index: 1001;
+            display: flex; justify-content: center; align-items: center;
+        }
+        
+        #modalTitleBot {
+            position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background: rgba(0,0,0,0.8); padding: 8px 20px;
+            border-radius: 20px; font-size: 0.9rem; pointer-events: none;
+            border: 1px solid var(--accent); white-space: nowrap;
+        }
+
+        /* Container de botões inferiores */
+        .action-buttons {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 1001;
+        }
+
+        .btn-action {
+            background: #252525;
+            color: var(--accent);
+            border: 2px solid var(--accent);
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 0.85rem;
+        }
+        
+        .btn-action:hover { background: var(--accent); color: var(--primary); }
     </style>
 </head>
 <body>
 
-    <div id="loginScreen">
-        <div class="login-box">
-            <h2 style="border:none; margin-bottom: 20px;">NIEF - ACESSO RESTRITO</h2>
-            <p style="color: #aaa; margin-bottom: 20px;">Digite a senha autorizada para Campina Grande e Região</p>
-            <input type="password" id="passInput" placeholder="Senha do Agente">
-            <br>
-            <button onclick="checkPass()">Entrar no Sistema</button>
-        </div>
+    <h2>NIEF - Inspeção Veicular</h2>
+
+    <div id="searchContainer">
+        <input type="text" id="searchInput" placeholder="Digite a sequência (ex: 9BD...)" autofocus autocomplete="off">
     </div>
 
-    <div id="appContent">
-        <h2>NIEF - Inspeção Veicular</h2>
-        <div id="searchContainer">
-            <input type="text" id="searchInput" placeholder="Digite a sequência (ex: 9BD...)" autocomplete="off">
-        </div>
-        <div id="gallery"></div>
-    </div>
+    <div id="gallery"></div>
 
     <div id="modal">
         <button id="closeBtn" onclick="closeModal()">×</button>
-        <div id="imageContainer"><img id="modalImg" src=""></div>
+        <div id="imageContainer">
+            <img id="modalImg" src="">
+        </div>
+        <div id="modalTitleBot"></div>
+        
         <div class="action-buttons">
-            <button class="btn-action" onclick="downloadImage()">Baixar</button>
-            <button class="btn-action" onclick="shareImage()">Copiar para WhatsApp</button>
+            <button class="btn-action" id="downloadBtn" onclick="downloadImage()">Baixar Foto</button>
+            <button class="btn-action" id="shareBtn" onclick="shareImage()">Copiar para WhatsApp</button>
         </div>
     </div>
 
     <canvas id="conversionCanvas" style="display:none;"></canvas>
 
     <script>
-        // SENHA HASHED (Para maior segurança, usamos um simples check aqui)
-        const SENHA_CORRETA = "NIEF2026"; 
-
-        function checkPass() {
-            const input = document.getElementById('passInput').value;
-            if (input === SENHA_CORRETA) {
-                document.getElementById('loginScreen').style.display = 'none';
-                document.getElementById('appContent').style.display = 'flex';
-                document.getElementById('searchInput').focus();
-            } else {
-                alert("Senha incorreta. Acesso negado.");
-            }
-        }
-
-        // Adicionar evento para entrar com a tecla "Enter"
-        document.getElementById('passInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') checkPass();
-        });
-
-        // --- LISTA DE ARQUIVOS (O SEU SCRIPT PYTHON CONTINUA ATUALIZANDO ESTA PARTE) ---
         // LISTA DE ARQUIVOS
         const imagens = [
         "10DBSS0080629.png",
@@ -111,6 +187,7 @@
         "4112818.jpg",
         "4D0037037.jpg",
         "5617552.jpg",
+        "7735226 8.jpg",
         "7735226.jpg",
         "7903076.jpg",
         "8AGSU19F0ER100458 1.jpg",
@@ -126,6 +203,7 @@
         "8N0000125.jpg",
         "8N1DK3CD2EL217767.JPG",
         "92EC10AGPRM021124.jpg",
+        "9362MKFWX BB008482 1.jpg",
         "9362MKFWXBB008482 2.jpg",
         "9362MKFWXBB008482.jpg",
         "93HRV2890HZ231361.JPG",
@@ -153,6 +231,8 @@
         "9BGKL48U0KB254661 2.jpg",
         "9BGKL48U0KB254661.jpg",
         "9BGKS69V0KG136709.JPG",
+        "9BGKT69L0 FG244756 1.jpg",
+        "9BGKT69L0 FG244756.jpg",
         "9BGKT69L0FG244756 1.jpg",
         "9BGKT69L0FG244756.jpg",
         "9BGRD08X03G179593.jpg",
@@ -314,6 +394,7 @@
         "LHJXCBLA0EB403221.jpg",
         "LHJXCBLD4B0220485.jpg",
         "LIJ-223085092-.JPG",
+        "LTEXCBLB4D3001994 1.jpg",
         "LTEXCBLB4D3001994 2.jpg",
         "LTEXCBLB4D3001994.jpg",
         "LWYMCA201E6014887.jpg",
@@ -342,6 +423,8 @@
         "LXYXCBL0XD0453155.jpg",
         "MC1P021257.jpg",
         "NAA165899.jpg",
+        "NAAM03138 (2).jpg",
+        "NAAM03138 1.jpg",
         "NAAM03138 2.jpg",
         "NAAM03138.jpg",
         "NC43E1A028569.JPG",
@@ -365,8 +448,126 @@
         "XNKAG8327485.JPG"
 ];
 
-        // (Mantenha aqui todas as funções de Busca, Zoom, Navegação e Compartilhamento já criadas)
-        // [Funções renderGallery, openModal, navigateModal, shareImage, etc...]
+        const gallery = document.getElementById('gallery');
+        const searchInput = document.getElementById('searchInput');
+        const modal = document.getElementById('modal');
+        const modalImg = document.getElementById('modalImg');
+        const imageContainer = document.getElementById('imageContainer');
+        const modalTitleBot = document.getElementById('modalTitleBot');
+        const shareBtn = document.getElementById('shareBtn');
+        const canvas = document.getElementById('conversionCanvas');
+
+        let scale = 1, panningX = 0, panningY = 0, startX = 0, startY = 0, isDragging = false;
+        let currentFilteredList = [];
+        let currentImageIndex = -1;
+
+        function normalizar(texto) {
+            return texto.toString().toLowerCase().replace(/[^a-z0-9]/g, '');
+        }
+
+        function renderGallery(filtro = "") {
+            gallery.innerHTML = "";
+            if (filtro.trim() === "") { currentFilteredList = []; return; }
+            const filtroLimpo = normalizar(filtro);
+            currentFilteredList = imagens.filter(img => normalizar(img.split('.')[0]).startsWith(filtroLimpo));
+            currentFilteredList.forEach(imgNome => {
+                const div = document.createElement('div');
+                div.className = 'thumbnail';
+                div.onclick = () => openModal(imgNome);
+                div.innerHTML = `<img src="${imgNome}" loading="lazy"><p>${imgNome.split('.')[0]}</p>`;
+                gallery.appendChild(div);
+            });
+        }
+
+        searchInput.addEventListener('input', (e) => renderGallery(e.target.value));
+
+        function openModal(src) {
+            currentImageIndex = currentFilteredList.indexOf(src);
+            updateModalImage(src);
+            modal.style.display = 'flex';
+        }
+
+        function updateModalImage(src) {
+            modalImg.src = src;
+            modalTitleBot.innerText = src.split('.')[0];
+            scale = 1; panningX = 0; panningY = 0;
+            updateTransform();
+        }
+
+        function closeModal() { modal.style.display = 'none'; }
+
+        function navigateModal(direction) {
+            if (currentFilteredList.length <= 1) return;
+            currentImageIndex = (currentImageIndex + direction + currentFilteredList.length) % currentFilteredList.length;
+            updateModalImage(currentFilteredList[currentImageIndex]);
+        }
+
+        // --- NOVA FUNÇÃO DE COPIAR (COMPATÍVEL) ---
+        async function shareImage() {
+            const originalText = shareBtn.innerText;
+            try {
+                // Criar um canvas para converter JPG em PNG
+                const ctx = canvas.getContext('2d');
+                canvas.width = modalImg.naturalWidth;
+                canvas.height = modalImg.naturalHeight;
+                ctx.drawImage(modalImg, 0, 0);
+
+                // Exportar como Blob PNG (necessário para o clipboard)
+                canvas.toBlob(async (blob) => {
+                    try {
+                        await navigator.clipboard.write([
+                            new ClipboardItem({ 'image/png': blob })
+                        ]);
+                        shareBtn.innerText = "Copiado!";
+                        setTimeout(() => shareBtn.innerText = originalText, 2000);
+                    } catch (e) {
+                        alert("Erro de Segurança: O navegador só permite copiar se o site usar HTTPS ou se você der permissão nas configurações.");
+                    }
+                }, 'image/png');
+            } catch (err) {
+                alert("Não foi possível processar a imagem.");
+            }
+        }
+
+        // --- FUNÇÃO DE DOWNLOAD (GARANTIDA) ---
+        function downloadImage() {
+            const link = document.createElement('a');
+            link.href = modalImg.src;
+            link.download = modalTitleBot.innerText + ".jpg";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Teclado
+        document.addEventListener('keydown', (e) => {
+            if (modal.style.display === 'flex') {
+                if (e.key === 'ArrowRight') navigateModal(1);
+                if (e.key === 'ArrowLeft') navigateModal(-1);
+                if (e.key === 'Escape') closeModal();
+            }
+        });
+
+        function updateTransform() { modalImg.style.transform = `translate(${panningX}px, ${panningY}px) scale(${scale})`; }
+
+        imageContainer.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            const delta = e.deltaY > 0 ? 0.9 : 1.1;
+            scale = Math.min(Math.max(.5, scale * delta), 8);
+            updateTransform();
+        });
+
+        imageContainer.addEventListener('mousedown', (e) => {
+            isDragging = true; startX = e.clientX - panningX; startY = e.clientY - panningY;
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            panningX = e.clientX - startX; panningY = e.clientY - startY;
+            updateTransform();
+        });
+
+        window.addEventListener('mouseup', () => isDragging = false);
     </script>
 </body>
 </html>
