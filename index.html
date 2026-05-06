@@ -1,217 +1,431 @@
 <!DOCTYPE html>
+
 <html lang="pt-br">
+
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
     <title>NIEF - Padrões de Gravação IDV</title>
+
     <style>
+
         :root {
+
             --primary: #1a1a1a;
+
             --accent: #7CFC00; /* Cor ajustada para #7CFC00 */
+
             --text: #ffffff;
+
         }
+
+
 
         body {
+
             font-family: 'Segoe UI', sans-serif;
+
             background-color: var(--primary);
+
             color: var(--text);
+
             margin: 0;
+
             padding: 20px;
+
             display: flex;
+
             flex-direction: column;
+
             align-items: center;
+
             overscroll-behavior: none;
+
         }
+
+
 
         h2 { 
+
             border-bottom: 2px solid var(--accent); 
+
             padding-bottom: 10px; 
+
             margin-bottom: 20px; 
+
             text-align: center; 
+
             max-width: 95%;
+
             word-wrap: break-word;
+
         }
+
+
 
         #searchContainer {
+
             width: 100%;
+
             max-width: 600px;
+
             margin-bottom: 30px;
+
         }
 
+
+
         #searchInput {
+
             width: 100%;
+
             padding: 18px;
+
             font-size: 1.3rem;
+
             border-radius: 12px;
+
             border: 2px solid #333;
+
             background: #252525;
+
             color: white;
+
             box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+
             transition: border-color 0.3s;
+
             box-sizing: border-box;
+
         }
+
+
 
         #searchInput:focus { outline: none; border-color: var(--accent); }
 
+
+
         #gallery {
+
             display: grid;
+
             grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+
             gap: 20px;
+
             width: 100%;
+
             max-width: 1100px;
+
             padding-bottom: 50px;
+
         }
 
+
+
         .thumbnail {
+
             cursor: pointer;
+
             border-radius: 8px;
+
             overflow: hidden;
+
             background: #222;
+
             border: 1px solid #444;
+
             animation: fadeIn 0.2s ease-in;
+
         }
+
+
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
+
+
         .thumbnail:hover { border-color: var(--accent); transform: translateY(-2px); transition: 0.2s; }
+
         .thumbnail img { width: 100%; height: 130px; object-fit: cover; display: block; }
+
         .thumbnail p { font-size: 0.75rem; margin: 8px; text-align: center; word-break: break-all; color: #ccc; }
 
+
+
         /* MODAL E LUPA */
+
         #modal {
+
             display: none;
+
             position: fixed;
+
             top: 0; left: 0; width: 100%; height: 100%;
+
             background: rgba(0,0,0,0.95);
+
             z-index: 1000;
+
             justify-content: center;
+
             align-items: center;
+
             overflow: hidden;
+
         }
+
+
 
         #imageContainer {
+
             width: 100%; height: 100%;
+
             display: flex; justify-content: center; align-items: center;
+
             cursor: grab; position: relative;
+
         }
+
         
+
         #imageContainer:active { cursor: grabbing; }
 
+
+
         #modalImg {
+
             max-width: 95%; max-height: 95%;
+
             transform-origin: center center;
+
             transition: transform 0.1s ease-out;
+
             user-select: none; pointer-events: none;
+
         }
+
+
 
         #closeBtn {
+
             position: absolute; top: 20px; right: 20px;
+
             background: var(--accent); color: var(--primary);
+
             border: none; font-size: 2rem; width: 50px; height: 50px;
+
             border-radius: 50%; cursor: pointer; z-index: 1001;
+
             display: flex; justify-content: center; align-items: center;
+
         }
+
         
+
         #modalTitleBot {
+
             position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+
             background: rgba(0,0,0,0.8); padding: 8px 20px;
+
             border-radius: 20px; font-size: 0.9rem; pointer-events: none;
+
             border: 1px solid var(--accent); white-space: nowrap;
+
             z-index: 1002;
+
         }
+
+
 
         /* Container de botões inferiores */
+
         .action-buttons {
+
             position: absolute;
+
             bottom: 70px;
+
             right: 20px;
+
             display: flex;
+
             flex-direction: column;
+
             gap: 10px;
+
             z-index: 1001;
+
         }
+
+
 
         .btn-action {
+
             background: #252525;
+
             color: var(--accent);
+
             border: 2px solid var(--accent);
+
             padding: 10px 15px;
+
             border-radius: 8px;
+
             font-weight: bold;
+
             cursor: pointer;
+
             transition: 0.2s;
+
             font-size: 0.85rem;
+
             text-align: center;
+
         }
+
         
+
         .btn-action:hover { background: var(--accent); color: var(--primary); }
 
+
+
         /* RESPONSIVIDADE PARA CELULARES */
+
         @media (max-width: 600px) {
+
             h2 { font-size: 1.1rem; margin-bottom: 15px; }
+
             
+
             #gallery {
+
                 grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+
                 gap: 10px;
+
             }
+
+
 
             .action-buttons {
+
                 bottom: 80px;
+
                 right: 0;
+
                 width: 100%;
+
                 flex-direction: row;
+
                 justify-content: center;
+
                 padding: 0 10px;
+
                 box-sizing: border-box;
+
             }
+
+
 
             .btn-action {
+
                 flex: 1;
+
                 font-size: 0.75rem;
+
                 padding: 12px 5px;
+
             }
+
+
 
             #modalTitleBot {
+
                 font-size: 0.75rem;
+
                 bottom: 25px;
+
                 width: 80%;
+
                 text-align: center;
+
                 white-space: normal;
+
             }
+
         }
+
     </style>
+
 </head>
+
 <body>
 
+
+
     <h2>NÚCLEO DE INTELIGÊNCIA E ENFRENTAMENTO ÀS FRAUDES VEICULARES - NIEF/STTP/CG</h2>
+
     <h2>Padrões de Gravação IDV (Motor e NIV)</h2>
 
+
+
     <div style="font-size: 0.75rem; color: #666; margin-bottom: 20px; text-align: center; width: 100%;">
+
         Desenvolvido por Thiago Lins - Agente de Trânsito STTP Campina Grande
+
     </div>
 
+
+
     <div id="searchContainer">
+
         <input type="text" id="searchInput" placeholder="Digite a sequência (ex: 9BD...)" autofocus autocomplete="off">
+
     </div>
+
+
 
     <div id="gallery"></div>
 
+
+
     <div id="modal">
+
         <button id="closeBtn" onclick="closeModal()">×</button>
+
         <div id="imageContainer">
+
             <img id="modalImg" src="">
+
         </div>
+
         <div id="modalTitleBot"></div>
+
         
+
         <div class="action-buttons">
+
             <button class="btn-action" id="downloadBtn" onclick="downloadImage()">Baixar Foto</button>
+
             <button class="btn-action" id="shareBtn" onclick="shareImage()">Copiar para WhatsApp</button>
+
         </div>
+
     </div>
+
+
 
     <canvas id="conversionCanvas" style="display:none;"></canvas>
 
+
+
     <script>
+
         // LISTA DE ARQUIVOS
         const imagens = [
         "10DBSS0080629.png",
@@ -743,149 +957,296 @@
         "XNKAG8327485.JPG"
 ];
 
+
+
         const gallery = document.getElementById('gallery');
+
         const searchInput = document.getElementById('searchInput');
+
         const modal = document.getElementById('modal');
+
         const modalImg = document.getElementById('modalImg');
+
         const imageContainer = document.getElementById('imageContainer');
+
         const modalTitleBot = document.getElementById('modalTitleBot');
+
         const shareBtn = document.getElementById('shareBtn');
+
         const canvas = document.getElementById('conversionCanvas');
 
+
+
         let scale = 1, panningX = 0, panningY = 0, startX = 0, startY = 0, isDragging = false;
+
         let currentFilteredList = [];
+
         let currentImageIndex = -1;
 
+
+
         function normalizar(texto) {
+
             return texto.toString().toLowerCase().replace(/[^a-z0-9]/g, '');
+
         }
 
+
+
         function renderGallery(filtro = "") {
+
             gallery.innerHTML = "";
+
             if (filtro.trim() === "") { currentFilteredList = []; return; }
+
             const filtroLimpo = normalizar(filtro);
+
             currentFilteredList = imagens.filter(img => normalizar(img.split('.')[0]).startsWith(filtroLimpo));
+
             currentFilteredList.forEach(imgNome => {
+
                 const div = document.createElement('div');
+
                 div.className = 'thumbnail';
+
                 div.onclick = () => openModal(imgNome);
+
                 div.innerHTML = `<img src="${imgNome}" loading="lazy"><p>${imgNome.split('.')[0]}</p>`;
+
                 gallery.appendChild(div);
+
             });
+
         }
+
+
 
         searchInput.addEventListener('input', (e) => renderGallery(e.target.value));
 
+
+
         function openModal(src) {
+
             currentImageIndex = currentFilteredList.indexOf(src);
+
             updateModalImage(src);
+
             modal.style.display = 'flex';
+
         }
 
+
+
         function updateModalImage(src) {
+
             modalImg.src = src;
+
             modalTitleBot.innerText = src.split('.')[0];
+
             scale = 1; panningX = 0; panningY = 0;
+
             updateTransform();
+
         }
+
+
 
         function closeModal() { modal.style.display = 'none'; }
 
+
+
         function navigateModal(direction) {
+
             if (currentFilteredList.length <= 1) return;
+
             currentImageIndex = (currentImageIndex + direction + currentFilteredList.length) % currentFilteredList.length;
+
             updateModalImage(currentFilteredList[currentImageIndex]);
+
         }
+
+
 
         async function shareImage() {
+
             const originalText = shareBtn.innerText;
+
             try {
+
                 const ctx = canvas.getContext('2d');
+
                 canvas.width = modalImg.naturalWidth;
+
                 canvas.height = modalImg.naturalHeight;
+
                 ctx.drawImage(modalImg, 0, 0);
 
+
+
                 canvas.toBlob(async (blob) => {
+
                     try {
+
                         await navigator.clipboard.write([
+
                             new ClipboardItem({ 'image/png': blob })
+
                         ]);
+
                         shareBtn.innerText = "Copiado!";
+
                         setTimeout(() => shareBtn.innerText = originalText, 2000);
+
                     } catch (e) {
+
                         alert("Erro de Segurança: O navegador só permite copiar se o site usar HTTPS ou se você der permissão nas configurações.");
+
                     }
+
                 }, 'image/png');
+
             } catch (err) {
+
                 alert("Não foi possível processar a imagem.");
+
             }
+
         }
+
+
 
         function downloadImage() {
+
             const link = document.createElement('a');
+
             link.href = modalImg.src;
+
             link.download = modalTitleBot.innerText + ".jpg";
+
             document.body.appendChild(link);
+
             link.click();
+
             document.body.removeChild(link);
+
         }
 
+
+
         document.addEventListener('keydown', (e) => {
+
             if (modal.style.display === 'flex') {
+
                 if (e.key === 'ArrowRight') navigateModal(1);
+
                 if (e.key === 'ArrowLeft') navigateModal(-1);
+
                 if (e.key === 'Escape') closeModal();
+
             }
+
         });
+
+
 
         function updateTransform() { modalImg.style.transform = `translate(${panningX}px, ${panningY}px) scale(${scale})`; }
 
+
+
         imageContainer.addEventListener('wheel', (e) => {
+
             e.preventDefault();
+
             const delta = e.deltaY > 0 ? 0.9 : 1.1;
+
             scale = Math.min(Math.max(.5, scale * delta), 8);
+
             updateTransform();
+
         });
+
+
 
         imageContainer.addEventListener('mousedown', (e) => {
+
             isDragging = true; startX = e.clientX - panningX; startY = e.clientY - panningY;
+
         });
 
+
+
         window.addEventListener('mousemove', (e) => {
+
             if (!isDragging) return;
+
             panningX = e.clientX - startX; panningY = e.clientY - startY;
+
             updateTransform();
+
         });
+
+
 
         window.addEventListener('mouseup', () => isDragging = false);
 
+
+
         // Suporte para touch (mobile)
+
         let lastTouchDistance = 0;
+
         imageContainer.addEventListener('touchstart', (e) => {
+
             if (e.touches.length === 1) {
+
                 isDragging = true;
+
                 startX = e.touches[0].clientX - panningX;
+
                 startY = e.touches[0].clientY - panningY;
+
             } else if (e.touches.length === 2) {
+
                 lastTouchDistance = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+
             }
+
         });
+
+
 
         imageContainer.addEventListener('touchmove', (e) => {
+
             if (e.touches.length === 1 && isDragging) {
+
                 panningX = e.touches[0].clientX - startX;
+
                 panningY = e.touches[0].clientY - startY;
+
                 updateTransform();
+
             } else if (e.touches.length === 2) {
+
                 const distance = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+
                 const delta = distance / lastTouchDistance;
+
                 scale = Math.min(Math.max(.5, scale * delta), 8);
+
                 lastTouchDistance = distance;
+
                 updateTransform();
+
             }
+
         });
 
+
+
         imageContainer.addEventListener('touchend', () => { isDragging = false; });
+
     </script>
+
 </body>
+
 </html>
