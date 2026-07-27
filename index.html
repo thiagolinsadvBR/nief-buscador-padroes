@@ -16,7 +16,7 @@
             background-color: var(--primary);
             color: var(--text);
             margin: 0;
-            /* Aumentado o padding superior para 70px para não sobrepor o título */
+            /* Padding superior ajustado para o botão flutuante */
             padding: 70px 20px 20px 20px; 
             display: flex;
             flex-direction: column;
@@ -27,15 +27,27 @@
         h2 { 
             border-bottom: 2px solid var(--accent); 
             padding-bottom: 10px; 
-            margin-bottom: 20px; 
+            margin-bottom: 15px; 
             text-align: center; 
             max-width: 95%;
             word-wrap: break-word;
         }
 
+        #contadorFotos {
+            color: var(--accent);
+            font-weight: bold;
+            margin-bottom: 25px;
+            font-size: 1.1rem;
+            text-align: center;
+            background: #252525;
+            padding: 8px 20px;
+            border-radius: 20px;
+            border: 1px solid #333;
+        }
+
         /* Botão Flutuante de Atualizações */
         #btnAtualizacoes {
-            position: fixed; /* Alterado para fixed para ficar flutuante ao rolar a página */
+            position: fixed; 
             top: 20px;
             right: 20px;
             background: var(--accent);
@@ -56,7 +68,6 @@
             width: 100%;
             max-width: 600px;
             margin-bottom: 30px;
-            margin-top: 10px;
         }
 
         #searchInput {
@@ -99,7 +110,7 @@
         .thumbnail:hover { border-color: var(--accent); transform: translateY(-2px); transition: 0.2s; }
         .thumbnail img { width: 100%; height: 130px; object-fit: cover; display: block; }
         
-        /* Novos estilos para os textos da miniatura */
+        /* Textos da miniatura */
         .thumb-text-container {
             padding: 10px 8px;
             text-align: center;
@@ -206,6 +217,17 @@
         
         .btn-action:hover { background: var(--accent); color: var(--primary); }
 
+        /* Botão específico para Reportar */
+        #reportBtn {
+            border-color: #ff4444;
+            color: #ff4444;
+        }
+
+        #reportBtn:hover {
+            background: #ff4444;
+            color: white;
+        }
+
         /* MODAL DE ATUALIZAÇÕES (BLUR) */
         #modalAtualizacoes {
             display: none;
@@ -259,7 +281,6 @@
             padding-right: 10px;
         }
 
-        /* Custom Scrollbar */
         .lista-scroll::-webkit-scrollbar { width: 8px; }
         .lista-scroll::-webkit-scrollbar-track { background: #111; border-radius: 4px; }
         .lista-scroll::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 4px; }
@@ -287,6 +308,7 @@
         @media (max-width: 600px) {
             body { padding-top: 60px; }
             h2 { font-size: 1.1rem; margin-bottom: 15px; }
+            #contadorFotos { font-size: 0.9rem; padding: 6px 15px; margin-bottom: 20px; }
             #btnAtualizacoes { top: 10px; right: 10px; font-size: 0.75rem; padding: 8px 12px; }
             
             #gallery {
@@ -299,12 +321,13 @@
                 right: 0;
                 width: 100%;
                 flex-direction: row;
+                flex-wrap: wrap;
                 justify-content: center;
                 padding: 0 10px;
                 box-sizing: border-box;
             }
 
-            .btn-action { flex: 1; font-size: 0.75rem; padding: 12px 5px; }
+            .btn-action { flex: 1 1 45%; font-size: 0.75rem; padding: 12px 5px; }
 
             #modalTitleBot {
                 bottom: 25px;
@@ -324,9 +347,12 @@
     <h2>NÚCLEO DE INTELIGÊNCIA E ENFRENTAMENTO ÀS FRAUDES VEICULARES - NIEF/STTP/CG</h2>
     <h2>Padrões de Gravação IDV (Motor e NIV)</h2>
 
-    <div style="font-size: 0.75rem; color: #666; margin-bottom: 20px; text-align: center; width: 100%;">
+    <div style="font-size: 0.75rem; color: #666; margin-bottom: 10px; text-align: center; width: 100%;">
         Desenvolvido por Thiago Lins - Agente de Trânsito STTP Campina Grande
     </div>
+
+    <!-- Contador de Fotos -->
+    <div id="contadorFotos">📸 Carregando padrões...</div>
 
     <div id="searchContainer">
         <input type="text" id="searchInput" placeholder="Digite a sequência (ex: 9BD...)" autofocus autocomplete="off">
@@ -350,6 +376,8 @@
             <button class="btn-action" id="downloadBtn" onclick="downloadImage()">Baixar Foto</button>
             <button class="btn-action" id="shareBtn" onclick="shareImage()">Copiar para WhatsApp</button>
             <button class="btn-action" id="copyNumberBtn" onclick="copyNumber()">Copiar Numeração</button>
+            <!-- Novo Botão para Reportar -->
+            <button class="btn-action" id="reportBtn" onclick="reportarInconsistencia()">🚩 Reportar Inconsistência</button>
         </div>
     </div>
 
@@ -6007,6 +6035,14 @@
         }
 ];
 
+        // Atualiza o contador de fotos logo após o array de imagens ser carregado
+        document.addEventListener("DOMContentLoaded", () => {
+            const contadorFotos = document.getElementById('contadorFotos');
+            if (contadorFotos) {
+                contadorFotos.innerText = `📸 Total de Padrões Cadastrados: ${imagens.length}`;
+            }
+        });
+
         const gallery = document.getElementById('gallery');
         const searchInput = document.getElementById('searchInput');
         const modal = document.getElementById('modal');
@@ -6127,6 +6163,17 @@
             } catch (e) { alert("Erro ao copiar a numeração."); }
         }
 
+        // Nova Função de Reportar Inconsistência
+        function reportarInconsistencia() {
+            const chassi = modalChassiDestaque.innerText;
+            // Base URL do Google Forms injetada com o chassi formatado para link
+            const baseUrl = "https://docs.google.com/forms/d/e/1FAIpQLSdOZECyTHgc15p5pcQF386JzcPwqn7PiEc2NLtnX6d_H-tcJQ/viewform?usp=pp_url&entry.202619458=";
+            const finalUrl = baseUrl + encodeURIComponent(chassi);
+            
+            // Abre o Forms em uma nova aba
+            window.open(finalUrl, '_blank');
+        }
+
         // Funções do Modal de Últimas Atualizações
         function abrirModalAtualizacoes() {
             const container = document.getElementById('containerListaAtualizacoes');
@@ -6154,8 +6201,10 @@
                 const ul = document.createElement('ul');
                 fotos.forEach(foto => {
                     const li = document.createElement('li');
+                    
+                    // Converte Marca, Modelo e Ano para maiúsculas (uppercase) antes de exibir
                     let textoExtras = (foto.marca && foto.marca !== "") 
-                        ? `${foto.marca} / ${foto.modelo} / ${foto.ano}` 
+                        ? `${foto.marca.toUpperCase()} / ${foto.modelo.toUpperCase()} / ${foto.ano.toUpperCase()}` 
                         : "Informação não cadastrada";
                         
                     li.innerHTML = `<span class="chassi-tag">${foto.chassi}</span><span class="info-tag">${textoExtras}</span>`;
