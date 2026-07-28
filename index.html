@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NIEF - Padrões de Gravação IDV</title>
+    <title>Padrões de Gravação IDV</title>
     
     <!-- Bibliotecas do Firebase (Versão 8 Compat - Ideal para HTML estático) -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -14,6 +14,8 @@
             --primary: #1a1a1a;
             --accent: #7CFC00;
             --text: #ffffff;
+            --nubank: #8A05BE;
+            --nubank-hover: #A824E3;
         }
 
         body {
@@ -35,6 +37,33 @@
             text-align: center; 
             max-width: 95%;
             word-wrap: break-word;
+        }
+
+        /* Botão de Doação Centralizado (Estilo Nubank) */
+        #btnDoacaoCentral {
+            background: var(--nubank);
+            color: #ffffff;
+            border: 2px solid var(--nubank);
+            padding: 12px 28px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 0.95rem;
+            cursor: pointer;
+            margin-top: 10px;
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(138, 5, 190, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        #btnDoacaoCentral:hover {
+            background: var(--nubank-hover);
+            border-color: var(--nubank-hover);
+            color: #ffffff;
+            box-shadow: 0 6px 20px rgba(168, 36, 227, 0.6);
+            transform: scale(1.05);
         }
 
         #contadorFotos {
@@ -195,15 +224,23 @@
             word-break: break-word;
         }
 
-        /* MODAL DE IMAGEM */
-        #modal {
+        /* MODAIS GERAIS (Fundo) */
+        .modal-overlay {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.95);
-            z-index: 1000;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             justify-content: center;
             align-items: center;
+            z-index: 2000;
+        }
+
+        /* MODAL DE IMAGEM ESPECÍFICO */
+        #modal {
+            background: rgba(0,0,0,0.95);
+            z-index: 1000;
             overflow: hidden;
         }
 
@@ -282,20 +319,8 @@
         }
         #reportBtn:hover { background: #ff4444; color: white; }
 
-        /* MODAL DE ATUALIZAÇÕES */
-        #modalAtualizacoes {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            z-index: 2000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .atualizacoes-box {
+        /* BOX DOS MODAIS DE TEXTO */
+        .modal-box {
             background: #1a1a1a;
             width: 90%;
             max-width: 600px;
@@ -309,7 +334,7 @@
             flex-direction: column;
         }
 
-        .atualizacoes-header {
+        .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -318,7 +343,7 @@
             margin-bottom: 15px;
         }
 
-        .atualizacoes-header h3 { margin: 0; color: var(--text); }
+        .modal-header h3 { margin: 0; color: var(--text); }
         
         .fechar-modal-btn {
             background: transparent;
@@ -334,7 +359,6 @@
             flex-grow: 1;
             padding-right: 10px;
         }
-
         .lista-scroll::-webkit-scrollbar { width: 8px; }
         .lista-scroll::-webkit-scrollbar-track { background: #111; border-radius: 4px; }
         .lista-scroll::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 4px; }
@@ -357,6 +381,45 @@
         }
         .chassi-tag { color: white; font-weight: bold; font-size: 0.95rem; display: block; margin-bottom: 3px; }
         .info-tag { color: #aaa; }
+
+        /* Estilos Específicos da Doação (Nubank) */
+        .doacao-desc {
+            font-size: 0.95rem;
+            color: #ddd;
+            text-align: center;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+        
+        .valores-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .btn-valor {
+            background: #252525;
+            color: #ffffff;
+            border: 2px solid var(--nubank);
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-valor:hover {
+            background: var(--nubank);
+            color: #ffffff;
+            transform: scale(1.03);
+            box-shadow: 0 4px 15px rgba(138, 5, 190, 0.4);
+        }
 
         /* Estilos do Terminal em Tempo Real */
         #terminalBox {
@@ -403,6 +466,8 @@
             #btnContribuir { top: 10px; left: 10px; }
             #btnAtualizacoes { top: 10px; right: 10px; }
             
+            #btnDoacaoCentral { font-size: 0.85rem; padding: 10px 15px; }
+
             #filterContainer { gap: 8px; }
             .select-filtro, #btnLimparFiltros { padding: 10px; font-size: 0.85rem; flex: 1 1 45%; min-width: 130px; }
 
@@ -431,12 +496,16 @@
     <button class="btn-flutuante" id="btnContribuir" onclick="abrirFormularioContribuicao()">📤 Enviar Novo Padrão</button>
     <button class="btn-flutuante" id="btnAtualizacoes" onclick="abrirModalAtualizacoes()">🔔 Últimas Atualizações</button>
 
-    <h2>NÚCLEO DE INTELIGÊNCIA E ENFRENTAMENTO ÀS FRAUDES VEICULARES - NIEF/STTP/CG</h2>
-    <h2>Padrões de Gravação IDV (Motor e NIV)</h2>
+    <h2>Padrões de Gravação IDV (Motor, NIV, Vidros, Etas e Agregados)</h2>
 
-    <div style="font-size: 0.75rem; color: #666; margin-bottom: 10px; text-align: center; width: 100%;">
-        Desenvolvido por Thiago Lins - Agente de Trânsito STTP Campina Grande
+    <div style="font-size: 0.75rem; color: #666; margin-bottom: 5px; text-align: center; width: 100%;">
+        Desenvolvido por Thiago Lins
     </div>
+
+    <!-- Botão de Doação com Cores Nubank -->
+    <button id="btnDoacaoCentral" onclick="abrirModalDoacao()">
+        ☕ Pague um café para o desenvolvedor
+    </button>
 
     <div id="contadorFotos">📸 Carregando padrões...</div>
 
@@ -469,7 +538,7 @@
         <div style="width: 100%; max-width: 700px;">
             <div id="terminalBox">
                 <div id="terminalHeader">
-                    > Estabelecendo conexão criptografada com servidor NIEF...<br>
+                    > Estabelecendo conexão criptografada com servidor central...<br>
                     <span id="gpsStatus">> Buscando coordenadas GPS da sessão (Aguardando Permissão)...</span>
                 </div>
                 <div id="terminalLogs"></div>
@@ -479,7 +548,7 @@
     <br><br>
 
     <!-- MODAL PRINCIPAL DA IMAGEM -->
-    <div id="modal">
+    <div id="modal" class="modal-overlay">
         <button id="closeBtn" onclick="closeModal()">×</button>
         <div id="imageContainer">
             <img id="modalImg" src="">
@@ -497,13 +566,38 @@
     </div>
 
     <!-- MODAL DE ATUALIZAÇÕES -->
-    <div id="modalAtualizacoes">
-        <div class="atualizacoes-box">
-            <div class="atualizacoes-header">
+    <div id="modalAtualizacoes" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header">
                 <h3>Últimas Atualizações do Sistema</h3>
                 <button class="fechar-modal-btn" onclick="fecharModalAtualizacoes()">×</button>
             </div>
             <div class="lista-scroll" id="containerListaAtualizacoes"></div>
+        </div>
+    </div>
+
+    <!-- MODAL DE DOAÇÃO -->
+    <div id="modalDoacao" class="modal-overlay">
+        <div class="modal-box" style="max-width: 450px;">
+            <div class="modal-header" style="justify-content: center; position: relative; border-color: var(--nubank);">
+                <h3 style="color: var(--accent);">☕ Apoie o Desenvolvimento</h3>
+                <button class="fechar-modal-btn" onclick="fecharModalDoacao()" style="position: absolute; right: 0;">×</button>
+            </div>
+            
+            <p class="doacao-desc">
+                Esta ferramenta foi criada e é mantida de forma independente para facilitar as nossas abordagens nas ruas. Se ela tem ajudado no seu trabalho, considere fazer uma colaboração para incentivar futuras atualizações e manter o sistema no ar! 🚀
+            </p>
+            
+            <div class="valores-grid">
+                <button class="btn-valor" onclick="window.open('https://nubank.com.br/cobrar/vxfnx/6a68cafe-c9d4-4b66-8023-b427ddc23077', '_blank')">R$ 5,00</button>
+                <button class="btn-valor" onclick="window.open('https://nubank.com.br/cobrar/vxfnx/6a68cb82-8701-4c99-bfa9-5d71f273d341', '_blank')">R$ 10,00</button>
+                <button class="btn-valor" onclick="window.open('https://nubank.com.br/cobrar/vxfnx/6a68cb97-9597-443f-8f36-310a693a2da1', '_blank')">R$ 15,00</button>
+                <button class="btn-valor" onclick="window.open('https://nubank.com.br/cobrar/vxfnx/6a68cba9-b3e2-498e-b804-0245b96c79dc', '_blank')">R$ 50,00</button>
+            </div>
+            
+            <p style="font-size: 0.75rem; color: #888; text-align: center; margin-top: 10px;">
+                * O link abrirá a página segura do Nubank exibindo o QR Code e a chave Copia e Cola.
+            </p>
         </div>
     </div>
 
@@ -6259,7 +6353,7 @@
         }
 
         // =========================================================================
-        // LÓGICA DE FILTROS CASCATA (CORRIGIDO PARA IGNORAR MAIÚSCULAS/MINÚSCULAS)
+        // LÓGICA DE FILTROS CASCATA 
         // =========================================================================
         const gallery = document.getElementById('gallery');
         const searchInput = document.getElementById('searchInput');
@@ -6282,7 +6376,6 @@
 
         function normalizar(texto) { return texto.toString().toLowerCase().replace(/[^a-z0-9]/g, ''); }
 
-        // Inicializa os filtros blindados contra variação de digitação (UpperCase em tudo)
         function initFiltros() {
             const marcas = [...new Set(imagens.map(img => img.marca).filter(m => m && m.trim() !== '').map(m => m.trim().toUpperCase()))].sort();
             selectMarca.innerHTML = '<option value="">Todas as Marcas</option>';
@@ -6464,7 +6557,7 @@
         }
 
         function abrirFormularioContribuicao() {
-            const linkDoFormulario = "SEU_LINK_AQUI"; // COLOQUE O LINK DO SEU FORMS AQUI
+            const linkDoFormulario = "SEU_LINK_AQUI"; 
             if(linkDoFormulario === "SEU_LINK_AQUI") alert("O link de envio ainda não foi configurado.");
             else window.open(linkDoFormulario, '_blank');
         }
@@ -6502,8 +6595,12 @@
 
             document.getElementById('modalAtualizacoes').style.display = 'flex';
         }
-
+        
         function fecharModalAtualizacoes() { document.getElementById('modalAtualizacoes').style.display = 'none'; }
+
+        // --- FUNÇÕES DO NOVO MODAL DE DOAÇÃO ---
+        function abrirModalDoacao() { document.getElementById('modalDoacao').style.display = 'flex'; }
+        function fecharModalDoacao() { document.getElementById('modalDoacao').style.display = 'none'; }
 
         document.addEventListener('keydown', (e) => {
             if (modal.style.display === 'flex') {
@@ -6512,6 +6609,7 @@
                 if (e.key === 'Escape') closeModal();
             }
             if (document.getElementById('modalAtualizacoes').style.display === 'flex' && e.key === 'Escape') fecharModalAtualizacoes();
+            if (document.getElementById('modalDoacao').style.display === 'flex' && e.key === 'Escape') fecharModalDoacao();
         });
 
         function updateTransform() { modalImg.style.transform = `translate(${panningX}px, ${panningY}px) scale(${scale})`; }
