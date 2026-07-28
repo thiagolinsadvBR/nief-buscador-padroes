@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>NIEF - Padrões de Gravação IDV</title>
+    
+    <!-- Bibliotecas do Firebase (Versão 8 Compat - Ideal para HTML estático) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
     <style>
         :root {
             --primary: #1a1a1a;
@@ -308,6 +313,27 @@
         .chassi-tag { color: white; font-weight: bold; font-size: 0.95rem; display: block; margin-bottom: 3px; }
         .info-tag { color: #aaa; }
 
+        /* Estilos do Terminal em Tempo Real */
+        #terminalContent {
+            font-family: 'Courier New', Courier, monospace;
+            color: var(--accent);
+            text-align: left;
+            background: #0a0a0a;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            border: 1px solid #333;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+            height: 220px;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+        }
+
+        #terminalContent::-webkit-scrollbar { width: 6px; }
+        #terminalContent::-webkit-scrollbar-track { background: #111; border-radius: 4px; }
+        #terminalContent::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        #terminalContent::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
         /* RESPONSIVIDADE PARA CELULARES */
         @media (max-width: 600px) {
             body { padding-top: 110px; } 
@@ -334,6 +360,7 @@
             #modalTitleBot { bottom: 25px; width: 85%; white-space: normal; padding: 8px 15px; }
             #modalChassiDestaque { font-size: 1rem; }
             #modalInfoExtra { font-size: 0.75rem; }
+            #terminalContent { font-size: 0.75rem; height: 180px; }
         }
     </style>
 </head>
@@ -357,13 +384,14 @@
 
     <div id="gallery"></div>
 
-    <!-- SEÇÃO DE REGISTRO DE ACESSO (TEXTO) -->
+    <!-- SEÇÃO DE REGISTRO DE ACESSO (TEXTO TEMPO REAL - FIREBASE) -->
     <div style="width: 100%; max-width: 800px; margin-top: 50px; padding-top: 30px; border-top: 1px solid #333; text-align: center; display: flex; flex-direction: column; align-items: center;">
-        <h3 style="color: var(--accent); margin-bottom: 15px; font-size: 1.1rem;">📡 Terminal de Acesso</h3>
-        <div id="listaAcessosText" style="width: 100%; max-width: 500px;">
-            <div style="font-family: 'Courier New', Courier, monospace; color: #aaa; text-align: left; background: #0a0a0a; padding: 15px; border-radius: 8px; font-size: 0.9rem; border: 1px solid #333;">
-                > Estabelecendo conexão segura...<br>
-                > Rastreando IP da sessão...
+        <h3 style="color: var(--accent); margin-bottom: 15px; font-size: 1.1rem;">📡 Terminal de Acessos Globais (Ao Vivo)</h3>
+        <div style="width: 100%; max-width: 700px;">
+            <div id="terminalContent">
+                <span style="color: #aaa;">> Estabelecendo conexão criptografada com servidor NIEF...</span><br>
+                <span style="color: #aaa;">> Sincronizando banco de dados global...</span><br><br>
+                <!-- Os logs do Firebase aparecerão aqui -->
             </div>
         </div>
     </div>
@@ -6039,46 +6067,76 @@
         }
 ];
 
-        // Função de Rastreamento de IP (Localização e Data) com nova API mais permissiva
-        async function registrarAcessoLocal() {
-            const container = document.getElementById('listaAcessosText');
+        // =========================================================================
+        // CONFIGURAÇÃO DO FIREBASE (SISTEMA EM TEMPO REAL)
+        // =========================================================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyDOCAbC123...",
+            authDomain: "nief-idv-terminal.firebaseapp.com",
+            databaseURL: "https://nief-idv-terminal-default-rtdb.firebaseio.com",
+            projectId: "nief-idv-terminal",
+            storageBucket: "nief-idv-terminal.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "1:123456789:web:abc123def456"
+        };
+
+        // Inicializa o Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        const acessosRef = database.ref('acessos');
+        const terminalContent = document.getElementById('terminalContent');
+
+        // Escutador em tempo real: Dispara automaticamente sempre que ALGUÉM no país acessar o site
+        // Limita para puxar apenas os últimos 20 acessos para não travar o navegador
+        acessosRef.orderByChild('timestamp').limitToLast(20).on('child_added', (snapshot) => {
+            const acesso = snapshot.val();
+            
+            // Tratamento de Data e Hora
+            const dataObjeto = new Date(acesso.timestamp || Date.now());
+            const dataFormatada = dataObjeto.toLocaleDateString('pt-BR');
+            const horaFormatada = dataObjeto.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+            const novaLinha = document.createElement('div');
+            novaLinha.style.marginBottom = '6px';
+            novaLinha.innerHTML = `
+                <span style="color: white;">[${dataFormatada} - ${horaFormatada}]</span> 
+                > NOVO ACESSO REGISTRADO | LOCAL: ${acesso.cidade.toUpperCase()}, ${acesso.estado.toUpperCase()}
+            `;
+            
+            terminalContent.appendChild(novaLinha);
+            
+            // Força a barra de rolagem a descer automaticamente para a mensagem mais recente
+            terminalContent.scrollTop = terminalContent.scrollHeight;
+        });
+
+        // Função que detecta a localização DESTE usuário específico e manda para o Firebase
+        async function registrarMeuAcessoGlobal() {
             try {
-                // Nova API (ipwho.is) - Muito mais tolerante a bloqueios locais e limites de requisição
+                // Tenta extrair a localização do IP (Mesmo esquema de antes)
                 const res = await fetch('https://ipwho.is/');
                 const data = await res.json();
                 
-                // Validação para garantir que a API retornou sucesso
-                if (!data.success) throw new Error("Falha na consulta da API");
+                if (!data.success) throw new Error("Bloqueio de API Local");
 
-                const cidade = data.city || 'Localidade Desconhecida';
-                const estado = data.region || 'Estado Desconhecido';
+                const cidade = data.city || 'DESCONHECIDA';
+                const estado = data.region || 'DESCONHECIDO';
                 
-                const dataAtual = new Date();
-                const dataFormatada = dataAtual.toLocaleDateString('pt-BR');
-                const horaFormatada = dataAtual.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-
-                container.innerHTML = `
-                    <div style="font-family: 'Courier New', Courier, monospace; color: var(--accent); text-align: left; background: #0a0a0a; padding: 15px; border-radius: 8px; font-size: 0.95rem; border: 1px solid #333; box-shadow: inset 0 0 10px rgba(0,0,0,0.8);">
-                        <span style="color: white;">[${dataFormatada} - ${horaFormatada}]</span><br>
-                        > USUÁRIO CONECTADO<br>
-                        > LOCAL: ${cidade}, ${estado}<br>
-                        > STATUS: SESSÃO ATIVA NO BANCO NIEF
-                    </div>
-                `;
+                // Grava a localização no banco de dados nas nuvens (O que aciona o 'child_added' para todos)
+                acessosRef.push({
+                    cidade: cidade,
+                    estado: estado,
+                    timestamp: firebase.database.ServerValue.TIMESTAMP
+                });
             } catch (e) {
-                const dataAtual = new Date();
-                const dataFormatada = dataAtual.toLocaleDateString('pt-BR');
-                const horaFormatada = dataAtual.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-                
-                container.innerHTML = `
-                    <div style="font-family: 'Courier New', Courier, monospace; color: #ff4444; text-align: left; background: #0a0a0a; padding: 15px; border-radius: 8px; font-size: 0.95rem; border: 1px solid #333;">
-                        <span style="color: white;">[${dataFormatada} - ${horaFormatada}]</span><br>
-                        > [AVISO] Falha ao obter dados de geolocalização. O seu navegador ou rede bloqueou a verificação.<br>
-                        > STATUS: SESSÃO ANÔNIMA INICIADA.
-                    </div>
-                `;
+                // Se a API for bloqueada por firewall/4G restrito, registra de forma genérica
+                acessosRef.push({
+                    cidade: "OCULTA (FIREWALL)",
+                    estado: "REDE RESTRITA",
+                    timestamp: firebase.database.ServerValue.TIMESTAMP
+                });
             }
         }
+        // =========================================================================
 
         document.addEventListener("DOMContentLoaded", () => {
             const contadorFotos = document.getElementById('contadorFotos');
@@ -6086,8 +6144,8 @@
                 contadorFotos.innerText = `📸 Total de Padrões Cadastrados: ${imagens.length}`;
             }
             
-            // Chama a função de registro assim que a página carregar
-            registrarAcessoLocal();
+            // Aciona o disparo para o banco global assim que o site terminar de carregar
+            registrarMeuAcessoGlobal();
         });
 
         const gallery = document.getElementById('gallery');
@@ -6211,7 +6269,6 @@
             window.open(finalUrl, '_blank');
         }
 
-        // ABRIR FORMULÁRIO DE CONTRIBUIÇÃO DE FOTOS
         function abrirFormularioContribuicao() {
             // ATENÇÃO: Cole aqui dentro das aspas o link do seu Google Forms de Upload de Fotos!
             const linkDoFormulario = "SEU_LINK_AQUI"; 
