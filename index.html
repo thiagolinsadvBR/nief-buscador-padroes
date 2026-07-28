@@ -314,9 +314,8 @@
         .info-tag { color: #aaa; }
 
         /* Estilos do Terminal em Tempo Real */
-        #terminalContent {
+        #terminalBox {
             font-family: 'Courier New', Courier, monospace;
-            color: var(--accent);
             text-align: left;
             background: #0a0a0a;
             padding: 15px;
@@ -325,14 +324,32 @@
             border: 1px solid #333;
             box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
             height: 220px;
-            overflow-y: auto;
-            scroll-behavior: smooth;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Cabeçalho Fixo do Terminal */
+        #terminalHeader {
+            color: #aaa;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed #333;
+            flex-shrink: 0; /* Impede que o cabeçalho seja esmagado */
         }
 
-        #terminalContent::-webkit-scrollbar { width: 6px; }
-        #terminalContent::-webkit-scrollbar-track { background: #111; border-radius: 4px; }
-        #terminalContent::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
-        #terminalContent::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+        /* Área de Rolagem dos Logs */
+        #terminalLogs {
+            overflow-y: auto;
+            flex-grow: 1;
+            scroll-behavior: smooth;
+            padding-right: 5px;
+            color: var(--accent);
+        }
+
+        #terminalLogs::-webkit-scrollbar { width: 6px; }
+        #terminalLogs::-webkit-scrollbar-track { background: #111; border-radius: 4px; }
+        #terminalLogs::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        #terminalLogs::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 
         @media (max-width: 600px) {
             body { padding-top: 110px; } 
@@ -359,7 +376,7 @@
             #modalTitleBot { bottom: 25px; width: 85%; white-space: normal; padding: 8px 15px; }
             #modalChassiDestaque { font-size: 1rem; }
             #modalInfoExtra { font-size: 0.75rem; }
-            #terminalContent { font-size: 0.75rem; height: 180px; }
+            #terminalBox { font-size: 0.75rem; height: 180px; }
         }
     </style>
 </head>
@@ -387,11 +404,15 @@
     <div style="width: 100%; max-width: 800px; margin-top: 50px; padding-top: 30px; border-top: 1px solid #333; text-align: center; display: flex; flex-direction: column; align-items: center;">
         <h3 style="color: var(--accent); margin-bottom: 15px; font-size: 1.1rem;">📡 Terminal de Acessos Globais (Ao Vivo)</h3>
         <div style="width: 100%; max-width: 700px;">
-            <div id="terminalContent">
-                <!-- Os logs do Firebase aparecerão aqui -->
-                <div id="loadingText" style="color: #aaa; margin-bottom: 10px;">
+            <div id="terminalBox">
+                <!-- CABEÇALHO FIXO -->
+                <div id="terminalHeader">
                     > Estabelecendo conexão criptografada com servidor NIEF...<br>
-                    > Buscando coordenadas GPS da sessão (Aguardando Permissão)...
+                    <span id="gpsStatus">> Buscando coordenadas GPS da sessão (Aguardando Permissão)...</span>
+                </div>
+                <!-- ÁREA DE ROLAGEM DOS LOGS -->
+                <div id="terminalLogs">
+                    <!-- Os logs do Firebase aparecerão aqui e irão empurrar os antigos para baixo -->
                 </div>
             </div>
         </div>
@@ -6082,8 +6103,8 @@
         };
 
         let database, acessosRef;
-        const terminalContent = document.getElementById('terminalContent');
-        const loadingText = document.getElementById('loadingText');
+        const terminalLogs = document.getElementById('terminalLogs');
+        const gpsStatus = document.getElementById('gpsStatus');
 
         // Tenta iniciar o Firebase.
         try {
@@ -6101,16 +6122,16 @@
                 novaLinha.style.marginBottom = '6px';
                 novaLinha.innerHTML = `<span style="color: white;">[${dataFormatada} - ${horaFormatada}]</span> > ACESSO REGISTRADO | LOCAL: ${acesso.cidade.toUpperCase()}, ${acesso.estado.toUpperCase()}`;
                 
-                // MUDANÇA AQUI: Usa prepend para jogar o registro mais novo para o topo
-                terminalContent.prepend(novaLinha);
+                // Insere a nova linha sempre na primeira posição da div de Logs
+                terminalLogs.prepend(novaLinha);
                 
-                // Mantém a barra de rolagem sempre no topo para o usuário ver as novidades
-                terminalContent.scrollTop = 0;
+                // Mantém a rolagem travada no topo para que a mensagem mais nova sempre fique visível
+                terminalLogs.scrollTop = 0;
             });
         } catch (error) {
             const erroLinha = document.createElement('div');
             erroLinha.innerHTML = `<span style="color: #ff4444;">> [ERRO] Falha ao conectar ao banco de dados global. Sincronização offline.</span><br>`;
-            terminalContent.prepend(erroLinha);
+            terminalLogs.prepend(erroLinha);
         }
 
         // =========================================================================
@@ -6164,14 +6185,15 @@
             
             try {
                 localizacao = await obterLocalizacaoViaGPS();
-                // Se der certo, removemos o aviso de carregamento
-                if(loadingText) loadingText.style.display = 'none';
+                // Atualiza o cabeçalho confirmando a aprovação e conexão
+                if(gpsStatus) gpsStatus.innerHTML = "> Status: <span style='color: var(--accent);'>Sessão Ativa e Sincronizada</span>";
             } catch (error) {
-                if(loadingText) loadingText.style.display = 'none';
+                // Atualiza o cabeçalho informando o modo de rastreio reduzido
+                if(gpsStatus) gpsStatus.innerHTML = "> Status: <span style='color: #ffaa00;'>Sessão Ativa (Rastreio via IP)</span>";
                 
                 const aviso = document.createElement('div');
-                aviso.innerHTML = `<span style="color: #ffaa00; margin-bottom: 10px; display: block;">> [AVISO] GPS bloqueado ou falhou. Iniciando rastreio por IP (Precisão Baixa)...</span>`;
-                terminalContent.prepend(aviso);
+                aviso.innerHTML = `<span style="color: #ffaa00; margin-bottom: 10px; display: block;">> [AVISO] GPS bloqueado ou falhou. Iniciando rastreio por IP...</span>`;
+                terminalLogs.prepend(aviso);
                 
                 localizacao = await obterLocalizacaoViaIP();
             }
@@ -6224,7 +6246,7 @@
                 div.className = 'thumbnail';
                 div.onclick = () => openModal(img);
                 
-                let textoExtras = (img.marca && img.marca !== "") ? `${img.marca} | ${img.modelo} | ${img.ano}` : "Informação não cadastrada";
+                let textoExtras = (img.marca && img.marca !== "") ? `${img.marca.toUpperCase()} / ${img.modelo.toUpperCase()} / ${img.ano.toUpperCase()}` : "Informação não cadastrada";
                 div.innerHTML = `<img src="${img.arquivo}" loading="lazy"><div class="thumb-text-container"><div class="thumb-chassi">${img.chassi}</div><div class="thumb-info">${textoExtras}</div></div>`;
                 gallery.appendChild(div);
             });
