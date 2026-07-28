@@ -83,7 +83,7 @@
         #searchContainer {
             width: 100%;
             max-width: 600px;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
 
         #searchInput {
@@ -100,6 +100,51 @@
         }
 
         #searchInput:focus { outline: none; border-color: var(--accent); }
+
+        /* Estilos dos Filtros em Cascata */
+        #filterContainer {
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .select-filtro {
+            padding: 12px 15px;
+            border-radius: 8px;
+            background: #252525;
+            color: white;
+            border: 1px solid #444;
+            font-size: 0.95rem;
+            outline: none;
+            flex-grow: 1;
+            min-width: 150px;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .select-filtro:focus { border-color: var(--accent); }
+        .select-filtro:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        #btnLimparFiltros {
+            padding: 12px 20px;
+            border-radius: 8px;
+            background: #252525;
+            color: #ff4444;
+            border: 1px solid #ff4444;
+            font-size: 0.95rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+        }
+        
+        #btnLimparFiltros:hover {
+            background: #ff4444;
+            color: white;
+        }
 
         #gallery {
             display: grid;
@@ -328,16 +373,14 @@
             flex-direction: column;
         }
         
-        /* Cabeçalho Fixo do Terminal */
         #terminalHeader {
             color: #aaa;
             margin-bottom: 10px;
             padding-bottom: 10px;
             border-bottom: 1px dashed #333;
-            flex-shrink: 0; /* Impede que o cabeçalho seja esmagado */
+            flex-shrink: 0; 
         }
 
-        /* Área de Rolagem dos Logs */
         #terminalLogs {
             overflow-y: auto;
             flex-grow: 1;
@@ -360,6 +403,9 @@
             #btnContribuir { top: 10px; left: 10px; }
             #btnAtualizacoes { top: 10px; right: 10px; }
             
+            #filterContainer { gap: 8px; }
+            .select-filtro, #btnLimparFiltros { padding: 10px; font-size: 0.85rem; flex: 1 1 45%; min-width: 130px; }
+
             #gallery { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
 
             .action-buttons {
@@ -398,6 +444,23 @@
         <input type="text" id="searchInput" placeholder="Digite a sequência (ex: 9BD...)" autofocus autocomplete="off">
     </div>
 
+    <!-- Container de Filtros em Cascata -->
+    <div id="filterContainer">
+        <select id="selectMarca" class="select-filtro">
+            <option value="">Todas as Marcas</option>
+        </select>
+        
+        <select id="selectModelo" class="select-filtro" disabled>
+            <option value="">Todos os Modelos</option>
+        </select>
+        
+        <select id="selectAno" class="select-filtro" disabled>
+            <option value="">Todos os Anos</option>
+        </select>
+        
+        <button id="btnLimparFiltros" onclick="limparFiltros()">Limpar Filtros</button>
+    </div>
+
     <div id="gallery"></div>
 
     <!-- SEÇÃO DE REGISTRO DE ACESSO -->
@@ -405,15 +468,11 @@
         <h3 style="color: var(--accent); margin-bottom: 15px; font-size: 1.1rem;">📡 Terminal de Acessos Globais (Ao Vivo)</h3>
         <div style="width: 100%; max-width: 700px;">
             <div id="terminalBox">
-                <!-- CABEÇALHO FIXO -->
                 <div id="terminalHeader">
                     > Estabelecendo conexão criptografada com servidor NIEF...<br>
                     <span id="gpsStatus">> Buscando coordenadas GPS da sessão (Aguardando Permissão)...</span>
                 </div>
-                <!-- ÁREA DE ROLAGEM DOS LOGS -->
-                <div id="terminalLogs">
-                    <!-- Os logs do Firebase aparecerão aqui e irão empurrar os antigos para baixo -->
-                </div>
+                <div id="terminalLogs"></div>
             </div>
         </div>
     </div>
@@ -6090,7 +6149,7 @@
 ];
 
         // =========================================================================
-        // CONFIGURAÇÃO DO FIREBASE (Com chaves oficiais)
+        // CONFIGURAÇÃO DO FIREBASE
         // =========================================================================
         const firebaseConfig = {
             apiKey: "AIzaSyBz17SeMmDiS0Xaxid62sU7E2qgIXdfqH0",
@@ -6106,7 +6165,6 @@
         const terminalLogs = document.getElementById('terminalLogs');
         const gpsStatus = document.getElementById('gpsStatus');
 
-        // Tenta iniciar o Firebase.
         try {
             firebase.initializeApp(firebaseConfig);
             database = firebase.database();
@@ -6122,10 +6180,7 @@
                 novaLinha.style.marginBottom = '6px';
                 novaLinha.innerHTML = `<span style="color: white;">[${dataFormatada} - ${horaFormatada}]</span> > ACESSO REGISTRADO | LOCAL: ${acesso.cidade.toUpperCase()}, ${acesso.estado.toUpperCase()}`;
                 
-                // Insere a nova linha sempre na primeira posição da div de Logs
                 terminalLogs.prepend(novaLinha);
-                
-                // Mantém a rolagem travada no topo para que a mensagem mais nova sempre fique visível
                 terminalLogs.scrollTop = 0;
             });
         } catch (error) {
@@ -6135,7 +6190,7 @@
         }
 
         // =========================================================================
-        // LÓGICA DE GEOLOCALIZAÇÃO HÍBRIDA (GPS PRIMEIRO, IP COMO BACKUP)
+        // LÓGICA DE GEOLOCALIZAÇÃO HÍBRIDA
         // =========================================================================
         async function obterLocalizacaoViaIP() {
             try {
@@ -6185,16 +6240,12 @@
             
             try {
                 localizacao = await obterLocalizacaoViaGPS();
-                // Atualiza o cabeçalho confirmando a aprovação e conexão
                 if(gpsStatus) gpsStatus.innerHTML = "> Status: <span style='color: var(--accent);'>Sessão Ativa e Sincronizada</span>";
             } catch (error) {
-                // Atualiza o cabeçalho informando o modo de rastreio reduzido
                 if(gpsStatus) gpsStatus.innerHTML = "> Status: <span style='color: #ffaa00;'>Sessão Ativa (Rastreio via IP)</span>";
-                
                 const aviso = document.createElement('div');
                 aviso.innerHTML = `<span style="color: #ffaa00; margin-bottom: 10px; display: block;">> [AVISO] GPS bloqueado ou falhou. Iniciando rastreio por IP...</span>`;
                 terminalLogs.prepend(aviso);
-                
                 localizacao = await obterLocalizacaoViaIP();
             }
 
@@ -6207,19 +6258,16 @@
             }
         }
 
-        document.addEventListener("DOMContentLoaded", () => {
-            const contadorFotos = document.getElementById('contadorFotos');
-            if (contadorFotos) {
-                contadorFotos.innerText = `📸 Total de Padrões Cadastrados: ${imagens.length}`;
-            }
-            registrarMeuAcessoGlobal();
-        });
-
         // =========================================================================
-        // RESTANTE DO CÓDIGO (GALERIA, MODAIS E BOTÕES)
+        // LÓGICA DE FILTROS CASCATA (CORRIGIDO PARA IGNORAR MAIÚSCULAS/MINÚSCULAS)
         // =========================================================================
         const gallery = document.getElementById('gallery');
         const searchInput = document.getElementById('searchInput');
+        
+        const selectMarca = document.getElementById('selectMarca');
+        const selectModelo = document.getElementById('selectModelo');
+        const selectAno = document.getElementById('selectAno');
+
         const modal = document.getElementById('modal');
         const modalImg = document.getElementById('modalImg');
         const imageContainer = document.getElementById('imageContainer');
@@ -6234,12 +6282,96 @@
 
         function normalizar(texto) { return texto.toString().toLowerCase().replace(/[^a-z0-9]/g, ''); }
 
-        function renderGallery(filtro = "") {
-            gallery.innerHTML = "";
-            if (filtro.trim() === "") { currentFilteredList = []; return; }
-            const filtroLimpo = normalizar(filtro);
+        // Inicializa os filtros blindados contra variação de digitação (UpperCase em tudo)
+        function initFiltros() {
+            const marcas = [...new Set(imagens.map(img => img.marca).filter(m => m && m.trim() !== '').map(m => m.trim().toUpperCase()))].sort();
+            selectMarca.innerHTML = '<option value="">Todas as Marcas</option>';
+            marcas.forEach(m => {
+                const opt = document.createElement('option');
+                opt.value = m;
+                opt.innerText = m;
+                selectMarca.appendChild(opt);
+            });
+        }
+
+        selectMarca.addEventListener('change', () => {
+            const marcaEscolhida = selectMarca.value; 
             
-            currentFilteredList = imagens.filter(img => normalizar(img.chassi).startsWith(filtroLimpo));
+            selectModelo.innerHTML = '<option value="">Todos os Modelos</option>';
+            selectAno.innerHTML = '<option value="">Todos os Anos</option>';
+            selectAno.disabled = true;
+
+            if (marcaEscolhida) {
+                selectModelo.disabled = false;
+                const modelos = [...new Set(imagens.filter(img => img.marca && img.marca.trim().toUpperCase() === marcaEscolhida).map(img => img.modelo).filter(m => m && m.trim() !== '').map(m => m.trim().toUpperCase()))].sort();
+                modelos.forEach(m => {
+                    const opt = document.createElement('option');
+                    opt.value = m;
+                    opt.innerText = m;
+                    selectModelo.appendChild(opt);
+                });
+            } else {
+                selectModelo.disabled = true;
+            }
+            renderGallery();
+        });
+
+        selectModelo.addEventListener('change', () => {
+            const marcaEscolhida = selectMarca.value;
+            const modeloEscolhido = selectModelo.value;
+            
+            selectAno.innerHTML = '<option value="">Todos os Anos</option>';
+
+            if (modeloEscolhido) {
+                selectAno.disabled = false;
+                const anos = [...new Set(imagens.filter(img => img.marca && img.marca.trim().toUpperCase() === marcaEscolhida && img.modelo && img.modelo.trim().toUpperCase() === modeloEscolhido).map(img => img.ano).filter(a => a && a.toString().trim() !== '').map(a => a.toString().trim().toUpperCase()))].sort();
+                anos.forEach(a => {
+                    const opt = document.createElement('option');
+                    opt.value = a;
+                    opt.innerText = a;
+                    selectAno.appendChild(opt);
+                });
+            } else {
+                selectAno.disabled = true;
+            }
+            renderGallery();
+        });
+
+        selectAno.addEventListener('change', () => renderGallery());
+
+        function limparFiltros() {
+            searchInput.value = "";
+            selectMarca.value = "";
+            selectModelo.innerHTML = '<option value="">Todos os Modelos</option>';
+            selectAno.innerHTML = '<option value="">Todos os Anos</option>';
+            selectModelo.disabled = true;
+            selectAno.disabled = true;
+            renderGallery();
+        }
+
+        function renderGallery() {
+            gallery.innerHTML = "";
+            
+            const filtroChassi = normalizar(searchInput.value);
+            const filtroMarca = selectMarca.value;
+            const filtroModelo = selectModelo.value;
+            const filtroAno = selectAno.value;
+
+            if (filtroChassi === "" && filtroMarca === "" && filtroModelo === "" && filtroAno === "") {
+                currentFilteredList = [];
+                return;
+            }
+
+            currentFilteredList = imagens.filter(img => {
+                let passaFiltro = true;
+                
+                if (filtroChassi) { passaFiltro = passaFiltro && normalizar(img.chassi).startsWith(filtroChassi); }
+                if (filtroMarca) { passaFiltro = passaFiltro && (img.marca && img.marca.trim().toUpperCase() === filtroMarca); }
+                if (filtroModelo) { passaFiltro = passaFiltro && (img.modelo && img.modelo.trim().toUpperCase() === filtroModelo); }
+                if (filtroAno) { passaFiltro = passaFiltro && (img.ano && String(img.ano).trim().toUpperCase() === filtroAno); }
+                
+                return passaFiltro;
+            });
             
             currentFilteredList.forEach(img => {
                 const div = document.createElement('div');
@@ -6252,8 +6384,20 @@
             });
         }
 
-        searchInput.addEventListener('input', (e) => renderGallery(e.target.value));
+        searchInput.addEventListener('input', () => renderGallery());
 
+        document.addEventListener("DOMContentLoaded", () => {
+            const contadorFotos = document.getElementById('contadorFotos');
+            if (contadorFotos) {
+                contadorFotos.innerText = `📸 Total de Padrões Cadastrados: ${imagens.length}`;
+            }
+            initFiltros();
+            registrarMeuAcessoGlobal();
+        });
+
+        // =========================================================================
+        // FUNÇÕES DO MODAL E BOTÕES
+        // =========================================================================
         function openModal(imgObj) {
             currentImageIndex = currentFilteredList.findIndex(i => i.arquivo === imgObj.arquivo);
             updateModalImage(imgObj);
