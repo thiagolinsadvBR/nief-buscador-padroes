@@ -237,7 +237,7 @@
         }
         #reportBtn:hover { background: #ff4444; color: white; }
 
-        /* MODAL DE ATUALIZAÇÕES (BLUR) */
+        /* MODAL DE ATUALIZAÇÕES */
         #modalAtualizacoes {
             display: none;
             position: fixed;
@@ -334,7 +334,6 @@
         #terminalContent::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
         #terminalContent::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 
-        /* RESPONSIVIDADE PARA CELULARES */
         @media (max-width: 600px) {
             body { padding-top: 110px; } 
             h2 { font-size: 1.1rem; margin-bottom: 15px; }
@@ -384,14 +383,13 @@
 
     <div id="gallery"></div>
 
-    <!-- SEÇÃO DE REGISTRO DE ACESSO (TEXTO TEMPO REAL - FIREBASE) -->
+    <!-- SEÇÃO DE REGISTRO DE ACESSO -->
     <div style="width: 100%; max-width: 800px; margin-top: 50px; padding-top: 30px; border-top: 1px solid #333; text-align: center; display: flex; flex-direction: column; align-items: center;">
         <h3 style="color: var(--accent); margin-bottom: 15px; font-size: 1.1rem;">📡 Terminal de Acessos Globais (Ao Vivo)</h3>
         <div style="width: 100%; max-width: 700px;">
             <div id="terminalContent">
                 <span style="color: #aaa;">> Estabelecendo conexão criptografada com servidor NIEF...</span><br>
-                <span style="color: #aaa;">> Sincronizando banco de dados global...</span><br><br>
-                <!-- Os logs do Firebase aparecerão aqui -->
+                <span style="color: #aaa;">> Buscando coordenadas GPS da sessão (Aguardando Permissão)...</span><br><br>
             </div>
         </div>
     </div>
@@ -6068,86 +6066,125 @@
 ];
 
         // =========================================================================
-        // CONFIGURAÇÃO DO FIREBASE (SISTEMA EM TEMPO REAL)
+        // CONFIGURAÇÃO DO FIREBASE COM AS CHAVES DEFINITIVAS
         // =========================================================================
         const firebaseConfig = {
-            apiKey: "AIzaSyDOCAbC123...",
-            authDomain: "nief-idv-terminal.firebaseapp.com",
-            databaseURL: "https://nief-idv-terminal-default-rtdb.firebaseio.com",
-            projectId: "nief-idv-terminal",
-            storageBucket: "nief-idv-terminal.appspot.com",
-            messagingSenderId: "123456789",
-            appId: "1:123456789:web:abc123def456"
+            apiKey: "AIzaSyBz17SeMmDiS0Xaxid62sU7E2qgIXdfqH0",
+            authDomain: "nief-idv-acessos.firebaseapp.com",
+            // A linha abaixo foi adicionada para garantir a conexão com o Realtime Database
+            databaseURL: "https://nief-idv-acessos-default-rtdb.firebaseio.com",
+            projectId: "nief-idv-acessos",
+            storageBucket: "nief-idv-acessos.firebasestorage.app",
+            messagingSenderId: "62938610049",
+            appId: "1:62938610049:web:653ea195c4d3afd576d080"
         };
 
-        // Inicializa o Firebase
-        firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
-        const acessosRef = database.ref('acessos');
+        let database, acessosRef;
         const terminalContent = document.getElementById('terminalContent');
 
-        // Escutador em tempo real: Dispara automaticamente sempre que ALGUÉM no país acessar o site
-        // Limita para puxar apenas os últimos 20 acessos para não travar o navegador
-        acessosRef.orderByChild('timestamp').limitToLast(20).on('child_added', (snapshot) => {
-            const acesso = snapshot.val();
-            
-            // Tratamento de Data e Hora
-            const dataObjeto = new Date(acesso.timestamp || Date.now());
-            const dataFormatada = dataObjeto.toLocaleDateString('pt-BR');
-            const horaFormatada = dataObjeto.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        // Tenta iniciar o Firebase.
+        try {
+            firebase.initializeApp(firebaseConfig);
+            database = firebase.database();
+            acessosRef = database.ref('acessos');
 
-            const novaLinha = document.createElement('div');
-            novaLinha.style.marginBottom = '6px';
-            novaLinha.innerHTML = `
-                <span style="color: white;">[${dataFormatada} - ${horaFormatada}]</span> 
-                > NOVO ACESSO REGISTRADO | LOCAL: ${acesso.cidade.toUpperCase()}, ${acesso.estado.toUpperCase()}
-            `;
-            
-            terminalContent.appendChild(novaLinha);
-            
-            // Força a barra de rolagem a descer automaticamente para a mensagem mais recente
-            terminalContent.scrollTop = terminalContent.scrollHeight;
-        });
+            acessosRef.orderByChild('timestamp').limitToLast(20).on('child_added', (snapshot) => {
+                const acesso = snapshot.val();
+                const dataObjeto = new Date(acesso.timestamp || Date.now());
+                const dataFormatada = dataObjeto.toLocaleDateString('pt-BR');
+                const horaFormatada = dataObjeto.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
-        // Função que detecta a localização DESTE usuário específico e manda para o Firebase
-        async function registrarMeuAcessoGlobal() {
+                const novaLinha = document.createElement('div');
+                novaLinha.style.marginBottom = '6px';
+                novaLinha.innerHTML = `<span style="color: white;">[${dataFormatada} - ${horaFormatada}]</span> > ACESSO REGISTRADO | LOCAL: ${acesso.cidade.toUpperCase()}, ${acesso.estado.toUpperCase()}`;
+                
+                terminalContent.appendChild(novaLinha);
+                terminalContent.scrollTop = terminalContent.scrollHeight;
+            });
+        } catch (error) {
+            terminalContent.innerHTML += `<span style="color: #ff4444;">> [ERRO] Falha ao conectar ao banco de dados global. Sincronização offline.</span><br>`;
+        }
+
+        // =========================================================================
+        // LÓGICA DE GEOLOCALIZAÇÃO HÍBRIDA (GPS PRIMEIRO, IP COMO BACKUP)
+        // =========================================================================
+        async function obterLocalizacaoViaIP() {
             try {
-                // Tenta extrair a localização do IP (Mesmo esquema de antes)
                 const res = await fetch('https://ipwho.is/');
                 const data = await res.json();
-                
-                if (!data.success) throw new Error("Bloqueio de API Local");
-
-                const cidade = data.city || 'DESCONHECIDA';
-                const estado = data.region || 'DESCONHECIDO';
-                
-                // Grava a localização no banco de dados nas nuvens (O que aciona o 'child_added' para todos)
-                acessosRef.push({
-                    cidade: cidade,
-                    estado: estado,
-                    timestamp: firebase.database.ServerValue.TIMESTAMP
-                });
+                if (!data.success) throw new Error();
+                return { cidade: data.city || 'Desconhecida', estado: data.region || 'Desconhecido' };
             } catch (e) {
-                // Se a API for bloqueada por firewall/4G restrito, registra de forma genérica
+                return { cidade: "Oculta (Firewall)", estado: "Rede Restrita" };
+            }
+        }
+
+        function obterLocalizacaoViaGPS() {
+            return new Promise((resolve, reject) => {
+                if (!navigator.geolocation) {
+                    reject("Navegador não suporta GPS.");
+                    return;
+                }
+                
+                navigator.geolocation.getCurrentPosition(
+                    async (position) => {
+                        const lat = position.coords.latitude;
+                        const lon = position.coords.longitude;
+                        
+                        try {
+                            // API gratuita para converter Latitude/Longitude em Nome da Cidade (BigDataCloud)
+                            const res = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=pt`);
+                            const data = await res.json();
+                            
+                            resolve({
+                                cidade: data.city || data.locality || "Cidade não identificada",
+                                estado: data.principalSubdivision || "Estado não identificado"
+                            });
+                        } catch (e) {
+                            reject("Falha na conversão das coordenadas.");
+                        }
+                    },
+                    (error) => {
+                        reject("Usuário bloqueou o GPS ou erro de sinal.");
+                    },
+                    { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 }
+                );
+            });
+        }
+
+        async function registrarMeuAcessoGlobal() {
+            let localizacao;
+            
+            try {
+                // Tenta forçar o GPS para precisão máxima (Vai pedir permissão na tela)
+                localizacao = await obterLocalizacaoViaGPS();
+            } catch (error) {
+                // Plano B: Se o agente recusar a permissão ou falhar, usa o IP da operadora
+                terminalContent.innerHTML += `<span style="color: #ffaa00;">> [AVISO] GPS bloqueado ou falhou. Iniciando rastreio por IP (Precisão Baixa)...</span><br>`;
+                localizacao = await obterLocalizacaoViaIP();
+            }
+
+            // Envia para o banco global se estiver configurado corretamente
+            if (acessosRef) {
                 acessosRef.push({
-                    cidade: "OCULTA (FIREWALL)",
-                    estado: "REDE RESTRITA",
+                    cidade: localizacao.cidade,
+                    estado: localizacao.estado,
                     timestamp: firebase.database.ServerValue.TIMESTAMP
                 });
             }
         }
-        // =========================================================================
 
         document.addEventListener("DOMContentLoaded", () => {
             const contadorFotos = document.getElementById('contadorFotos');
             if (contadorFotos) {
                 contadorFotos.innerText = `📸 Total de Padrões Cadastrados: ${imagens.length}`;
             }
-            
-            // Aciona o disparo para o banco global assim que o site terminar de carregar
             registrarMeuAcessoGlobal();
         });
 
+        // =========================================================================
+        // RESTANTE DO CÓDIGO (GALERIA, MODAIS E BOTÕES)
+        // =========================================================================
         const gallery = document.getElementById('gallery');
         const searchInput = document.getElementById('searchInput');
         const modal = document.getElementById('modal');
@@ -6162,9 +6199,7 @@
         let currentFilteredList = [];
         let currentImageIndex = -1;
 
-        function normalizar(texto) {
-            return texto.toString().toLowerCase().replace(/[^a-z0-9]/g, '');
-        }
+        function normalizar(texto) { return texto.toString().toLowerCase().replace(/[^a-z0-9]/g, ''); }
 
         function renderGallery(filtro = "") {
             gallery.innerHTML = "";
@@ -6178,17 +6213,8 @@
                 div.className = 'thumbnail';
                 div.onclick = () => openModal(img);
                 
-                let textoExtras = (img.marca && img.marca !== "") 
-                    ? `${img.marca} | ${img.modelo} | ${img.ano}` 
-                    : "Informação não cadastrada";
-
-                div.innerHTML = `
-                    <img src="${img.arquivo}" loading="lazy">
-                    <div class="thumb-text-container">
-                        <div class="thumb-chassi">${img.chassi}</div>
-                        <div class="thumb-info">${textoExtras}</div>
-                    </div>
-                `;
+                let textoExtras = (img.marca && img.marca !== "") ? `${img.marca} | ${img.modelo} | ${img.ano}` : "Informação não cadastrada";
+                div.innerHTML = `<img src="${img.arquivo}" loading="lazy"><div class="thumb-text-container"><div class="thumb-chassi">${img.chassi}</div><div class="thumb-info">${textoExtras}</div></div>`;
                 gallery.appendChild(div);
             });
         }
@@ -6204,13 +6230,7 @@
         function updateModalImage(imgObj) {
             modalImg.src = imgObj.arquivo;
             modalChassiDestaque.innerText = imgObj.chassi;
-            
-            if (imgObj.marca && imgObj.marca !== "") {
-                modalInfoExtra.innerText = `${imgObj.marca} | ${imgObj.modelo} | ${imgObj.ano}`;
-            } else {
-                modalInfoExtra.innerText = "Informação não cadastrada";
-            }
-            
+            modalInfoExtra.innerText = (imgObj.marca && imgObj.marca !== "") ? `${imgObj.marca} | ${imgObj.modelo} | ${imgObj.ano}` : "Informação não cadastrada";
             scale = 1; panningX = 0; panningY = 0;
             updateTransform();
         }
@@ -6236,9 +6256,7 @@
                         await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
                         shareBtn.innerText = "Copiado!";
                         setTimeout(() => shareBtn.innerText = originalText, 2000);
-                    } catch (e) {
-                        alert("Erro de Segurança: O navegador só permite copiar se o site usar HTTPS.");
-                    }
+                    } catch (e) { alert("Erro de Segurança: O navegador só permite copiar se o site usar HTTPS."); }
                 }, 'image/png');
             } catch (err) { alert("Não foi possível processar a imagem."); }
         }
@@ -6265,19 +6283,13 @@
         function reportarInconsistencia() {
             const chassi = modalChassiDestaque.innerText.trim();
             const baseUrl = "https://docs.google.com/forms/d/e/1FAIpQLSdOZECyTHgc15p5pcQF386JzcPwqn7PiEc2NLtnX6d_H-tcJQ/viewform?usp=pp_url&entry.202619458=";
-            const finalUrl = baseUrl + encodeURIComponent(chassi);
-            window.open(finalUrl, '_blank');
+            window.open(baseUrl + encodeURIComponent(chassi), '_blank');
         }
 
         function abrirFormularioContribuicao() {
-            // ATENÇÃO: Cole aqui dentro das aspas o link do seu Google Forms de Upload de Fotos!
-            const linkDoFormulario = "SEU_LINK_AQUI"; 
-            
-            if(linkDoFormulario === "SEU_LINK_AQUI") {
-                alert("O link de envio ainda não foi configurado. Configure no arquivo index.html.");
-            } else {
-                window.open(linkDoFormulario, '_blank');
-            }
+            const linkDoFormulario = "SEU_LINK_AQUI"; // COLOQUE O LINK DO SEU FORMS AQUI
+            if(linkDoFormulario === "SEU_LINK_AQUI") alert("O link de envio ainda não foi configurado.");
+            else window.open(linkDoFormulario, '_blank');
         }
 
         function abrirModalAtualizacoes() {
@@ -6285,7 +6297,6 @@
             container.innerHTML = '';
 
             const fotosOrdenadas = [...imagens].sort((a, b) => b.timestamp - a.timestamp);
-            
             const agrupadoPorData = {};
             fotosOrdenadas.forEach(img => {
                 if (!agrupadoPorData[img.data]) agrupadoPorData[img.data] = [];
@@ -6303,11 +6314,7 @@
                 const ul = document.createElement('ul');
                 fotos.forEach(foto => {
                     const li = document.createElement('li');
-                    
-                    let textoExtras = (foto.marca && foto.marca !== "") 
-                        ? `${foto.marca.toUpperCase()} / ${foto.modelo.toUpperCase()} / ${foto.ano.toUpperCase()}` 
-                        : "Informação não cadastrada";
-                        
+                    let textoExtras = (foto.marca && foto.marca !== "") ? `${foto.marca.toUpperCase()} / ${foto.modelo.toUpperCase()} / ${foto.ano.toUpperCase()}` : "Informação não cadastrada";
                     li.innerHTML = `<span class="chassi-tag">${foto.chassi}</span><span class="info-tag">${textoExtras}</span>`;
                     ul.appendChild(li);
                 });
@@ -6319,9 +6326,7 @@
             document.getElementById('modalAtualizacoes').style.display = 'flex';
         }
 
-        function fecharModalAtualizacoes() {
-            document.getElementById('modalAtualizacoes').style.display = 'none';
-        }
+        function fecharModalAtualizacoes() { document.getElementById('modalAtualizacoes').style.display = 'none'; }
 
         document.addEventListener('keydown', (e) => {
             if (modal.style.display === 'flex') {
@@ -6329,38 +6334,25 @@
                 if (e.key === 'ArrowLeft') navigateModal(-1);
                 if (e.key === 'Escape') closeModal();
             }
-            if (document.getElementById('modalAtualizacoes').style.display === 'flex' && e.key === 'Escape') {
-                fecharModalAtualizacoes();
-            }
+            if (document.getElementById('modalAtualizacoes').style.display === 'flex' && e.key === 'Escape') fecharModalAtualizacoes();
         });
 
         function updateTransform() { modalImg.style.transform = `translate(${panningX}px, ${panningY}px) scale(${scale})`; }
 
         imageContainer.addEventListener('wheel', (e) => {
             e.preventDefault();
-            const delta = e.deltaY > 0 ? 0.9 : 1.1;
-            scale = Math.min(Math.max(.5, scale * delta), 8);
+            scale = Math.min(Math.max(.5, scale * (e.deltaY > 0 ? 0.9 : 1.1)), 8);
             updateTransform();
         });
 
-        imageContainer.addEventListener('mousedown', (e) => {
-            isDragging = true; startX = e.clientX - panningX; startY = e.clientY - panningY;
-        });
-
-        window.addEventListener('mousemove', (e) => {
-            if (!isDragging) return;
-            panningX = e.clientX - startX; panningY = e.clientY - startY;
-            updateTransform();
-        });
-
+        imageContainer.addEventListener('mousedown', (e) => { isDragging = true; startX = e.clientX - panningX; startY = e.clientY - panningY; });
+        window.addEventListener('mousemove', (e) => { if (isDragging) { panningX = e.clientX - startX; panningY = e.clientY - startY; updateTransform(); } });
         window.addEventListener('mouseup', () => isDragging = false);
 
         let lastTouchDistance = 0;
         imageContainer.addEventListener('touchstart', (e) => {
             if (e.touches.length === 1) {
-                isDragging = true;
-                startX = e.touches[0].clientX - panningX;
-                startY = e.touches[0].clientY - panningY;
+                isDragging = true; startX = e.touches[0].clientX - panningX; startY = e.touches[0].clientY - panningY;
             } else if (e.touches.length === 2) {
                 lastTouchDistance = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
             }
@@ -6368,13 +6360,10 @@
 
         imageContainer.addEventListener('touchmove', (e) => {
             if (e.touches.length === 1 && isDragging) {
-                panningX = e.touches[0].clientX - startX;
-                panningY = e.touches[0].clientY - startY;
-                updateTransform();
+                panningX = e.touches[0].clientX - startX; panningY = e.touches[0].clientY - startY; updateTransform();
             } else if (e.touches.length === 2) {
                 const distance = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
-                const delta = distance / lastTouchDistance;
-                scale = Math.min(Math.max(.5, scale * delta), 8);
+                scale = Math.min(Math.max(.5, scale * (distance / lastTouchDistance)), 8);
                 lastTouchDistance = distance;
                 updateTransform();
             }
