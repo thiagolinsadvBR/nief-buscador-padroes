@@ -388,8 +388,11 @@
         <h3 style="color: var(--accent); margin-bottom: 15px; font-size: 1.1rem;">📡 Terminal de Acessos Globais (Ao Vivo)</h3>
         <div style="width: 100%; max-width: 700px;">
             <div id="terminalContent">
-                <span style="color: #aaa;">> Estabelecendo conexão criptografada com servidor NIEF...</span><br>
-                <span style="color: #aaa;">> Buscando coordenadas GPS da sessão (Aguardando Permissão)...</span><br><br>
+                <!-- Os logs do Firebase aparecerão aqui -->
+                <div id="loadingText" style="color: #aaa; margin-bottom: 10px;">
+                    > Estabelecendo conexão criptografada com servidor NIEF...<br>
+                    > Buscando coordenadas GPS da sessão (Aguardando Permissão)...
+                </div>
             </div>
         </div>
     </div>
@@ -6066,12 +6069,11 @@
 ];
 
         // =========================================================================
-        // CONFIGURAÇÃO DO FIREBASE COM AS CHAVES DEFINITIVAS
+        // CONFIGURAÇÃO DO FIREBASE (Com chaves oficiais)
         // =========================================================================
         const firebaseConfig = {
             apiKey: "AIzaSyBz17SeMmDiS0Xaxid62sU7E2qgIXdfqH0",
             authDomain: "nief-idv-acessos.firebaseapp.com",
-            // A linha abaixo foi adicionada para garantir a conexão com o Realtime Database
             databaseURL: "https://nief-idv-acessos-default-rtdb.firebaseio.com",
             projectId: "nief-idv-acessos",
             storageBucket: "nief-idv-acessos.firebasestorage.app",
@@ -6081,6 +6083,7 @@
 
         let database, acessosRef;
         const terminalContent = document.getElementById('terminalContent');
+        const loadingText = document.getElementById('loadingText');
 
         // Tenta iniciar o Firebase.
         try {
@@ -6098,11 +6101,16 @@
                 novaLinha.style.marginBottom = '6px';
                 novaLinha.innerHTML = `<span style="color: white;">[${dataFormatada} - ${horaFormatada}]</span> > ACESSO REGISTRADO | LOCAL: ${acesso.cidade.toUpperCase()}, ${acesso.estado.toUpperCase()}`;
                 
-                terminalContent.appendChild(novaLinha);
-                terminalContent.scrollTop = terminalContent.scrollHeight;
+                // MUDANÇA AQUI: Usa prepend para jogar o registro mais novo para o topo
+                terminalContent.prepend(novaLinha);
+                
+                // Mantém a barra de rolagem sempre no topo para o usuário ver as novidades
+                terminalContent.scrollTop = 0;
             });
         } catch (error) {
-            terminalContent.innerHTML += `<span style="color: #ff4444;">> [ERRO] Falha ao conectar ao banco de dados global. Sincronização offline.</span><br>`;
+            const erroLinha = document.createElement('div');
+            erroLinha.innerHTML = `<span style="color: #ff4444;">> [ERRO] Falha ao conectar ao banco de dados global. Sincronização offline.</span><br>`;
+            terminalContent.prepend(erroLinha);
         }
 
         // =========================================================================
@@ -6132,7 +6140,6 @@
                         const lon = position.coords.longitude;
                         
                         try {
-                            // API gratuita para converter Latitude/Longitude em Nome da Cidade (BigDataCloud)
                             const res = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=pt`);
                             const data = await res.json();
                             
@@ -6156,15 +6163,19 @@
             let localizacao;
             
             try {
-                // Tenta forçar o GPS para precisão máxima (Vai pedir permissão na tela)
                 localizacao = await obterLocalizacaoViaGPS();
+                // Se der certo, removemos o aviso de carregamento
+                if(loadingText) loadingText.style.display = 'none';
             } catch (error) {
-                // Plano B: Se o agente recusar a permissão ou falhar, usa o IP da operadora
-                terminalContent.innerHTML += `<span style="color: #ffaa00;">> [AVISO] GPS bloqueado ou falhou. Iniciando rastreio por IP (Precisão Baixa)...</span><br>`;
+                if(loadingText) loadingText.style.display = 'none';
+                
+                const aviso = document.createElement('div');
+                aviso.innerHTML = `<span style="color: #ffaa00; margin-bottom: 10px; display: block;">> [AVISO] GPS bloqueado ou falhou. Iniciando rastreio por IP (Precisão Baixa)...</span>`;
+                terminalContent.prepend(aviso);
+                
                 localizacao = await obterLocalizacaoViaIP();
             }
 
-            // Envia para o banco global se estiver configurado corretamente
             if (acessosRef) {
                 acessosRef.push({
                     cidade: localizacao.cidade,
