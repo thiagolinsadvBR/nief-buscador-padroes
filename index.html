@@ -534,7 +534,6 @@
 
     <!-- SEÇÃO DE REGISTRO DE ACESSO -->
     <div style="width: 100%; max-width: 800px; margin-top: 50px; padding-top: 30px; border-top: 1px solid #333; text-align: center; display: flex; flex-direction: column; align-items: center;">
-        <!-- Título agora possui ID e proteção contra seleção de texto, atuando como botão invisível -->
         <h3 id="tituloTerminal" style="color: var(--accent); margin-bottom: 15px; font-size: 1.1rem; user-select: none; cursor: default;">📡 Terminal de Acessos Globais (Ao Vivo)</h3>
         <div style="width: 100%; max-width: 700px;">
             <div id="terminalBox">
@@ -6334,11 +6333,17 @@
                     registros.sort((a, b) => b.timestamp - a.timestamp);
 
                     registros.forEach(registro => {
+                        const cid = registro.cidade ? registro.cidade.toUpperCase() : "DESCONHECIDA";
+                        
+                        // IGNORA CAMPINA GRANDE NO RELATÓRIO EXPORTADO
+                        if (cid.includes("CAMPINA GRANDE")) {
+                            return; // Pula este registro e vai para o próximo
+                        }
+
+                        const est = registro.estado ? registro.estado.toUpperCase() : "DESCONHECIDO";
                         const dataObjeto = new Date(registro.timestamp || Date.now());
                         const dataF = dataObjeto.toLocaleDateString('pt-BR');
                         const horaF = dataObjeto.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-                        const cid = registro.cidade ? registro.cidade.toUpperCase() : "DESCONHECIDA";
-                        const est = registro.estado ? registro.estado.toUpperCase() : "DESCONHECIDO";
                         
                         csvContent += `${dataF};${horaF};${cid};${est}\n`;
                     });
