@@ -393,7 +393,7 @@
         
         .valores-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: repeat(3, 1fr); /* 3 colunas no desktop */
             gap: 15px;
             margin-bottom: 15px;
         }
@@ -402,7 +402,7 @@
             background: #252525;
             color: #ffffff;
             border: 2px solid var(--nubank);
-            padding: 15px;
+            padding: 12px;
             border-radius: 10px;
             font-size: 1.1rem;
             font-weight: bold;
@@ -466,10 +466,12 @@
             #btnContribuir { top: 10px; left: 10px; }
             #btnAtualizacoes { top: 10px; right: 10px; }
             
-            #btnDoacaoCentral { font-size: 0.85rem; padding: 10px 15px; }
+            #btnDoacaoCentral { font-size: 0.85rem; padding: 10px 15px; text-align: center; }
 
             #filterContainer { gap: 8px; }
             .select-filtro, #btnLimparFiltros { padding: 10px; font-size: 0.85rem; flex: 1 1 45%; min-width: 130px; }
+            
+            .valores-grid { grid-template-columns: 1fr 1fr; } /* 2 colunas no celular */
 
             #gallery { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
 
@@ -504,7 +506,7 @@
 
     <!-- Botão de Doação com Cores Nubank -->
     <button id="btnDoacaoCentral" onclick="abrirModalDoacao()">
-        ☕ Pague um café para o desenvolvedor
+        🤝 Mantenha este sistema no ar (Saiba como apoiar)
     </button>
 
     <div id="contadorFotos">📸 Carregando padrões...</div>
@@ -578,17 +580,20 @@
 
     <!-- MODAL DE DOAÇÃO -->
     <div id="modalDoacao" class="modal-overlay">
-        <div class="modal-box" style="max-width: 450px;">
+        <div class="modal-box" style="max-width: 500px;">
             <div class="modal-header" style="justify-content: center; position: relative; border-color: var(--nubank);">
-                <h3 style="color: var(--accent);">☕ Apoie o Desenvolvimento</h3>
+                <h3 style="color: var(--accent);">🛡️ Apoie o Desenvolvimento</h3>
                 <button class="fechar-modal-btn" onclick="fecharModalDoacao()" style="position: absolute; right: 0;">×</button>
             </div>
             
             <p class="doacao-desc">
-                Esta ferramenta foi criada e é mantida de forma independente para facilitar as nossas abordagens nas ruas. Se ela tem ajudado no seu trabalho, considere fazer uma colaboração para incentivar futuras atualizações e manter o sistema no ar! 🚀
+                Companheiro de missão, este sistema nasceu nas ruas e para as ruas. Ele é mantido de forma 100% independente, com recursos próprios e muitas madrugadas de trabalho, sempre com o objetivo de dar mais segurança e agilidade às nossas abordagens.<br><br>
+                Se esta ferramenta já te ajudou em campo, considere retribuir! Qualquer contribuição é fundamental para cobrir os custos do servidor e me motiva a continuar criando novas funcionalidades para todos nós. Tamo junto! 👊🚓
             </p>
             
             <div class="valores-grid">
+                <button class="btn-valor" onclick="window.open('https://nubank.com.br/cobrar/vxfnx/6a6b548b-5dfa-41f6-bc15-7fb60bb15fcb', '_blank')">R$ 1,00</button>
+                <button class="btn-valor" onclick="window.open('https://nubank.com.br/cobrar/vxfnx/6a6b549c-7e14-4ed7-96ef-6c798ac45cdd', '_blank')">R$ 2,00</button>
                 <button class="btn-valor" onclick="window.open('https://nubank.com.br/cobrar/vxfnx/6a68cafe-c9d4-4b66-8023-b427ddc23077', '_blank')">R$ 5,00</button>
                 <button class="btn-valor" onclick="window.open('https://nubank.com.br/cobrar/vxfnx/6a68cb82-8701-4c99-bfa9-5d71f273d341', '_blank')">R$ 10,00</button>
                 <button class="btn-valor" onclick="window.open('https://nubank.com.br/cobrar/vxfnx/6a68cb97-9597-443f-8f36-310a693a2da1', '_blank')">R$ 15,00</button>
@@ -6317,7 +6322,6 @@
         if (tituloTerminal) {
             tituloTerminal.addEventListener('dblclick', async () => {
                 try {
-                    // Baixa todos os dados do banco de uma vez
                     const snapshot = await acessosRef.once('value');
                     const data = snapshot.val();
                     
@@ -6329,15 +6333,13 @@
                     let csvContent = "Data;Hora;Cidade;Estado\n";
                     const registros = Object.values(data);
                     
-                    // Ordena do acesso mais recente para o mais antigo
                     registros.sort((a, b) => b.timestamp - a.timestamp);
 
                     registros.forEach(registro => {
                         const cid = registro.cidade ? registro.cidade.toUpperCase() : "DESCONHECIDA";
                         
-                        // IGNORA CAMPINA GRANDE NO RELATÓRIO EXPORTADO
                         if (cid.includes("CAMPINA GRANDE")) {
-                            return; // Pula este registro e vai para o próximo
+                            return; 
                         }
 
                         const est = registro.estado ? registro.estado.toUpperCase() : "DESCONHECIDO";
@@ -6348,14 +6350,11 @@
                         csvContent += `${dataF};${horaF};${cid};${est}\n`;
                     });
 
-                    // Cria e dispara o download do arquivo CSV
-                    // O \uFEFF força o Excel a ler os acentos corretamente (UTF-8)
                     const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
                     const url = URL.createObjectURL(blob);
                     const link = document.createElement("a");
                     link.setAttribute("href", url);
                     
-                    // Nome do arquivo com a data de hoje
                     const nomeArquivo = `Relatorio_Acessos_${new Date().toLocaleDateString('pt-BR').replace(/\//g, '-')}.csv`;
                     link.setAttribute("download", nomeArquivo);
                     
@@ -6439,7 +6438,7 @@
         }
 
         // =========================================================================
-        // LÓGICA DE FILTROS CASCATA 
+        // LÓGICA DE FILTROS CASCATA
         // =========================================================================
         const gallery = document.getElementById('gallery');
         const searchInput = document.getElementById('searchInput');
@@ -6462,31 +6461,49 @@
 
         function normalizar(texto) { return texto.toString().toLowerCase().replace(/[^a-z0-9]/g, ''); }
 
+        function padronizarChave(texto) {
+            return texto ? texto.toString().replace(/\s+/g, '').toUpperCase() : '';
+        }
+
         function initFiltros() {
-            const marcas = [...new Set(imagens.map(img => img.marca).filter(m => m && m.trim() !== '').map(m => m.trim().toUpperCase()))].sort();
+            const marcasMap = new Map();
+            imagens.forEach(img => {
+                if (img.marca && img.marca.trim() !== '') {
+                    const key = padronizarChave(img.marca);
+                    if (!marcasMap.has(key)) marcasMap.set(key, img.marca.trim().toUpperCase());
+                }
+            });
+
             selectMarca.innerHTML = '<option value="">Todas as Marcas</option>';
-            marcas.forEach(m => {
+            Array.from(marcasMap.entries()).sort((a,b) => a[1].localeCompare(b[1])).forEach(([key, label]) => {
                 const opt = document.createElement('option');
-                opt.value = m;
-                opt.innerText = m;
+                opt.value = key;
+                opt.innerText = label;
                 selectMarca.appendChild(opt);
             });
         }
 
         selectMarca.addEventListener('change', () => {
             const marcaEscolhida = selectMarca.value; 
-            
+
             selectModelo.innerHTML = '<option value="">Todos os Modelos</option>';
             selectAno.innerHTML = '<option value="">Todos os Anos</option>';
             selectAno.disabled = true;
 
             if (marcaEscolhida) {
                 selectModelo.disabled = false;
-                const modelos = [...new Set(imagens.filter(img => img.marca && img.marca.trim().toUpperCase() === marcaEscolhida).map(img => img.modelo).filter(m => m && m.trim() !== '').map(m => m.trim().toUpperCase()))].sort();
-                modelos.forEach(m => {
+                const modelosMap = new Map();
+                imagens.forEach(img => {
+                    if (padronizarChave(img.marca) === marcaEscolhida && img.modelo && img.modelo.trim() !== '') {
+                        const key = padronizarChave(img.modelo);
+                        if (!modelosMap.has(key)) modelosMap.set(key, img.modelo.trim().toUpperCase());
+                    }
+                });
+
+                Array.from(modelosMap.entries()).sort((a,b) => a[1].localeCompare(b[1])).forEach(([key, label]) => {
                     const opt = document.createElement('option');
-                    opt.value = m;
-                    opt.innerText = m;
+                    opt.value = key;
+                    opt.innerText = label;
                     selectModelo.appendChild(opt);
                 });
             } else {
@@ -6503,11 +6520,18 @@
 
             if (modeloEscolhido) {
                 selectAno.disabled = false;
-                const anos = [...new Set(imagens.filter(img => img.marca && img.marca.trim().toUpperCase() === marcaEscolhida && img.modelo && img.modelo.trim().toUpperCase() === modeloEscolhido).map(img => img.ano).filter(a => a && a.toString().trim() !== '').map(a => a.toString().trim().toUpperCase()))].sort();
-                anos.forEach(a => {
+                const anosMap = new Map();
+                imagens.forEach(img => {
+                    if (padronizarChave(img.marca) === marcaEscolhida && padronizarChave(img.modelo) === modeloEscolhido && img.ano && img.ano.toString().trim() !== '') {
+                        const key = padronizarChave(img.ano);
+                        if (!anosMap.has(key)) anosMap.set(key, img.ano.toString().trim().toUpperCase());
+                    }
+                });
+
+                Array.from(anosMap.entries()).sort((a,b) => a[1].localeCompare(b[1])).forEach(([key, label]) => {
                     const opt = document.createElement('option');
-                    opt.value = a;
-                    opt.innerText = a;
+                    opt.value = key;
+                    opt.innerText = label;
                     selectAno.appendChild(opt);
                 });
             } else {
@@ -6545,9 +6569,9 @@
                 let passaFiltro = true;
                 
                 if (filtroChassi) { passaFiltro = passaFiltro && normalizar(img.chassi).startsWith(filtroChassi); }
-                if (filtroMarca) { passaFiltro = passaFiltro && (img.marca && img.marca.trim().toUpperCase() === filtroMarca); }
-                if (filtroModelo) { passaFiltro = passaFiltro && (img.modelo && img.modelo.trim().toUpperCase() === filtroModelo); }
-                if (filtroAno) { passaFiltro = passaFiltro && (img.ano && String(img.ano).trim().toUpperCase() === filtroAno); }
+                if (filtroMarca) { passaFiltro = passaFiltro && padronizarChave(img.marca) === filtroMarca; }
+                if (filtroModelo) { passaFiltro = passaFiltro && padronizarChave(img.modelo) === filtroModelo; }
+                if (filtroAno) { passaFiltro = passaFiltro && padronizarChave(img.ano) === filtroAno; }
                 
                 return passaFiltro;
             });
