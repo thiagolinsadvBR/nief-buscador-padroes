@@ -87,6 +87,93 @@
             color: var(--primary);
         }
 
+        /* DASHBOARD - GRID DE FERRAMENTAS */
+        .grid-ferramentas {
+            display: flex;
+            gap: 25px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+            margin-bottom: 50px;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .btn-ferramenta {
+            background: #111;
+            border: 2px solid var(--accent);
+            border-radius: 18px;
+            width: 150px;
+            height: 150px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: var(--accent);
+            font-weight: bold;
+            font-size: 0.95rem;
+            text-align: center;
+            line-height: 1.2;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .btn-ferramenta:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(124, 252, 0, 0.3);
+            background: #1a1a1a;
+        }
+
+        .btn-ferramenta svg {
+            width: 55px;
+            height: 55px;
+            stroke: #888;
+            margin-bottom: 15px;
+            transition: stroke 0.3s ease;
+        }
+
+        .btn-ferramenta:hover svg {
+            stroke: #aaa;
+        }
+
+        .btn-sair {
+            background: transparent;
+            border: 2px solid #ff4444;
+            color: #ff4444;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            max-width: 300px;
+        }
+
+        .btn-sair:hover {
+            background: #ff4444;
+            color: white;
+        }
+
+        .btn-voltar-menu {
+            background: transparent;
+            color: var(--text);
+            border: 1px solid #444;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 25px;
+            align-self: flex-start;
+            font-size: 0.9rem;
+            transition: 0.2s;
+        }
+        
+        .btn-voltar-menu:hover {
+            background: #333;
+            border-color: var(--accent);
+        }
+
         #contadorFotos {
             color: var(--accent);
             font-weight: bold;
@@ -286,14 +373,37 @@
         🤝 Mantenha este sistema no ar (Saiba como apoiar)
     </button>
 
-    <!-- Botão Principal de Login -->
+    <!-- Botão Principal de Login (Exibido para usuários deslogados ou pendentes) -->
     <button id="btnAcessoRestrito" onclick="abrirModalAuth()">
         🔒 Acessar Ferramentas Restritas
     </button>
 
-    <!-- ÁREA RESTRITA: Oculta por padrão -->
-    <div id="areaRestrita" style="display: none; width: 100%; flex-direction: column; align-items: center;">
+    <!-- NOVA ÁREA: DASHBOARD DE FERRAMENTAS -->
+    <div id="areaDashboard" style="display: none; width: 100%; flex-direction: column; align-items: center;">
         
+        <div class="grid-ferramentas">
+            <!-- Botão Ferramenta 1: Buscador -->
+            <button class="btn-ferramenta" onclick="abrirBuscador()">
+                <!-- SVG Lupa Estilizada -->
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="10" cy="10" r="7"></circle>
+                    <line x1="21" y1="21" x2="15" y2="15"></line>
+                </svg>
+                <span>Buscador de<br>Padrões</span>
+            </button>
+            
+            <!-- FUTURAS FERRAMENTAS ENTRARÃO AQUI -->
+        </div>
+
+        <!-- Botão de Sair no Menu Principal -->
+        <button class="btn-sair" onclick="fazerLogout()">Sair da Ferramenta Restrita</button>
+    </div>
+
+    <!-- FERRAMENTA 1: BUSCADOR DE PADRÕES (Ex-AreaRestrita) -->
+    <div id="areaBuscador" style="display: none; width: 100%; flex-direction: column; align-items: center; max-width: 1100px;">
+        
+        <button class="btn-voltar-menu" onclick="voltarDashboard()">⬅ Voltar ao Painel</button>
+
         <div id="contadorFotos">📸 Carregando padrões...</div>
 
         <div id="searchContainer">
@@ -308,12 +418,13 @@
         </div>
 
         <div id="gallery"></div>
-
-        <button class="btn-action" style="margin-top: 30px; max-width: 300px; border-color: #ff4444; color: #ff4444;" onclick="fazerLogout()">Sair da Ferramenta Restrita</button>
     </div>
 
-    <!-- SEÇÃO DE REGISTRO DE ACESSO -->
-    <div style="width: 100%; max-width: 800px; margin-top: 50px; padding-top: 30px; border-top: 1px solid #333; text-align: center; display: flex; flex-direction: column; align-items: center;">
+    <br>
+    <hr style="border: none; border-top: 1px solid #333; width: 80%; max-width: 800px; margin: 20px 0;">
+
+    <!-- SEÇÃO DE REGISTRO DE ACESSO (Pública) -->
+    <div style="width: 100%; max-width: 800px; margin-top: 20px; text-align: center; display: flex; flex-direction: column; align-items: center;">
         <h3 id="tituloTerminal" style="color: var(--accent); margin-bottom: 15px; font-size: 1.1rem; user-select: none; cursor: default;">📡 Terminal de Acessos Globais (Ao Vivo)</h3>
         <div style="width: 100%; max-width: 700px;">
             <div id="terminalBox">
@@ -327,7 +438,7 @@
     </div>
     <br><br>
 
-    <!-- MODAIS DE AUTENTICAÇÃO -->
+    <!-- MODAIS DE AUTENTICAÇÃO (LOGIN / CADASTRO) -->
     <div id="modalAuth" class="modal-overlay">
         <div class="modal-box" style="max-width: 400px; text-align: center;">
             <div class="modal-header" style="justify-content: center; position: relative;">
@@ -348,22 +459,18 @@
                 <p style="font-size: 0.85rem; color: #ccc; cursor:pointer; text-decoration: underline; margin-bottom: 0;" onclick="toggleAuthMode()">Não tem conta? Solicitar acesso</p>
             </div>
 
-            <!-- Formulário de Cadastro Atualizado com CPF, Telefone e Máscaras -->
+            <!-- Formulário de Cadastro -->
             <div id="formCadastro" class="form-scroll" style="display:none;">
                 <input type="text" id="cadNome" class="select-filtro" placeholder="Seu Nome / Matrícula">
-                
-                <!-- Novos Campos -->
                 <input type="text" id="cadCPF" class="select-filtro" placeholder="CPF (somente números)" maxlength="14" oninput="mascaraCPF(this)">
                 <input type="tel" id="cadTelefone" class="select-filtro" placeholder="WhatsApp (com DDD)" maxlength="15" oninput="mascaraTelefone(this)">
-                
-                <input type="text" id="cadInstituicao" class="select-filtro" placeholder="Instituição / Unidade / Batalhão">
+                <input type="text" id="cadInstituicao" class="select-filtro" placeholder="Instituição (Ex: STTP, PRF, PM)">
                 <input type="email" id="cadEmail" class="select-filtro" placeholder="E-mail válido">
                 
                 <div class="password-wrapper">
                     <input type="password" id="cadSenha" class="select-filtro" placeholder="Crie uma Senha (mín. 6 letras)">
                     <button class="toggle-password" onclick="toggleVisibility('cadSenha')">👁️</button>
                 </div>
-
                 <div class="password-wrapper">
                     <input type="password" id="cadSenhaConfirma" class="select-filtro" placeholder="Confirme a Senha">
                     <button class="toggle-password" onclick="toggleVisibility('cadSenhaConfirma')">👁️</button>
@@ -6541,9 +6648,10 @@
         const terminalLogs = document.getElementById('terminalLogs');
         const gpsStatus = document.getElementById('gpsStatus');
         
-        // Elementos de Autenticação
+        // Elementos de Autenticação e Áreas
         const btnAcessoRestrito = document.getElementById('btnAcessoRestrito');
-        const areaRestrita = document.getElementById('areaRestrita');
+        const areaDashboard = document.getElementById('areaDashboard');
+        const areaBuscador = document.getElementById('areaBuscador');
         const modalAuth = document.getElementById('modalAuth');
         const formLogin = document.getElementById('formLogin');
         const formCadastro = document.getElementById('formCadastro');
@@ -6560,22 +6668,29 @@
                     database.ref('usuarios/' + user.uid).once('value').then(snapshot => {
                         const userData = snapshot.val();
                         if (userData && userData.status === 'aprovado') {
+                            // APROVADO! Mostra o Dashboard Principal
                             btnAcessoRestrito.style.display = 'none';
-                            areaRestrita.style.display = 'flex';
+                            areaDashboard.style.display = 'flex';
+                            areaBuscador.style.display = 'none';
                             modalAuth.style.display = 'none';
                             modalPendente.style.display = 'none';
+                            
                             initFiltros();
                             renderGallery();
                         } else {
+                            // PENDENTE!
                             btnAcessoRestrito.style.display = 'none';
-                            areaRestrita.style.display = 'none';
+                            areaDashboard.style.display = 'none';
+                            areaBuscador.style.display = 'none';
                             modalAuth.style.display = 'none';
                             modalPendente.style.display = 'flex';
                         }
                     });
                 } else {
+                    // DESLOGADO!
                     btnAcessoRestrito.style.display = 'block';
-                    areaRestrita.style.display = 'none';
+                    areaDashboard.style.display = 'none';
+                    areaBuscador.style.display = 'none';
                     modalAuth.style.display = 'none';
                     modalPendente.style.display = 'none';
                 }
@@ -6600,6 +6715,19 @@
         }
 
         // =========================================================================
+        // FUNÇÕES DE NAVEGAÇÃO DO DASHBOARD
+        // =========================================================================
+        function abrirBuscador() {
+            areaDashboard.style.display = 'none';
+            areaBuscador.style.display = 'flex';
+        }
+
+        function voltarDashboard() {
+            areaBuscador.style.display = 'none';
+            areaDashboard.style.display = 'flex';
+        }
+
+        // =========================================================================
         // FUNÇÕES DE AUTENTICAÇÃO E MÁSCARAS
         // =========================================================================
         function abrirModalAuth() { modalAuth.style.display = 'flex'; }
@@ -6616,17 +6744,12 @@
             }
         }
 
-        // Função para mostrar/ocultar a senha
         function toggleVisibility(id) {
             const input = document.getElementById(id);
-            if (input.type === "password") {
-                input.type = "text";
-            } else {
-                input.type = "password";
-            }
+            if (input.type === "password") input.type = "text";
+            else input.type = "password";
         }
 
-        // Máscara de CPF
         function mascaraCPF(cpf) {
             let v = cpf.value.replace(/\D/g, "");
             if (v.length > 11) v = v.substring(0, 11);
@@ -6636,7 +6759,6 @@
             cpf.value = v;
         }
 
-        // Máscara de Telefone/WhatsApp
         function mascaraTelefone(tel) {
             let v = tel.value.replace(/\D/g, "");
             if (v.length > 11) v = v.substring(0, 11);
@@ -6658,7 +6780,6 @@
                 alert("Preencha todos os campos!");
                 return;
             }
-
             if(senha !== senhaConfirma) {
                 alert("As senhas digitadas não coincidem. Verifique e tente novamente.");
                 return;
@@ -6666,12 +6787,7 @@
 
             auth.createUserWithEmailAndPassword(email, senha).then(credenciais => {
                 database.ref('usuarios/' + credenciais.user.uid).set({
-                    nome: nome,
-                    cpf: cpf,
-                    telefone: telefone,
-                    instituicao: instituicao,
-                    email: email,
-                    status: 'pendente'
+                    nome: nome, cpf: cpf, telefone: telefone, instituicao: instituicao, email: email, status: 'pendente'
                 });
                 alert("Solicitação enviada com sucesso! Aguarde a liberação do Administrador.");
             }).catch(erro => {
@@ -6685,10 +6801,7 @@
             const email = document.getElementById('loginEmail').value;
             const senha = document.getElementById('loginSenha').value;
 
-            if(!email || !senha) {
-                alert("Preencha e-mail e senha!");
-                return;
-            }
+            if(!email || !senha) { alert("Preencha e-mail e senha!"); return; }
 
             auth.signInWithEmailAndPassword(email, senha).catch(erro => {
                 if (erro.code === 'auth/user-not-found' || erro.code === 'auth/wrong-password') alert("E-mail ou senha incorretos.");
@@ -6718,12 +6831,10 @@
                     registros.forEach(registro => {
                         const cid = registro.cidade ? registro.cidade.toUpperCase() : "DESCONHECIDA";
                         if (cid.includes("CAMPINA GRANDE")) return; 
-
                         const est = registro.estado ? registro.estado.toUpperCase() : "DESCONHECIDO";
                         const dataObjeto = new Date(registro.timestamp || Date.now());
                         const dataF = dataObjeto.toLocaleDateString('pt-BR');
                         const horaF = dataObjeto.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-                        
                         csvContent += `${dataF};${horaF};${cid};${est}\n`;
                     });
 
@@ -6732,9 +6843,7 @@
                     const link = document.createElement("a");
                     link.setAttribute("href", url);
                     link.setAttribute("download", `Relatorio_Acessos_${new Date().toLocaleDateString('pt-BR').replace(/\//g, '-')}.csv`);
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
+                    document.body.appendChild(link); link.click(); document.body.removeChild(link);
                 } catch (err) { alert("Erro ao extrair o relatório."); }
             });
         }
@@ -6748,9 +6857,7 @@
                 const data = await res.json();
                 if (!data.success) throw new Error();
                 return { cidade: data.city || 'Desconhecida', estado: data.region || 'Desconhecido' };
-            } catch (e) {
-                return { cidade: "Oculta (Firewall)", estado: "Rede Restrita" };
-            }
+            } catch (e) { return { cidade: "Oculta (Firewall)", estado: "Rede Restrita" }; }
         }
 
         function obterLocalizacaoViaGPS() {
@@ -6890,7 +6997,7 @@
         searchInput.addEventListener('input', () => renderGallery());
 
         // =========================================================================
-        // MODAIS GERAIS, ZOOM E BOTÕES
+        // MODAIS GERAIS E BOTÕES
         // =========================================================================
         const modal = document.getElementById('modal');
         const modalImg = document.getElementById('modalImg');
