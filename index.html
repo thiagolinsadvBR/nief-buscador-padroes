@@ -156,7 +156,7 @@
         }
         .password-wrapper input {
             width: 100%;
-            padding-right: 40px; /* Dá espaço para o botão do olho */
+            padding-right: 40px; 
             margin: 0;
         }
         .toggle-password {
@@ -213,8 +213,8 @@
         #reportBtn:hover { background: #ff4444; color: white; }
 
         /* BOX DOS MODAIS */
-        .modal-box { background: #1a1a1a; width: 90%; max-width: 600px; max-height: 80vh; border-radius: 12px; border: 1px solid var(--accent); padding: 25px; box-shadow: 0 15px 30px rgba(0,0,0,0.6); position: relative; display: flex; flex-direction: column; box-sizing: border-box; }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding-bottom: 15px; margin-bottom: 15px; }
+        .modal-box { background: #1a1a1a; width: 90%; max-width: 600px; max-height: 85vh; border-radius: 12px; border: 1px solid var(--accent); padding: 25px; box-shadow: 0 15px 30px rgba(0,0,0,0.6); position: relative; display: flex; flex-direction: column; box-sizing: border-box; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding-bottom: 15px; margin-bottom: 15px; flex-shrink: 0; }
         .modal-header h3 { margin: 0; color: var(--text); }
         .fechar-modal-btn { background: transparent; color: var(--text); border: none; font-size: 1.8rem; cursor: pointer; line-height: 1; }
 
@@ -222,6 +222,12 @@
         .lista-scroll::-webkit-scrollbar { width: 8px; }
         .lista-scroll::-webkit-scrollbar-track { background: #111; border-radius: 4px; }
         .lista-scroll::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 4px; }
+        
+        .form-scroll { overflow-y: auto; padding-right: 5px; display: flex; flex-direction: column; gap: 15px; }
+        .form-scroll::-webkit-scrollbar { width: 6px; }
+        .form-scroll::-webkit-scrollbar-track { background: #111; border-radius: 4px; }
+        .form-scroll::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 4px; }
+
         .dia-atualizacao { margin-bottom: 25px; }
         .dia-atualizacao h4 { color: var(--accent); margin: 0 0 10px 0; font-size: 1.1rem; border-bottom: 1px dashed #333; padding-bottom: 5px; }
         .dia-atualizacao ul { list-style: none; padding: 0; margin: 0; }
@@ -280,12 +286,12 @@
         🤝 Mantenha este sistema no ar (Saiba como apoiar)
     </button>
 
-    <!-- Botão Principal de Login (Exibido para usuários deslogados ou pendentes) -->
+    <!-- Botão Principal de Login -->
     <button id="btnAcessoRestrito" onclick="abrirModalAuth()">
         🔒 Acessar Ferramentas Restritas
     </button>
 
-    <!-- ÁREA RESTRITA: Oculta por padrão. Só aparece se o usuário for APROVADO -->
+    <!-- ÁREA RESTRITA: Oculta por padrão -->
     <div id="areaRestrita" style="display: none; width: 100%; flex-direction: column; align-items: center;">
         
         <div id="contadorFotos">📸 Carregando padrões...</div>
@@ -303,11 +309,10 @@
 
         <div id="gallery"></div>
 
-        <!-- Botão de Sair -->
         <button class="btn-action" style="margin-top: 30px; max-width: 300px; border-color: #ff4444; color: #ff4444;" onclick="fazerLogout()">Sair da Ferramenta Restrita</button>
     </div>
 
-    <!-- SEÇÃO DE REGISTRO DE ACESSO (Pública) -->
+    <!-- SEÇÃO DE REGISTRO DE ACESSO -->
     <div style="width: 100%; max-width: 800px; margin-top: 50px; padding-top: 30px; border-top: 1px solid #333; text-align: center; display: flex; flex-direction: column; align-items: center;">
         <h3 id="tituloTerminal" style="color: var(--accent); margin-bottom: 15px; font-size: 1.1rem; user-select: none; cursor: default;">📡 Terminal de Acessos Globais (Ao Vivo)</h3>
         <div style="width: 100%; max-width: 700px;">
@@ -322,7 +327,7 @@
     </div>
     <br><br>
 
-    <!-- MODAIS DE AUTENTICAÇÃO (LOGIN / CADASTRO) -->
+    <!-- MODAIS DE AUTENTICAÇÃO -->
     <div id="modalAuth" class="modal-overlay">
         <div class="modal-box" style="max-width: 400px; text-align: center;">
             <div class="modal-header" style="justify-content: center; position: relative;">
@@ -331,7 +336,7 @@
             </div>
             
             <!-- Formulário de Login -->
-            <div id="formLogin" style="display:flex; flex-direction: column; gap: 15px;">
+            <div id="formLogin" class="form-scroll">
                 <input type="email" id="loginEmail" class="select-filtro" placeholder="E-mail">
                 
                 <div class="password-wrapper">
@@ -340,13 +345,18 @@
                 </div>
                 
                 <button class="btn-action" onclick="fazerLogin()">Entrar</button>
-                <p style="font-size: 0.85rem; color: #ccc; cursor:pointer; text-decoration: underline;" onclick="toggleAuthMode()">Não tem conta? Solicitar acesso</p>
+                <p style="font-size: 0.85rem; color: #ccc; cursor:pointer; text-decoration: underline; margin-bottom: 0;" onclick="toggleAuthMode()">Não tem conta? Solicitar acesso</p>
             </div>
 
-            <!-- Formulário de Cadastro Atualizado com Instituição e Confirmação -->
-            <div id="formCadastro" style="display:none; flex-direction: column; gap: 15px;">
+            <!-- Formulário de Cadastro Atualizado com CPF, Telefone e Máscaras -->
+            <div id="formCadastro" class="form-scroll" style="display:none;">
                 <input type="text" id="cadNome" class="select-filtro" placeholder="Seu Nome / Matrícula">
-                <input type="text" id="cadInstituicao" class="select-filtro" placeholder="Instituição / Unidade / Batalhão a qual pertence">
+                
+                <!-- Novos Campos -->
+                <input type="text" id="cadCPF" class="select-filtro" placeholder="CPF (somente números)" maxlength="14" oninput="mascaraCPF(this)">
+                <input type="tel" id="cadTelefone" class="select-filtro" placeholder="WhatsApp (com DDD)" maxlength="15" oninput="mascaraTelefone(this)">
+                
+                <input type="text" id="cadInstituicao" class="select-filtro" placeholder="Instituição (Ex: STTP, PRF, PM)">
                 <input type="email" id="cadEmail" class="select-filtro" placeholder="E-mail válido">
                 
                 <div class="password-wrapper">
@@ -360,7 +370,7 @@
                 </div>
                 
                 <button class="btn-action" onclick="fazerCadastro()">Enviar Solicitação</button>
-                <p style="font-size: 0.85rem; color: #ccc; cursor:pointer; text-decoration: underline;" onclick="toggleAuthMode()">Já tem conta? Fazer Login</p>
+                <p style="font-size: 0.85rem; color: #ccc; cursor:pointer; text-decoration: underline; margin-bottom: 0;" onclick="toggleAuthMode()">Já tem conta? Fazer Login</p>
             </div>
         </div>
     </div>
@@ -380,7 +390,7 @@
         </div>
     </div>
 
-    <!-- OUTROS MODAIS (IMAGEM, ATUALIZAÇÕES E DOAÇÕES MANTIDOS INTACTOS) -->
+    <!-- OUTROS MODAIS -->
     <div id="modal" class="modal-overlay">
         <button id="closeBtn" onclick="closeModal()">×</button>
         <div id="imageContainer">
@@ -415,9 +425,8 @@
                 <button class="fechar-modal-btn" onclick="fecharModalDoacao()" style="position: absolute; right: 0;">×</button>
             </div>
             <p class="doacao-desc">
-                Companheiro de missão, este sistema nasceu nas ruas e para as ruas. Ele é mantido de forma independente e é fruto de muitas madrugadas de trabalho, sempre com o objetivo de dar mais embasamento e agilidade às nossas abordagens.
-
-		Se esta ferramenta já te ajudou em campo, considere contribuir! Isso ajuda e motiva a continuar criando novas funcionalidades para todos nós. Tamo junto! 👊🚓
+                Companheiro de missão, este sistema nasceu nas ruas e para as ruas. Ele é mantido de forma 100% independente, com recursos próprios e muitas madrugadas de trabalho, sempre com o objetivo de dar mais segurança e agilidade às nossas abordagens.<br><br>
+                Se esta ferramenta já te ajudou em campo, considere retribuir! Qualquer contribuição é fundamental para cobrir os custos do servidor e me motiva a continuar criando novas funcionalidades para todos nós. Tamo junto! 👊🚓
             </p>
             <div class="valores-grid">
                 <button class="btn-valor" onclick="window.open('https://nubank.com.br/cobrar/vxfnx/6a6b548b-5dfa-41f6-bc15-7fb60bb15fcb', '_blank')">R$ 1,00</button>
@@ -6543,27 +6552,21 @@
         try {
             firebase.initializeApp(firebaseConfig);
             database = firebase.database();
-            auth = firebase.auth(); // Inicia a Autenticação
+            auth = firebase.auth();
             acessosRef = database.ref('acessos');
 
-            // Monitor de Status de Login em Tempo Real
             auth.onAuthStateChanged(user => {
                 if (user) {
-                    // Se estiver logado, checa se foi aprovado pelo Admin no banco de dados
                     database.ref('usuarios/' + user.uid).once('value').then(snapshot => {
                         const userData = snapshot.val();
                         if (userData && userData.status === 'aprovado') {
-                            // APROVADO! Mostra o sistema e esconde botões e modais de login
                             btnAcessoRestrito.style.display = 'none';
                             areaRestrita.style.display = 'flex';
                             modalAuth.style.display = 'none';
                             modalPendente.style.display = 'none';
-                            
-                            // Inicia a Galeria só quando aprovado
                             initFiltros();
                             renderGallery();
                         } else {
-                            // PENDENTE! Mostra a tela de espera e esconde o sistema
                             btnAcessoRestrito.style.display = 'none';
                             areaRestrita.style.display = 'none';
                             modalAuth.style.display = 'none';
@@ -6571,7 +6574,6 @@
                         }
                     });
                 } else {
-                    // DESLOGADO! Mostra o botão inicial, esconde tudo do sistema
                     btnAcessoRestrito.style.display = 'block';
                     areaRestrita.style.display = 'none';
                     modalAuth.style.display = 'none';
@@ -6579,7 +6581,6 @@
                 }
             });
 
-            // Lógica do Terminal Global
             acessosRef.orderByChild('timestamp').limitToLast(20).on('child_added', (snapshot) => {
                 const acesso = snapshot.val();
                 const dataObjeto = new Date(acesso.timestamp || Date.now());
@@ -6589,7 +6590,6 @@
                 const novaLinha = document.createElement('div');
                 novaLinha.style.marginBottom = '6px';
                 novaLinha.innerHTML = `<span style="color: white;">[${dataFormatada} - ${horaFormatada}]</span> > ACESSO REGISTRADO | LOCAL: ${acesso.cidade.toUpperCase()}, ${acesso.estado.toUpperCase()}`;
-                
                 terminalLogs.prepend(novaLinha);
                 terminalLogs.scrollTop = 0;
             });
@@ -6600,7 +6600,7 @@
         }
 
         // =========================================================================
-        // FUNÇÕES DE AUTENTICAÇÃO
+        // FUNÇÕES DE AUTENTICAÇÃO E MÁSCARAS
         // =========================================================================
         function abrirModalAuth() { modalAuth.style.display = 'flex'; }
         function fecharModalAuth() { modalAuth.style.display = 'none'; }
@@ -6616,7 +6616,7 @@
             }
         }
 
-        // Função para mostrar/ocultar senha no formulário
+        // Função para mostrar/ocultar a senha
         function toggleVisibility(id) {
             const input = document.getElementById(id);
             if (input.type === "password") {
@@ -6626,34 +6626,56 @@
             }
         }
 
+        // Máscara de CPF
+        function mascaraCPF(cpf) {
+            let v = cpf.value.replace(/\D/g, "");
+            if (v.length > 11) v = v.substring(0, 11);
+            v = v.replace(/(\d{3})(\d)/, "$1.$2");
+            v = v.replace(/(\d{3})(\d)/, "$1.$2");
+            v = v.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+            cpf.value = v;
+        }
+
+        // Máscara de Telefone/WhatsApp
+        function mascaraTelefone(tel) {
+            let v = tel.value.replace(/\D/g, "");
+            if (v.length > 11) v = v.substring(0, 11);
+            v = v.replace(/^(\d{2})(\d)/g, "($1) $2");
+            v = v.replace(/(\d)(\d{4})$/, "$1-$2");
+            tel.value = v;
+        }
+
         function fazerCadastro() {
             const nome = document.getElementById('cadNome').value;
+            const cpf = document.getElementById('cadCPF').value;
+            const telefone = document.getElementById('cadTelefone').value;
             const instituicao = document.getElementById('cadInstituicao').value;
             const email = document.getElementById('cadEmail').value;
             const senha = document.getElementById('cadSenha').value;
             const senhaConfirma = document.getElementById('cadSenhaConfirma').value;
 
-            if(!nome || !instituicao || !email || !senha || !senhaConfirma) {
+            if(!nome || !cpf || !telefone || !instituicao || !email || !senha || !senhaConfirma) {
                 alert("Preencha todos os campos!");
                 return;
             }
 
             if(senha !== senhaConfirma) {
-                alert("As senhas digitadas não coincidem. Tente novamente.");
+                alert("As senhas digitadas não coincidem. Verifique e tente novamente.");
                 return;
             }
 
             auth.createUserWithEmailAndPassword(email, senha).then(credenciais => {
-                // Ao criar a conta no Auth, grava os dados extras como PENDENTE no Banco de Dados
                 database.ref('usuarios/' + credenciais.user.uid).set({
                     nome: nome,
+                    cpf: cpf,
+                    telefone: telefone,
                     instituicao: instituicao,
                     email: email,
                     status: 'pendente'
                 });
                 alert("Solicitação enviada com sucesso! Aguarde a liberação do Administrador.");
             }).catch(erro => {
-                if (erro.code === 'auth/email-already-in-use') alert("Este e-mail já está cadastrado.");
+                if (erro.code === 'auth/email-already-in-use') alert("Este e-mail já está cadastrado no sistema.");
                 else if (erro.code === 'auth/weak-password') alert("A senha deve ter pelo menos 6 caracteres.");
                 else alert("Erro: " + erro.message);
             });
@@ -6675,10 +6697,7 @@
         }
 
         function fazerLogout() {
-            auth.signOut().then(() => {
-                // A página recarregará para limpar a galeria de forma segura
-                window.location.reload(); 
-            });
+            auth.signOut().then(() => { window.location.reload(); });
         }
 
         // =========================================================================
@@ -6773,7 +6792,7 @@
         });
 
         // =========================================================================
-        // LÓGICA DA GALERIA E FILTROS (Mantido Perfeito)
+        // LÓGICA DA GALERIA E FILTROS 
         // =========================================================================
         const gallery = document.getElementById('gallery');
         const searchInput = document.getElementById('searchInput');
@@ -6871,7 +6890,7 @@
         searchInput.addEventListener('input', () => renderGallery());
 
         // =========================================================================
-        // MODAIS GERAIS, ZOOM E BOTÕES (Mantidos Perfeitos)
+        // MODAIS GERAIS, ZOOM E BOTÕES
         // =========================================================================
         const modal = document.getElementById('modal');
         const modalImg = document.getElementById('modalImg');
