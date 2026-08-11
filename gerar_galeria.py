@@ -59,8 +59,8 @@ def atualizar_base_nief():
     with open(nome_html, 'r', encoding='utf-8') as f:
         conteudo = f.read()
 
-    # 4. Localizar e substituir a lista de imagens no JavaScript
-    marcador_inicio = "// LISTA DE ARQUIVOS"
+    # 4. Localizar e substituir a lista de imagens no JavaScript adaptado ao NOVO HTML
+    marcador_inicio = "const imagens ="
     marcador_fim = "];"
 
     try:
@@ -69,22 +69,24 @@ def atualizar_base_nief():
         pos_temp = conteudo.find(marcador_fim, pos_inicio)
         
         if pos_inicio == -1 or pos_temp == -1:
-            print("Erro: Marcador '// LISTA DE ARQUIVOS' ou o fechamento '];' não encontrados no HTML.")
+            print("Erro: Marcadores da variável 'const imagens = [...]' não encontrados no HTML.")
             return
             
-        pos_fim = pos_temp + 2 # Pega a posição logo após o ponto e vírgula
+        pos_fim = pos_temp + len(marcador_fim) # Pega a posição exata após o ];
 
         # Converte a lista de objetos do Python para array JSON legível no JavaScript
         lista_formatada = json.dumps(dados_imagens, indent=8, ensure_ascii=False)
-        novo_trecho = f"{marcador_inicio}\n        const imagens = {lista_formatada};"
+        
+        # Monta a nova declaração da variável completa
+        novo_trecho = f"const imagens = {lista_formatada};"
 
-        # Monta o arquivo final
+        # Monta o arquivo final injetando os novos dados na posição exata
         novo_conteudo = conteudo[:pos_inicio] + novo_trecho + conteudo[pos_fim:]
 
         with open(nome_html, 'w', encoding='utf-8') as f:
             f.write(novo_conteudo)
 
-        print(f"✓ Sucesso! {len(dados_imagens)} imagens foram indexadas com metadados estruturados.")
+        print(f"✓ Sucesso! {len(dados_imagens)} imagens foram indexadas e inseridas no novo sistema restrito.")
         
     except Exception as e:
         print(f"Ocorreu um erro ao processar o arquivo: {e}")

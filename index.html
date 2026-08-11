@@ -5,8 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Padrões de Gravação IDV</title>
     
-    <!-- Bibliotecas do Firebase (Versão 8 Compat - Ideal para HTML estático) -->
+    <!-- Bibliotecas do Firebase (Versão 8 Compat) -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <style>
@@ -39,7 +40,7 @@
             word-wrap: break-word;
         }
 
-        /* Botão de Doação Centralizado (Estilo Nubank) */
+        /* Botão de Doação Centralizado */
         #btnDoacaoCentral {
             background: var(--nubank);
             color: #ffffff;
@@ -64,6 +65,26 @@
             color: #ffffff;
             box-shadow: 0 6px 20px rgba(168, 36, 227, 0.6);
             transform: scale(1.05);
+        }
+
+        /* Botão de Login Inicial */
+        #btnAcessoRestrito {
+            background: #111;
+            color: var(--accent);
+            border: 2px solid var(--accent);
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(124, 252, 0, 0.2);
+        }
+
+        #btnAcessoRestrito:hover {
+            background: var(--accent);
+            color: var(--primary);
         }
 
         #contadorFotos {
@@ -95,25 +116,12 @@
         
         .btn-flutuante:hover { transform: translateY(-2px); }
 
-        #btnContribuir {
-            left: 20px;
-            background: #252525;
-            color: var(--accent);
-            border: 1px solid var(--accent);
-        }
+        #btnContribuir { left: 20px; background: #252525; color: var(--accent); border: 1px solid var(--accent); }
         #btnContribuir:hover { background: var(--accent); color: var(--primary); }
 
-        #btnAtualizacoes {
-            right: 20px;
-            background: var(--accent);
-            color: var(--primary);
-        }
+        #btnAtualizacoes { right: 20px; background: var(--accent); color: var(--primary); }
 
-        #searchContainer {
-            width: 100%;
-            max-width: 600px;
-            margin-bottom: 20px;
-        }
+        #searchContainer { width: 100%; max-width: 600px; margin-bottom: 20px; }
 
         #searchInput {
             width: 100%;
@@ -127,331 +135,110 @@
             transition: border-color 0.3s;
             box-sizing: border-box;
         }
-
         #searchInput:focus { outline: none; border-color: var(--accent); }
 
-        /* Estilos dos Filtros em Cascata */
+        /* Filtros */
         #filterContainer {
-            width: 100%;
-            max-width: 800px;
-            display: flex;
-            gap: 10px;
-            margin-bottom: 30px;
-            justify-content: center;
-            flex-wrap: wrap;
+            width: 100%; max-width: 800px; display: flex; gap: 10px; margin-bottom: 30px; justify-content: center; flex-wrap: wrap;
         }
 
         .select-filtro {
-            padding: 12px 15px;
-            border-radius: 8px;
-            background: #252525;
-            color: white;
-            border: 1px solid #444;
-            font-size: 0.95rem;
-            outline: none;
-            flex-grow: 1;
-            min-width: 150px;
-            cursor: pointer;
-            transition: border-color 0.2s;
+            padding: 12px 15px; border-radius: 8px; background: #252525; color: white; border: 1px solid #444; font-size: 0.95rem; outline: none; flex-grow: 1; min-width: 150px; cursor: pointer; transition: border-color 0.2s; box-sizing: border-box;
         }
-
         .select-filtro:focus { border-color: var(--accent); }
         .select-filtro:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        #btnLimparFiltros {
-            padding: 12px 20px;
-            border-radius: 8px;
-            background: #252525;
-            color: #ff4444;
-            border: 1px solid #ff4444;
-            font-size: 0.95rem;
-            font-weight: bold;
+        /* Estilos do Mostrar Senha */
+        .password-wrapper {
+            position: relative;
+            display: flex;
+            width: 100%;
+        }
+        .password-wrapper input {
+            width: 100%;
+            padding-right: 40px; /* Dá espaço para o botão do olho */
+            margin: 0;
+        }
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
             cursor: pointer;
-            transition: background 0.2s, color 0.2s;
+            background: none;
+            border: none;
+            color: #aaa;
+            font-size: 1.2rem;
+            padding: 0;
+            transition: color 0.2s;
         }
-        
-        #btnLimparFiltros:hover {
-            background: #ff4444;
-            color: white;
+        .toggle-password:hover { color: var(--accent); }
+
+        #btnLimparFiltros {
+            padding: 12px 20px; border-radius: 8px; background: #252525; color: #ff4444; border: 1px solid #ff4444; font-size: 0.95rem; font-weight: bold; cursor: pointer; transition: background 0.2s, color 0.2s;
         }
+        #btnLimparFiltros:hover { background: #ff4444; color: white; }
 
         #gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            gap: 20px;
-            width: 100%;
-            max-width: 1100px;
-            padding-bottom: 50px;
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; width: 100%; max-width: 1100px; padding-bottom: 50px;
         }
 
-        .thumbnail {
-            cursor: pointer;
-            border-radius: 8px;
-            overflow: hidden;
-            background: #222;
-            border: 1px solid #444;
-            animation: fadeIn 0.2s ease-in;
-            display: flex;
-            flex-direction: column;
-        }
-
+        .thumbnail { cursor: pointer; border-radius: 8px; overflow: hidden; background: #222; border: 1px solid #444; animation: fadeIn 0.2s ease-in; display: flex; flex-direction: column; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
         .thumbnail:hover { border-color: var(--accent); transform: translateY(-2px); transition: 0.2s; }
         .thumbnail img { width: 100%; height: 130px; object-fit: cover; display: block; }
-        
-        .thumb-text-container {
-            padding: 10px 8px;
-            text-align: center;
-            background: #222;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-        
-        .thumb-chassi {
-            font-size: 0.8rem;
-            font-weight: bold;
-            color: white;
-            word-break: break-all;
-            margin-bottom: 4px;
-        }
-        
-        .thumb-info {
-            font-size: 0.65rem;
-            color: #aaa;
-            word-break: break-word;
-        }
+        .thumb-text-container { padding: 10px 8px; text-align: center; background: #222; flex-grow: 1; display: flex; flex-direction: column; justify-content: center; }
+        .thumb-chassi { font-size: 0.8rem; font-weight: bold; color: white; word-break: break-all; margin-bottom: 4px; }
+        .thumb-info { font-size: 0.65rem; color: #aaa; word-break: break-word; }
 
         /* MODAIS GERAIS (Fundo) */
         .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); justify-content: center; align-items: center; z-index: 2000;
         }
 
-        /* MODAL DE IMAGEM ESPECÍFICO */
-        #modal {
-            background: rgba(0,0,0,0.95);
-            z-index: 1000;
-            overflow: hidden;
-        }
-
-        #imageContainer {
-            width: 100%; height: 100%;
-            display: flex; justify-content: center; align-items: center;
-            cursor: grab; position: relative;
-        }
-        
+        #modal { background: rgba(0,0,0,0.95); z-index: 1000; overflow: hidden; }
+        #imageContainer { width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; cursor: grab; position: relative; }
         #imageContainer:active { cursor: grabbing; }
+        #modalImg { max-width: 95%; max-height: 95%; transform-origin: center center; transition: transform 0.1s ease-out; user-select: none; pointer-events: none; }
 
-        #modalImg {
-            max-width: 95%; max-height: 95%;
-            transform-origin: center center;
-            transition: transform 0.1s ease-out;
-            user-select: none; pointer-events: none;
-        }
+        #closeBtn { position: absolute; top: 20px; right: 20px; background: var(--accent); color: var(--primary); border: none; font-size: 2rem; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; z-index: 1001; display: flex; justify-content: center; align-items: center; }
+        #modalTitleBot { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.85); padding: 12px 25px; border-radius: 12px; font-size: 0.9rem; pointer-events: none; border: 1px solid var(--accent); white-space: nowrap; z-index: 1002; text-align: center; }
+        #modalChassiDestaque { font-size: 1.2rem; font-weight: bold; color: white; margin-bottom: 5px; }
+        #modalInfoExtra { font-size: 0.8rem; color: #ccc; }
 
-        #closeBtn {
-            position: absolute; top: 20px; right: 20px;
-            background: var(--accent); color: var(--primary);
-            border: none; font-size: 2rem; width: 50px; height: 50px;
-            border-radius: 50%; cursor: pointer; z-index: 1001;
-            display: flex; justify-content: center; align-items: center;
-        }
-        
-        #modalTitleBot {
-            position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
-            background: rgba(0,0,0,0.85); padding: 12px 25px;
-            border-radius: 12px; font-size: 0.9rem; pointer-events: none;
-            border: 1px solid var(--accent); white-space: nowrap;
-            z-index: 1002;
-            text-align: center;
-        }
-
-        #modalChassiDestaque {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: white;
-            margin-bottom: 5px;
-        }
-
-        #modalInfoExtra {
-            font-size: 0.8rem;
-            color: #ccc;
-        }
-
-        .action-buttons {
-            position: absolute;
-            bottom: 70px;
-            right: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            z-index: 1001;
-        }
-
-        .btn-action {
-            background: #252525;
-            color: var(--accent);
-            border: 2px solid var(--accent);
-            padding: 10px 15px;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.2s;
-            font-size: 0.85rem;
-            text-align: center;
-        }
-        
+        .action-buttons { position: absolute; bottom: 70px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 1001; }
+        .btn-action { background: #252525; color: var(--accent); border: 2px solid var(--accent); padding: 10px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 0.85rem; text-align: center; width: 100%; box-sizing: border-box; }
         .btn-action:hover { background: var(--accent); color: var(--primary); }
-
-        #reportBtn {
-            border-color: #ff4444;
-            color: #ff4444;
-        }
+        #reportBtn { border-color: #ff4444; color: #ff4444; }
         #reportBtn:hover { background: #ff4444; color: white; }
 
-        /* BOX DOS MODAIS DE TEXTO */
-        .modal-box {
-            background: #1a1a1a;
-            width: 90%;
-            max-width: 600px;
-            max-height: 80vh;
-            border-radius: 12px;
-            border: 1px solid var(--accent);
-            padding: 25px;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.6);
-            position: relative;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #333;
-            padding-bottom: 15px;
-            margin-bottom: 15px;
-        }
-
+        /* BOX DOS MODAIS */
+        .modal-box { background: #1a1a1a; width: 90%; max-width: 600px; max-height: 80vh; border-radius: 12px; border: 1px solid var(--accent); padding: 25px; box-shadow: 0 15px 30px rgba(0,0,0,0.6); position: relative; display: flex; flex-direction: column; box-sizing: border-box; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding-bottom: 15px; margin-bottom: 15px; }
         .modal-header h3 { margin: 0; color: var(--text); }
-        
-        .fechar-modal-btn {
-            background: transparent;
-            color: var(--text);
-            border: none;
-            font-size: 1.8rem;
-            cursor: pointer;
-            line-height: 1;
-        }
+        .fechar-modal-btn { background: transparent; color: var(--text); border: none; font-size: 1.8rem; cursor: pointer; line-height: 1; }
 
-        .lista-scroll {
-            overflow-y: auto;
-            flex-grow: 1;
-            padding-right: 10px;
-        }
+        .lista-scroll { overflow-y: auto; flex-grow: 1; padding-right: 10px; }
         .lista-scroll::-webkit-scrollbar { width: 8px; }
         .lista-scroll::-webkit-scrollbar-track { background: #111; border-radius: 4px; }
         .lista-scroll::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 4px; }
-
         .dia-atualizacao { margin-bottom: 25px; }
-        .dia-atualizacao h4 {
-            color: var(--accent);
-            margin: 0 0 10px 0;
-            font-size: 1.1rem;
-            border-bottom: 1px dashed #333;
-            padding-bottom: 5px;
-        }
+        .dia-atualizacao h4 { color: var(--accent); margin: 0 0 10px 0; font-size: 1.1rem; border-bottom: 1px dashed #333; padding-bottom: 5px; }
         .dia-atualizacao ul { list-style: none; padding: 0; margin: 0; }
-        .dia-atualizacao li {
-            background: #252525;
-            padding: 10px 15px;
-            margin-bottom: 8px;
-            border-radius: 6px;
-            font-size: 0.85rem;
-        }
+        .dia-atualizacao li { background: #252525; padding: 10px 15px; margin-bottom: 8px; border-radius: 6px; font-size: 0.85rem; }
         .chassi-tag { color: white; font-weight: bold; font-size: 0.95rem; display: block; margin-bottom: 3px; }
         .info-tag { color: #aaa; }
 
-        /* Estilos Específicos da Doação (Nubank) */
-        .doacao-desc {
-            font-size: 0.95rem;
-            color: #ddd;
-            text-align: center;
-            line-height: 1.5;
-            margin-bottom: 20px;
-        }
-        
-        .valores-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr); /* 3 colunas no desktop */
-            gap: 15px;
-            margin-bottom: 15px;
-        }
+        /* Doação */
+        .doacao-desc { font-size: 0.95rem; color: #ddd; text-align: center; line-height: 1.5; margin-bottom: 20px; }
+        .valores-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 15px; }
+        .btn-valor { background: #252525; color: #ffffff; border: 2px solid var(--nubank); padding: 12px; border-radius: 10px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: all 0.2s; display: flex; justify-content: center; align-items: center; gap: 8px; }
+        .btn-valor:hover { background: var(--nubank); color: #ffffff; transform: scale(1.03); box-shadow: 0 4px 15px rgba(138, 5, 190, 0.4); }
 
-        .btn-valor {
-            background: #252525;
-            color: #ffffff;
-            border: 2px solid var(--nubank);
-            padding: 12px;
-            border-radius: 10px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-valor:hover {
-            background: var(--nubank);
-            color: #ffffff;
-            transform: scale(1.03);
-            box-shadow: 0 4px 15px rgba(138, 5, 190, 0.4);
-        }
-
-        /* Estilos do Terminal em Tempo Real */
-        #terminalBox {
-            font-family: 'Courier New', Courier, monospace;
-            text-align: left;
-            background: #0a0a0a;
-            padding: 15px;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            border: 1px solid #333;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
-            height: 220px;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        #terminalHeader {
-            color: #aaa;
-            margin-bottom: 10px;
-            padding-bottom: 10px;
-            border-bottom: 1px dashed #333;
-            flex-shrink: 0; 
-        }
-
-        #terminalLogs {
-            overflow-y: auto;
-            flex-grow: 1;
-            scroll-behavior: smooth;
-            padding-right: 5px;
-            color: var(--accent);
-        }
-
+        /* Terminal */
+        #terminalBox { font-family: 'Courier New', Courier, monospace; text-align: left; background: #0a0a0a; padding: 15px; border-radius: 8px; font-size: 0.85rem; border: 1px solid #333; box-shadow: inset 0 0 10px rgba(0,0,0,0.8); height: 220px; display: flex; flex-direction: column; }
+        #terminalHeader { color: #aaa; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px dashed #333; flex-shrink: 0; }
+        #terminalLogs { overflow-y: auto; flex-grow: 1; scroll-behavior: smooth; padding-right: 5px; color: var(--accent); }
         #terminalLogs::-webkit-scrollbar { width: 6px; }
         #terminalLogs::-webkit-scrollbar-track { background: #111; border-radius: 4px; }
         #terminalLogs::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
@@ -461,34 +248,18 @@
             body { padding-top: 110px; } 
             h2 { font-size: 1.1rem; margin-bottom: 15px; }
             #contadorFotos { font-size: 0.9rem; padding: 6px 15px; margin-bottom: 20px; }
-            
             .btn-flutuante { font-size: 0.70rem; padding: 8px 10px; }
             #btnContribuir { top: 10px; left: 10px; }
             #btnAtualizacoes { top: 10px; right: 10px; }
-            
             #btnDoacaoCentral { font-size: 0.85rem; padding: 10px 15px; text-align: center; }
-
             #filterContainer { gap: 8px; }
             .select-filtro, #btnLimparFiltros { padding: 10px; font-size: 0.85rem; flex: 1 1 45%; min-width: 130px; }
-            
-            .valores-grid { grid-template-columns: 1fr 1fr; } /* 2 colunas no celular */
-
+            .valores-grid { grid-template-columns: 1fr 1fr; }
             #gallery { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
-
-            .action-buttons {
-                bottom: 80px;
-                right: 0;
-                width: 100%;
-                flex-direction: row;
-                flex-wrap: wrap;
-                justify-content: center;
-                padding: 0 10px;
-                box-sizing: border-box;
-            }
+            .action-buttons { bottom: 80px; right: 0; width: 100%; flex-direction: row; flex-wrap: wrap; justify-content: center; padding: 0 10px; box-sizing: border-box; }
             .btn-action { flex: 1 1 45%; font-size: 0.75rem; padding: 12px 5px; }
             #modalTitleBot { bottom: 25px; width: 85%; white-space: normal; padding: 8px 15px; }
             #modalChassiDestaque { font-size: 1rem; }
-            #modalInfoExtra { font-size: 0.75rem; }
             #terminalBox { font-size: 0.75rem; height: 180px; }
         }
     </style>
@@ -504,37 +275,39 @@
         Desenvolvido por Thiago Lins
     </div>
 
-    <!-- Botão de Doação com Cores Nubank -->
+    <!-- Botão de Doação -->
     <button id="btnDoacaoCentral" onclick="abrirModalDoacao()">
         🤝 Mantenha este sistema no ar (Saiba como apoiar)
     </button>
 
-    <div id="contadorFotos">📸 Carregando padrões...</div>
+    <!-- Botão Principal de Login (Exibido para usuários deslogados ou pendentes) -->
+    <button id="btnAcessoRestrito" onclick="abrirModalAuth()">
+        🔒 Acessar Ferramentas Restritas
+    </button>
 
-    <div id="searchContainer">
-        <input type="text" id="searchInput" placeholder="Digite a sequência (ex: 9BD...)" autofocus autocomplete="off">
+    <!-- ÁREA RESTRITA: Oculta por padrão. Só aparece se o usuário for APROVADO -->
+    <div id="areaRestrita" style="display: none; width: 100%; flex-direction: column; align-items: center;">
+        
+        <div id="contadorFotos">📸 Carregando padrões...</div>
+
+        <div id="searchContainer">
+            <input type="text" id="searchInput" placeholder="Digite a sequência (ex: 9BD...)" autocomplete="off">
+        </div>
+
+        <div id="filterContainer">
+            <select id="selectMarca" class="select-filtro"><option value="">Todas as Marcas</option></select>
+            <select id="selectModelo" class="select-filtro" disabled><option value="">Todos os Modelos</option></select>
+            <select id="selectAno" class="select-filtro" disabled><option value="">Todos os Anos</option></select>
+            <button id="btnLimparFiltros" onclick="limparFiltros()">Limpar Filtros</button>
+        </div>
+
+        <div id="gallery"></div>
+
+        <!-- Botão de Sair -->
+        <button class="btn-action" style="margin-top: 30px; max-width: 300px; border-color: #ff4444; color: #ff4444;" onclick="fazerLogout()">Sair da Ferramenta Restrita</button>
     </div>
 
-    <!-- Container de Filtros em Cascata -->
-    <div id="filterContainer">
-        <select id="selectMarca" class="select-filtro">
-            <option value="">Todas as Marcas</option>
-        </select>
-        
-        <select id="selectModelo" class="select-filtro" disabled>
-            <option value="">Todos os Modelos</option>
-        </select>
-        
-        <select id="selectAno" class="select-filtro" disabled>
-            <option value="">Todos os Anos</option>
-        </select>
-        
-        <button id="btnLimparFiltros" onclick="limparFiltros()">Limpar Filtros</button>
-    </div>
-
-    <div id="gallery"></div>
-
-    <!-- SEÇÃO DE REGISTRO DE ACESSO -->
+    <!-- SEÇÃO DE REGISTRO DE ACESSO (Pública) -->
     <div style="width: 100%; max-width: 800px; margin-top: 50px; padding-top: 30px; border-top: 1px solid #333; text-align: center; display: flex; flex-direction: column; align-items: center;">
         <h3 id="tituloTerminal" style="color: var(--accent); margin-bottom: 15px; font-size: 1.1rem; user-select: none; cursor: default;">📡 Terminal de Acessos Globais (Ao Vivo)</h3>
         <div style="width: 100%; max-width: 700px;">
@@ -549,7 +322,65 @@
     </div>
     <br><br>
 
-    <!-- MODAL PRINCIPAL DA IMAGEM -->
+    <!-- MODAIS DE AUTENTICAÇÃO (LOGIN / CADASTRO) -->
+    <div id="modalAuth" class="modal-overlay">
+        <div class="modal-box" style="max-width: 400px; text-align: center;">
+            <div class="modal-header" style="justify-content: center; position: relative;">
+                <h3 id="authTitle" style="color: var(--accent);">🔒 Acesso Restrito</h3>
+                <button class="fechar-modal-btn" onclick="fecharModalAuth()" style="position: absolute; right: 0;">×</button>
+            </div>
+            
+            <!-- Formulário de Login -->
+            <div id="formLogin" style="display:flex; flex-direction: column; gap: 15px;">
+                <input type="email" id="loginEmail" class="select-filtro" placeholder="E-mail">
+                
+                <div class="password-wrapper">
+                    <input type="password" id="loginSenha" class="select-filtro" placeholder="Senha">
+                    <button class="toggle-password" onclick="toggleVisibility('loginSenha')">👁️</button>
+                </div>
+                
+                <button class="btn-action" onclick="fazerLogin()">Entrar</button>
+                <p style="font-size: 0.85rem; color: #ccc; cursor:pointer; text-decoration: underline;" onclick="toggleAuthMode()">Não tem conta? Solicitar acesso</p>
+            </div>
+
+            <!-- Formulário de Cadastro Atualizado com Instituição e Confirmação -->
+            <div id="formCadastro" style="display:none; flex-direction: column; gap: 15px;">
+                <input type="text" id="cadNome" class="select-filtro" placeholder="Seu Nome / Matrícula">
+                <input type="text" id="cadInstituicao" class="select-filtro" placeholder="Instituição a qual pertence (Ex: STTP, PRF, PM)">
+                <input type="email" id="cadEmail" class="select-filtro" placeholder="E-mail válido">
+                
+                <div class="password-wrapper">
+                    <input type="password" id="cadSenha" class="select-filtro" placeholder="Crie uma Senha (mín. 6 letras)">
+                    <button class="toggle-password" onclick="toggleVisibility('cadSenha')">👁️</button>
+                </div>
+
+                <div class="password-wrapper">
+                    <input type="password" id="cadSenhaConfirma" class="select-filtro" placeholder="Confirme a Senha">
+                    <button class="toggle-password" onclick="toggleVisibility('cadSenhaConfirma')">👁️</button>
+                </div>
+                
+                <button class="btn-action" onclick="fazerCadastro()">Enviar Solicitação</button>
+                <p style="font-size: 0.85rem; color: #ccc; cursor:pointer; text-decoration: underline;" onclick="toggleAuthMode()">Já tem conta? Fazer Login</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE ESPERA (PENDENTE) -->
+    <div id="modalPendente" class="modal-overlay">
+        <div class="modal-box" style="max-width: 400px; text-align: center;">
+            <div class="modal-header" style="justify-content: center; position: relative; border-color: #ffaa00;">
+                <h3 style="color: #ffaa00;">⏳ Cadastro em Análise</h3>
+                <button class="fechar-modal-btn" onclick="fecharModalPendente()" style="position: absolute; right: 0;">×</button>
+            </div>
+            <p style="color: #ccc; font-size: 0.95rem; line-height: 1.5;">
+                Sua conta foi criada com sucesso, mas o acesso às ferramentas de inteligência requer validação de segurança.<br><br>
+                Aguarde a liberação do Administrador.
+            </p>
+            <button class="btn-action" style="margin-top: 20px; border-color: #ff4444; color: #ff4444;" onclick="fazerLogout()">Sair da Conta</button>
+        </div>
+    </div>
+
+    <!-- OUTROS MODAIS (IMAGEM, ATUALIZAÇÕES E DOAÇÕES MANTIDOS INTACTOS) -->
     <div id="modal" class="modal-overlay">
         <button id="closeBtn" onclick="closeModal()">×</button>
         <div id="imageContainer">
@@ -567,7 +398,6 @@
         </div>
     </div>
 
-    <!-- MODAL DE ATUALIZAÇÕES -->
     <div id="modalAtualizacoes" class="modal-overlay">
         <div class="modal-box">
             <div class="modal-header">
@@ -578,19 +408,16 @@
         </div>
     </div>
 
-    <!-- MODAL DE DOAÇÃO -->
     <div id="modalDoacao" class="modal-overlay">
         <div class="modal-box" style="max-width: 500px;">
             <div class="modal-header" style="justify-content: center; position: relative; border-color: var(--nubank);">
                 <h3 style="color: var(--accent);">🛡️ Apoie o Desenvolvimento</h3>
                 <button class="fechar-modal-btn" onclick="fecharModalDoacao()" style="position: absolute; right: 0;">×</button>
             </div>
-            
             <p class="doacao-desc">
                 Companheiro de missão, este sistema nasceu nas ruas e para as ruas. Ele é mantido de forma 100% independente, com recursos próprios e muitas madrugadas de trabalho, sempre com o objetivo de dar mais segurança e agilidade às nossas abordagens.<br><br>
                 Se esta ferramenta já te ajudou em campo, considere retribuir! Qualquer contribuição é fundamental para cobrir os custos do servidor e me motiva a continuar criando novas funcionalidades para todos nós. Tamo junto! 👊🚓
             </p>
-            
             <div class="valores-grid">
                 <button class="btn-valor" onclick="window.open('https://nubank.com.br/cobrar/vxfnx/6a6b548b-5dfa-41f6-bc15-7fb60bb15fcb', '_blank')">R$ 1,00</button>
                 <button class="btn-valor" onclick="window.open('https://nubank.com.br/cobrar/vxfnx/6a6b549c-7e14-4ed7-96ef-6c798ac45cdd', '_blank')">R$ 2,00</button>
@@ -599,7 +426,6 @@
                 <button class="btn-valor" onclick="window.open('https://nubank.com.br/cobrar/vxfnx/6a68cb97-9597-443f-8f36-310a693a2da1', '_blank')">R$ 15,00</button>
                 <button class="btn-valor" onclick="window.open('https://nubank.com.br/cobrar/vxfnx/6a68cba9-b3e2-498e-b804-0245b96c79dc', '_blank')">R$ 50,00</button>
             </div>
-            
             <p style="font-size: 0.75rem; color: #888; text-align: center; margin-top: 10px;">
                 * O link abrirá a página segura do Nubank exibindo o QR Code e a chave Copia e Cola.
             </p>
@@ -609,7 +435,9 @@
     <canvas id="conversionCanvas" style="display:none;"></canvas>
 
     <script>
-        // LISTA DE ARQUIVOS
+        // =========================================================================
+        // ATENÇÃO: COLE A SUA LISTA DE IMAGENS COMPLETA LOGO ABAIXO!
+        // =========================================================================
         const imagens = [
         {
                 "arquivo": "10DBSS0019449_Peugeot_207Passion XR S_2009.jpg",
@@ -6687,10 +6515,8 @@
                 "timestamp": 1785769422.9504845
         }
 ];
+        // =========================================================================
 
-        // =========================================================================
-        // CONFIGURAÇÃO DO FIREBASE
-        // =========================================================================
         const firebaseConfig = {
             apiKey: "AIzaSyBz17SeMmDiS0Xaxid62sU7E2qgIXdfqH0",
             authDomain: "nief-idv-acessos.firebaseapp.com",
@@ -6701,15 +6527,58 @@
             appId: "1:62938610049:web:653ea195c4d3afd576d080"
         };
 
-        let database, acessosRef;
+        let database, acessosRef, auth;
         const terminalLogs = document.getElementById('terminalLogs');
         const gpsStatus = document.getElementById('gpsStatus');
+        
+        // Elementos de Autenticação
+        const btnAcessoRestrito = document.getElementById('btnAcessoRestrito');
+        const areaRestrita = document.getElementById('areaRestrita');
+        const modalAuth = document.getElementById('modalAuth');
+        const formLogin = document.getElementById('formLogin');
+        const formCadastro = document.getElementById('formCadastro');
+        const modalPendente = document.getElementById('modalPendente');
 
         try {
             firebase.initializeApp(firebaseConfig);
             database = firebase.database();
+            auth = firebase.auth(); // Inicia a Autenticação
             acessosRef = database.ref('acessos');
 
+            // Monitor de Status de Login em Tempo Real
+            auth.onAuthStateChanged(user => {
+                if (user) {
+                    // Se estiver logado, checa se foi aprovado pelo Admin no banco de dados
+                    database.ref('usuarios/' + user.uid).once('value').then(snapshot => {
+                        const userData = snapshot.val();
+                        if (userData && userData.status === 'aprovado') {
+                            // APROVADO! Mostra o sistema e esconde botões e modais de login
+                            btnAcessoRestrito.style.display = 'none';
+                            areaRestrita.style.display = 'flex';
+                            modalAuth.style.display = 'none';
+                            modalPendente.style.display = 'none';
+                            
+                            // Inicia a Galeria só quando aprovado
+                            initFiltros();
+                            renderGallery();
+                        } else {
+                            // PENDENTE! Mostra a tela de espera e esconde o sistema
+                            btnAcessoRestrito.style.display = 'none';
+                            areaRestrita.style.display = 'none';
+                            modalAuth.style.display = 'none';
+                            modalPendente.style.display = 'flex';
+                        }
+                    });
+                } else {
+                    // DESLOGADO! Mostra o botão inicial, esconde tudo do sistema
+                    btnAcessoRestrito.style.display = 'block';
+                    areaRestrita.style.display = 'none';
+                    modalAuth.style.display = 'none';
+                    modalPendente.style.display = 'none';
+                }
+            });
+
+            // Lógica do Terminal Global
             acessosRef.orderByChild('timestamp').limitToLast(20).on('child_added', (snapshot) => {
                 const acesso = snapshot.val();
                 const dataObjeto = new Date(acesso.timestamp || Date.now());
@@ -6730,7 +6599,89 @@
         }
 
         // =========================================================================
-        // EXTRAÇÃO SECRETA DO RELATÓRIO PARA EXCEL (Botão Oculto)
+        // FUNÇÕES DE AUTENTICAÇÃO
+        // =========================================================================
+        function abrirModalAuth() { modalAuth.style.display = 'flex'; }
+        function fecharModalAuth() { modalAuth.style.display = 'none'; }
+        function fecharModalPendente() { modalPendente.style.display = 'none'; }
+
+        function toggleAuthMode() {
+            if (formLogin.style.display === 'none') {
+                formLogin.style.display = 'flex';
+                formCadastro.style.display = 'none';
+            } else {
+                formLogin.style.display = 'none';
+                formCadastro.style.display = 'flex';
+            }
+        }
+
+        // Função para mostrar/ocultar senha no formulário
+        function toggleVisibility(id) {
+            const input = document.getElementById(id);
+            if (input.type === "password") {
+                input.type = "text";
+            } else {
+                input.type = "password";
+            }
+        }
+
+        function fazerCadastro() {
+            const nome = document.getElementById('cadNome').value;
+            const instituicao = document.getElementById('cadInstituicao').value;
+            const email = document.getElementById('cadEmail').value;
+            const senha = document.getElementById('cadSenha').value;
+            const senhaConfirma = document.getElementById('cadSenhaConfirma').value;
+
+            if(!nome || !instituicao || !email || !senha || !senhaConfirma) {
+                alert("Preencha todos os campos!");
+                return;
+            }
+
+            if(senha !== senhaConfirma) {
+                alert("As senhas digitadas não coincidem. Tente novamente.");
+                return;
+            }
+
+            auth.createUserWithEmailAndPassword(email, senha).then(credenciais => {
+                // Ao criar a conta no Auth, grava os dados extras como PENDENTE no Banco de Dados
+                database.ref('usuarios/' + credenciais.user.uid).set({
+                    nome: nome,
+                    instituicao: instituicao,
+                    email: email,
+                    status: 'pendente'
+                });
+                alert("Solicitação enviada com sucesso! Aguarde a liberação do Administrador.");
+            }).catch(erro => {
+                if (erro.code === 'auth/email-already-in-use') alert("Este e-mail já está cadastrado.");
+                else if (erro.code === 'auth/weak-password') alert("A senha deve ter pelo menos 6 caracteres.");
+                else alert("Erro: " + erro.message);
+            });
+        }
+
+        function fazerLogin() {
+            const email = document.getElementById('loginEmail').value;
+            const senha = document.getElementById('loginSenha').value;
+
+            if(!email || !senha) {
+                alert("Preencha e-mail e senha!");
+                return;
+            }
+
+            auth.signInWithEmailAndPassword(email, senha).catch(erro => {
+                if (erro.code === 'auth/user-not-found' || erro.code === 'auth/wrong-password') alert("E-mail ou senha incorretos.");
+                else alert("Erro: " + erro.message);
+            });
+        }
+
+        function fazerLogout() {
+            auth.signOut().then(() => {
+                // A página recarregará para limpar a galeria de forma segura
+                window.location.reload(); 
+            });
+        }
+
+        // =========================================================================
+        // EXTRAÇÃO SECRETA DO RELATÓRIO PARA EXCEL
         // =========================================================================
         const tituloTerminal = document.getElementById('tituloTerminal');
         if (tituloTerminal) {
@@ -6738,23 +6689,15 @@
                 try {
                     const snapshot = await acessosRef.once('value');
                     const data = snapshot.val();
-                    
-                    if (!data) {
-                        alert("Nenhum acesso registrado no banco de dados ainda.");
-                        return;
-                    }
+                    if (!data) { alert("Nenhum acesso registrado no banco de dados ainda."); return; }
 
                     let csvContent = "Data;Hora;Cidade;Estado\n";
                     const registros = Object.values(data);
-                    
                     registros.sort((a, b) => b.timestamp - a.timestamp);
 
                     registros.forEach(registro => {
                         const cid = registro.cidade ? registro.cidade.toUpperCase() : "DESCONHECIDA";
-                        
-                        if (cid.includes("CAMPINA GRANDE")) {
-                            return; 
-                        }
+                        if (cid.includes("CAMPINA GRANDE")) return; 
 
                         const est = registro.estado ? registro.estado.toUpperCase() : "DESCONHECIDO";
                         const dataObjeto = new Date(registro.timestamp || Date.now());
@@ -6768,22 +6711,16 @@
                     const url = URL.createObjectURL(blob);
                     const link = document.createElement("a");
                     link.setAttribute("href", url);
-                    
-                    const nomeArquivo = `Relatorio_Acessos_${new Date().toLocaleDateString('pt-BR').replace(/\//g, '-')}.csv`;
-                    link.setAttribute("download", nomeArquivo);
-                    
+                    link.setAttribute("download", `Relatorio_Acessos_${new Date().toLocaleDateString('pt-BR').replace(/\//g, '-')}.csv`);
                     document.body.appendChild(link);
                     link.click();
                     document.body.removeChild(link);
-                    
-                } catch (err) {
-                    alert("Erro ao extrair o relatório. Verifique sua conexão com o Firebase.");
-                }
+                } catch (err) { alert("Erro ao extrair o relatório."); }
             });
         }
 
         // =========================================================================
-        // LÓGICA DE GEOLOCALIZAÇÃO HÍBRIDA
+        // GEOLOCALIZAÇÃO
         // =========================================================================
         async function obterLocalizacaoViaIP() {
             try {
@@ -6798,31 +6735,16 @@
 
         function obterLocalizacaoViaGPS() {
             return new Promise((resolve, reject) => {
-                if (!navigator.geolocation) {
-                    reject("Navegador não suporta GPS.");
-                    return;
-                }
-                
+                if (!navigator.geolocation) { reject("Sem suporte"); return; }
                 navigator.geolocation.getCurrentPosition(
                     async (position) => {
-                        const lat = position.coords.latitude;
-                        const lon = position.coords.longitude;
-                        
                         try {
-                            const res = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=pt`);
+                            const res = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${position.coords.latitude}&longitude=${position.coords.longitude}&localityLanguage=pt`);
                             const data = await res.json();
-                            
-                            resolve({
-                                cidade: data.city || data.locality || "Cidade não identificada",
-                                estado: data.principalSubdivision || "Estado não identificado"
-                            });
-                        } catch (e) {
-                            reject("Falha na conversão das coordenadas.");
-                        }
+                            resolve({ cidade: data.city || data.locality || "N/A", estado: data.principalSubdivision || "N/A" });
+                        } catch (e) { reject("Falha API GPS"); }
                     },
-                    (error) => {
-                        reject("Usuário bloqueou o GPS ou erro de sinal.");
-                    },
+                    (error) => { reject("Bloqueado"); },
                     { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 }
                 );
             });
@@ -6830,54 +6752,39 @@
 
         async function registrarMeuAcessoGlobal() {
             let localizacao;
-            
             try {
                 localizacao = await obterLocalizacaoViaGPS();
                 if(gpsStatus) gpsStatus.innerHTML = "> Status: <span style='color: var(--accent);'>Sessão Ativa e Sincronizada</span>";
             } catch (error) {
                 if(gpsStatus) gpsStatus.innerHTML = "> Status: <span style='color: #ffaa00;'>Sessão Ativa (Rastreio via IP)</span>";
                 const aviso = document.createElement('div');
-                aviso.innerHTML = `<span style="color: #ffaa00; margin-bottom: 10px; display: block;">> [AVISO] GPS bloqueado ou falhou. Iniciando rastreio por IP...</span>`;
+                aviso.innerHTML = `<span style="color: #ffaa00; margin-bottom: 10px; display: block;">> [AVISO] GPS bloqueado ou falhou. Rastreio por IP...</span>`;
                 terminalLogs.prepend(aviso);
                 localizacao = await obterLocalizacaoViaIP();
             }
-
-            if (acessosRef) {
-                acessosRef.push({
-                    cidade: localizacao.cidade,
-                    estado: localizacao.estado,
-                    timestamp: firebase.database.ServerValue.TIMESTAMP
-                });
-            }
+            if (acessosRef) acessosRef.push({ cidade: localizacao.cidade, estado: localizacao.estado, timestamp: firebase.database.ServerValue.TIMESTAMP });
         }
 
+        document.addEventListener("DOMContentLoaded", () => {
+            const contadorFotos = document.getElementById('contadorFotos');
+            if (contadorFotos) contadorFotos.innerText = `📸 Total de Padrões Cadastrados: ${imagens.length}`;
+            registrarMeuAcessoGlobal();
+        });
+
         // =========================================================================
-        // LÓGICA DE FILTROS CASCATA
+        // LÓGICA DA GALERIA E FILTROS (Mantido Perfeito)
         // =========================================================================
         const gallery = document.getElementById('gallery');
         const searchInput = document.getElementById('searchInput');
-        
         const selectMarca = document.getElementById('selectMarca');
         const selectModelo = document.getElementById('selectModelo');
         const selectAno = document.getElementById('selectAno');
-
-        const modal = document.getElementById('modal');
-        const modalImg = document.getElementById('modalImg');
-        const imageContainer = document.getElementById('imageContainer');
-        const modalChassiDestaque = document.getElementById('modalChassiDestaque');
-        const modalInfoExtra = document.getElementById('modalInfoExtra');
-        const shareBtn = document.getElementById('shareBtn');
-        const canvas = document.getElementById('conversionCanvas');
-
-        let scale = 1, panningX = 0, panningY = 0, startX = 0, startY = 0, isDragging = false;
+        
         let currentFilteredList = [];
         let currentImageIndex = -1;
 
         function normalizar(texto) { return texto.toString().toLowerCase().replace(/[^a-z0-9]/g, ''); }
-
-        function padronizarChave(texto) {
-            return texto ? texto.toString().replace(/\s+/g, '').toUpperCase() : '';
-        }
+        function padronizarChave(texto) { return texto ? texto.toString().replace(/\s+/g, '').toUpperCase() : ''; }
 
         function initFiltros() {
             const marcasMap = new Map();
@@ -6887,287 +6794,166 @@
                     if (!marcasMap.has(key)) marcasMap.set(key, img.marca.trim().toUpperCase());
                 }
             });
-
             selectMarca.innerHTML = '<option value="">Todas as Marcas</option>';
             Array.from(marcasMap.entries()).sort((a,b) => a[1].localeCompare(b[1])).forEach(([key, label]) => {
-                const opt = document.createElement('option');
-                opt.value = key;
-                opt.innerText = label;
-                selectMarca.appendChild(opt);
+                const opt = document.createElement('option'); opt.value = key; opt.innerText = label; selectMarca.appendChild(opt);
             });
         }
 
         selectMarca.addEventListener('change', () => {
-            const marcaEscolhida = selectMarca.value; 
-
             selectModelo.innerHTML = '<option value="">Todos os Modelos</option>';
             selectAno.innerHTML = '<option value="">Todos os Anos</option>';
             selectAno.disabled = true;
-
-            if (marcaEscolhida) {
+            if (selectMarca.value) {
                 selectModelo.disabled = false;
                 const modelosMap = new Map();
                 imagens.forEach(img => {
-                    if (padronizarChave(img.marca) === marcaEscolhida && img.modelo && img.modelo.trim() !== '') {
+                    if (padronizarChave(img.marca) === selectMarca.value && img.modelo && img.modelo.trim() !== '') {
                         const key = padronizarChave(img.modelo);
                         if (!modelosMap.has(key)) modelosMap.set(key, img.modelo.trim().toUpperCase());
                     }
                 });
-
                 Array.from(modelosMap.entries()).sort((a,b) => a[1].localeCompare(b[1])).forEach(([key, label]) => {
-                    const opt = document.createElement('option');
-                    opt.value = key;
-                    opt.innerText = label;
-                    selectModelo.appendChild(opt);
+                    const opt = document.createElement('option'); opt.value = key; opt.innerText = label; selectModelo.appendChild(opt);
                 });
-            } else {
-                selectModelo.disabled = true;
-            }
+            } else { selectModelo.disabled = true; }
             renderGallery();
         });
 
         selectModelo.addEventListener('change', () => {
-            const marcaEscolhida = selectMarca.value;
-            const modeloEscolhido = selectModelo.value;
-            
             selectAno.innerHTML = '<option value="">Todos os Anos</option>';
-
-            if (modeloEscolhido) {
+            if (selectModelo.value) {
                 selectAno.disabled = false;
                 const anosMap = new Map();
                 imagens.forEach(img => {
-                    if (padronizarChave(img.marca) === marcaEscolhida && padronizarChave(img.modelo) === modeloEscolhido && img.ano && img.ano.toString().trim() !== '') {
+                    if (padronizarChave(img.marca) === selectMarca.value && padronizarChave(img.modelo) === selectModelo.value && img.ano && img.ano.toString().trim() !== '') {
                         const key = padronizarChave(img.ano);
                         if (!anosMap.has(key)) anosMap.set(key, img.ano.toString().trim().toUpperCase());
                     }
                 });
-
                 Array.from(anosMap.entries()).sort((a,b) => a[1].localeCompare(b[1])).forEach(([key, label]) => {
-                    const opt = document.createElement('option');
-                    opt.value = key;
-                    opt.innerText = label;
-                    selectAno.appendChild(opt);
+                    const opt = document.createElement('option'); opt.value = key; opt.innerText = label; selectAno.appendChild(opt);
                 });
-            } else {
-                selectAno.disabled = true;
-            }
+            } else { selectAno.disabled = true; }
             renderGallery();
         });
 
         selectAno.addEventListener('change', () => renderGallery());
 
         function limparFiltros() {
-            searchInput.value = "";
-            selectMarca.value = "";
-            selectModelo.innerHTML = '<option value="">Todos os Modelos</option>';
-            selectAno.innerHTML = '<option value="">Todos os Anos</option>';
-            selectModelo.disabled = true;
-            selectAno.disabled = true;
+            searchInput.value = ""; selectMarca.value = ""; selectModelo.innerHTML = '<option value="">Todos os Modelos</option>';
+            selectAno.innerHTML = '<option value="">Todos os Anos</option>'; selectModelo.disabled = true; selectAno.disabled = true;
             renderGallery();
         }
 
         function renderGallery() {
             gallery.innerHTML = "";
-            
-            const filtroChassi = normalizar(searchInput.value);
-            const filtroMarca = selectMarca.value;
-            const filtroModelo = selectModelo.value;
-            const filtroAno = selectAno.value;
-
-            if (filtroChassi === "" && filtroMarca === "" && filtroModelo === "" && filtroAno === "") {
-                currentFilteredList = [];
-                return;
-            }
+            const filtroChassi = normalizar(searchInput.value), filtroMarca = selectMarca.value, filtroModelo = selectModelo.value, filtroAno = selectAno.value;
+            if (filtroChassi === "" && filtroMarca === "" && filtroModelo === "" && filtroAno === "") { currentFilteredList = []; return; }
 
             currentFilteredList = imagens.filter(img => {
-                let passaFiltro = true;
-                
-                if (filtroChassi) { passaFiltro = passaFiltro && normalizar(img.chassi).startsWith(filtroChassi); }
-                if (filtroMarca) { passaFiltro = passaFiltro && padronizarChave(img.marca) === filtroMarca; }
-                if (filtroModelo) { passaFiltro = passaFiltro && padronizarChave(img.modelo) === filtroModelo; }
-                if (filtroAno) { passaFiltro = passaFiltro && padronizarChave(img.ano) === filtroAno; }
-                
-                return passaFiltro;
+                let passa = true;
+                if (filtroChassi) passa = passa && normalizar(img.chassi).startsWith(filtroChassi);
+                if (filtroMarca) passa = passa && padronizarChave(img.marca) === filtroMarca;
+                if (filtroModelo) passa = passa && padronizarChave(img.modelo) === filtroModelo;
+                if (filtroAno) passa = passa && padronizarChave(img.ano) === filtroAno;
+                return passa;
             });
             
             currentFilteredList.forEach(img => {
-                const div = document.createElement('div');
-                div.className = 'thumbnail';
-                div.onclick = () => openModal(img);
-                
+                const div = document.createElement('div'); div.className = 'thumbnail'; div.onclick = () => openModal(img);
                 let textoExtras = (img.marca && img.marca !== "") ? `${img.marca.toUpperCase()} / ${img.modelo.toUpperCase()} / ${img.ano.toUpperCase()}` : "Informação não cadastrada";
                 div.innerHTML = `<img src="${img.arquivo}" loading="lazy"><div class="thumb-text-container"><div class="thumb-chassi">${img.chassi}</div><div class="thumb-info">${textoExtras}</div></div>`;
                 gallery.appendChild(div);
             });
         }
-
         searchInput.addEventListener('input', () => renderGallery());
 
-        document.addEventListener("DOMContentLoaded", () => {
-            const contadorFotos = document.getElementById('contadorFotos');
-            if (contadorFotos) {
-                contadorFotos.innerText = `📸 Total de Padrões Cadastrados: ${imagens.length}`;
-            }
-            initFiltros();
-            registrarMeuAcessoGlobal();
-        });
+        // =========================================================================
+        // MODAIS GERAIS, ZOOM E BOTÕES (Mantidos Perfeitos)
+        // =========================================================================
+        const modal = document.getElementById('modal');
+        const modalImg = document.getElementById('modalImg');
+        const imageContainer = document.getElementById('imageContainer');
+        const modalChassiDestaque = document.getElementById('modalChassiDestaque');
+        const modalInfoExtra = document.getElementById('modalInfoExtra');
+        const shareBtn = document.getElementById('shareBtn');
+        const canvas = document.getElementById('conversionCanvas');
+        let scale = 1, panningX = 0, panningY = 0, startX = 0, startY = 0, isDragging = false;
 
-        // =========================================================================
-        // FUNÇÕES DO MODAL E BOTÕES
-        // =========================================================================
         function openModal(imgObj) {
             currentImageIndex = currentFilteredList.findIndex(i => i.arquivo === imgObj.arquivo);
-            updateModalImage(imgObj);
-            modal.style.display = 'flex';
-        }
-
-        function updateModalImage(imgObj) {
-            modalImg.src = imgObj.arquivo;
-            modalChassiDestaque.innerText = imgObj.chassi;
+            modalImg.src = imgObj.arquivo; modalChassiDestaque.innerText = imgObj.chassi;
             modalInfoExtra.innerText = (imgObj.marca && imgObj.marca !== "") ? `${imgObj.marca} | ${imgObj.modelo} | ${imgObj.ano}` : "Informação não cadastrada";
-            scale = 1; panningX = 0; panningY = 0;
-            updateTransform();
+            scale = 1; panningX = 0; panningY = 0; updateTransform(); modal.style.display = 'flex';
         }
-
         function closeModal() { modal.style.display = 'none'; }
-
         function navigateModal(direction) {
             if (currentFilteredList.length <= 1) return;
             currentImageIndex = (currentImageIndex + direction + currentFilteredList.length) % currentFilteredList.length;
-            updateModalImage(currentFilteredList[currentImageIndex]);
+            const imgObj = currentFilteredList[currentImageIndex];
+            modalImg.src = imgObj.arquivo; modalChassiDestaque.innerText = imgObj.chassi;
+            modalInfoExtra.innerText = (imgObj.marca && imgObj.marca !== "") ? `${imgObj.marca} | ${imgObj.modelo} | ${imgObj.ano}` : "Informação não cadastrada";
+            scale = 1; panningX = 0; panningY = 0; updateTransform();
         }
 
         async function shareImage() {
             const originalText = shareBtn.innerText;
             try {
-                const ctx = canvas.getContext('2d');
-                canvas.width = modalImg.naturalWidth;
-                canvas.height = modalImg.naturalHeight;
-                ctx.drawImage(modalImg, 0, 0);
-
+                const ctx = canvas.getContext('2d'); canvas.width = modalImg.naturalWidth; canvas.height = modalImg.naturalHeight; ctx.drawImage(modalImg, 0, 0);
                 canvas.toBlob(async (blob) => {
-                    try {
-                        await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
-                        shareBtn.innerText = "Copiado!";
-                        setTimeout(() => shareBtn.innerText = originalText, 2000);
+                    try { await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]); shareBtn.innerText = "Copiado!"; setTimeout(() => shareBtn.innerText = originalText, 2000);
                     } catch (e) { alert("Erro de Segurança: O navegador só permite copiar se o site usar HTTPS."); }
                 }, 'image/png');
-            } catch (err) { alert("Não foi possível processar a imagem."); }
+            } catch (err) { alert("Erro na imagem."); }
         }
-
-        function downloadImage() {
-            const link = document.createElement('a');
-            link.href = modalImg.src;
-            link.download = modalChassiDestaque.innerText + ".jpg";
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        async function copyNumber() {
-            const btn = document.getElementById('copyNumberBtn');
-            const originalText = btn.innerText;
-            try {
-                await navigator.clipboard.writeText(modalChassiDestaque.innerText);
-                btn.innerText = "Copiado!";
-                setTimeout(() => btn.innerText = originalText, 2000);
-            } catch (e) { alert("Erro ao copiar a numeração."); }
-        }
-
-        function reportarInconsistencia() {
-            const chassi = modalChassiDestaque.innerText.trim();
-            const baseUrl = "https://docs.google.com/forms/d/e/1FAIpQLSdOZECyTHgc15p5pcQF386JzcPwqn7PiEc2NLtnX6d_H-tcJQ/viewform?usp=pp_url&entry.202619458=";
-            window.open(baseUrl + encodeURIComponent(chassi), '_blank');
-        }
-
-        function abrirFormularioContribuicao() {
-            const linkDoFormulario = "SEU_LINK_AQUI"; 
-            if(linkDoFormulario === "SEU_LINK_AQUI") alert("O link de envio ainda não foi configurado.");
-            else window.open(linkDoFormulario, '_blank');
-        }
+        function downloadImage() { const link = document.createElement('a'); link.href = modalImg.src; link.download = modalChassiDestaque.innerText + ".jpg"; document.body.appendChild(link); link.click(); document.body.removeChild(link); }
+        async function copyNumber() { try { await navigator.clipboard.writeText(modalChassiDestaque.innerText); document.getElementById('copyNumberBtn').innerText = "Copiado!"; setTimeout(() => document.getElementById('copyNumberBtn').innerText = "Copiar Numeração", 2000); } catch (e) { alert("Erro"); } }
+        function reportarInconsistencia() { window.open("https://docs.google.com/forms/d/e/1FAIpQLSdOZECyTHgc15p5pcQF386JzcPwqn7PiEc2NLtnX6d_H-tcJQ/viewform?usp=pp_url&entry.202619458=" + encodeURIComponent(modalChassiDestaque.innerText.trim()), '_blank'); }
+        function abrirFormularioContribuicao() { window.open("SEU_LINK_AQUI", '_blank'); }
 
         function abrirModalAtualizacoes() {
-            const container = document.getElementById('containerListaAtualizacoes');
-            container.innerHTML = '';
-
-            const fotosOrdenadas = [...imagens].sort((a, b) => b.timestamp - a.timestamp);
+            const container = document.getElementById('containerListaAtualizacoes'); container.innerHTML = '';
             const agrupadoPorData = {};
-            fotosOrdenadas.forEach(img => {
-                if (!agrupadoPorData[img.data]) agrupadoPorData[img.data] = [];
-                agrupadoPorData[img.data].push(img);
-            });
-
+            [...imagens].sort((a, b) => b.timestamp - a.timestamp).forEach(img => { if (!agrupadoPorData[img.data]) agrupadoPorData[img.data] = []; agrupadoPorData[img.data].push(img); });
             for (const [data, fotos] of Object.entries(agrupadoPorData)) {
-                const divDia = document.createElement('div');
-                divDia.className = 'dia-atualizacao';
-                
-                const tituloData = document.createElement('h4');
-                tituloData.innerText = `📅 ${data}`;
-                divDia.appendChild(tituloData);
-                
+                const divDia = document.createElement('div'); divDia.className = 'dia-atualizacao';
+                divDia.innerHTML = `<h4>📅 ${data}</h4>`;
                 const ul = document.createElement('ul');
                 fotos.forEach(foto => {
-                    const li = document.createElement('li');
-                    let textoExtras = (foto.marca && foto.marca !== "") ? `${foto.marca.toUpperCase()} / ${foto.modelo.toUpperCase()} / ${foto.ano.toUpperCase()}` : "Informação não cadastrada";
-                    li.innerHTML = `<span class="chassi-tag">${foto.chassi}</span><span class="info-tag">${textoExtras}</span>`;
-                    ul.appendChild(li);
+                    let txt = (foto.marca && foto.marca !== "") ? `${foto.marca.toUpperCase()} / ${foto.modelo.toUpperCase()} / ${foto.ano.toUpperCase()}` : "Informação não cadastrada";
+                    ul.innerHTML += `<li><span class="chassi-tag">${foto.chassi}</span><span class="info-tag">${txt}</span></li>`;
                 });
-                
-                divDia.appendChild(ul);
-                container.appendChild(divDia);
+                divDia.appendChild(ul); container.appendChild(divDia);
             }
-
             document.getElementById('modalAtualizacoes').style.display = 'flex';
         }
-        
         function fecharModalAtualizacoes() { document.getElementById('modalAtualizacoes').style.display = 'none'; }
 
-        // --- FUNÇÕES DO NOVO MODAL DE DOAÇÃO ---
         function abrirModalDoacao() { document.getElementById('modalDoacao').style.display = 'flex'; }
         function fecharModalDoacao() { document.getElementById('modalDoacao').style.display = 'none'; }
 
         document.addEventListener('keydown', (e) => {
-            if (modal.style.display === 'flex') {
-                if (e.key === 'ArrowRight') navigateModal(1);
-                if (e.key === 'ArrowLeft') navigateModal(-1);
-                if (e.key === 'Escape') closeModal();
-            }
+            if (modal.style.display === 'flex') { if (e.key === 'ArrowRight') navigateModal(1); if (e.key === 'ArrowLeft') navigateModal(-1); if (e.key === 'Escape') closeModal(); }
             if (document.getElementById('modalAtualizacoes').style.display === 'flex' && e.key === 'Escape') fecharModalAtualizacoes();
             if (document.getElementById('modalDoacao').style.display === 'flex' && e.key === 'Escape') fecharModalDoacao();
+            if (modalAuth.style.display === 'flex' && e.key === 'Escape') fecharModalAuth();
         });
 
         function updateTransform() { modalImg.style.transform = `translate(${panningX}px, ${panningY}px) scale(${scale})`; }
-
-        imageContainer.addEventListener('wheel', (e) => {
-            e.preventDefault();
-            scale = Math.min(Math.max(.5, scale * (e.deltaY > 0 ? 0.9 : 1.1)), 8);
-            updateTransform();
-        });
-
+        imageContainer.addEventListener('wheel', (e) => { e.preventDefault(); scale = Math.min(Math.max(.5, scale * (e.deltaY > 0 ? 0.9 : 1.1)), 8); updateTransform(); });
         imageContainer.addEventListener('mousedown', (e) => { isDragging = true; startX = e.clientX - panningX; startY = e.clientY - panningY; });
         window.addEventListener('mousemove', (e) => { if (isDragging) { panningX = e.clientX - startX; panningY = e.clientY - startY; updateTransform(); } });
         window.addEventListener('mouseup', () => isDragging = false);
-
-        let lastTouchDistance = 0;
+        let lastTouchDist = 0;
         imageContainer.addEventListener('touchstart', (e) => {
-            if (e.touches.length === 1) {
-                isDragging = true; startX = e.touches[0].clientX - panningX; startY = e.touches[0].clientY - panningY;
-            } else if (e.touches.length === 2) {
-                lastTouchDistance = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
-            }
+            if (e.touches.length === 1) { isDragging = true; startX = e.touches[0].clientX - panningX; startY = e.touches[0].clientY - panningY; } 
+            else if (e.touches.length === 2) { lastTouchDist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY); }
         });
-
         imageContainer.addEventListener('touchmove', (e) => {
-            if (e.touches.length === 1 && isDragging) {
-                panningX = e.touches[0].clientX - startX; panningY = e.touches[0].clientY - startY; updateTransform();
-            } else if (e.touches.length === 2) {
-                const distance = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
-                scale = Math.min(Math.max(.5, scale * (distance / lastTouchDistance)), 8);
-                lastTouchDistance = distance;
-                updateTransform();
-            }
+            if (e.touches.length === 1 && isDragging) { panningX = e.touches[0].clientX - startX; panningY = e.touches[0].clientY - startY; updateTransform(); } 
+            else if (e.touches.length === 2) { const dist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY); scale = Math.min(Math.max(.5, scale * (dist / lastTouchDist)), 8); lastTouchDist = dist; updateTransform(); }
         });
-
         imageContainer.addEventListener('touchend', () => { isDragging = false; });
     </script>
 </body>
