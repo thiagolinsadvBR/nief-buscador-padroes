@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Padrões de Gravação IDV</title>
+    <title>Sistemas de IDV/EFV</title>
     
     <!-- Bibliotecas do Firebase (Versão 8 Compat) -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -127,16 +127,17 @@
             background: #1a1a1a;
         }
 
-        .btn-ferramenta svg {
+        .btn-ferramenta img.icone-custom {
             width: 55px;
             height: 55px;
-            stroke: #888;
             margin-bottom: 15px;
-            transition: stroke 0.3s ease;
+            transition: all 0.3s ease;
+            filter: invert(60%);
+            object-fit: contain;
         }
 
-        .btn-ferramenta:hover svg {
-            stroke: #aaa;
+        .btn-ferramenta:hover img.icone-custom {
+            filter: invert(80%) drop-shadow(0px 0px 5px rgba(255,255,255,0.5));
         }
 
         .btn-sair {
@@ -174,6 +175,7 @@
             border-color: var(--accent);
         }
 
+        /* CONFIGURAÇÕES GERAIS DE ITENS */
         #contadorFotos {
             color: var(--accent);
             font-weight: bold;
@@ -186,7 +188,6 @@
             border: 1px solid #333;
         }
 
-        /* Botões Flutuantes Superiores */
         .btn-flutuante {
             position: fixed; 
             top: 20px;
@@ -200,7 +201,6 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.5);
             transition: transform 0.2s, background 0.2s;
         }
-        
         .btn-flutuante:hover { transform: translateY(-2px); }
 
         #btnContribuir { left: 20px; background: #252525; color: var(--accent); border: 1px solid var(--accent); }
@@ -211,58 +211,34 @@
         #searchContainer { width: 100%; max-width: 600px; margin-bottom: 20px; }
 
         #searchInput {
-            width: 100%;
-            padding: 18px;
-            font-size: 1.3rem;
-            border-radius: 12px;
-            border: 2px solid #333;
-            background: #252525;
-            color: white;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
-            transition: border-color 0.3s;
-            box-sizing: border-box;
+            width: 100%; padding: 18px; font-size: 1.3rem; border-radius: 12px; border: 2px solid #333;
+            background: #252525; color: white; box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+            transition: border-color 0.3s; box-sizing: border-box;
         }
         #searchInput:focus { outline: none; border-color: var(--accent); }
 
-        /* Filtros */
         #filterContainer {
             width: 100%; max-width: 800px; display: flex; gap: 10px; margin-bottom: 30px; justify-content: center; flex-wrap: wrap;
         }
 
         .select-filtro {
-            padding: 12px 15px; border-radius: 8px; background: #252525; color: white; border: 1px solid #444; font-size: 0.95rem; outline: none; flex-grow: 1; min-width: 150px; cursor: pointer; transition: border-color 0.2s; box-sizing: border-box;
+            padding: 12px 15px; border-radius: 8px; background: #252525; color: white; border: 1px solid #444; 
+            font-size: 0.95rem; outline: none; flex-grow: 1; min-width: 150px; cursor: pointer; transition: border-color 0.2s; box-sizing: border-box;
         }
         .select-filtro:focus { border-color: var(--accent); }
         .select-filtro:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        /* Estilos do Mostrar Senha */
-        .password-wrapper {
-            position: relative;
-            display: flex;
-            width: 100%;
-        }
-        .password-wrapper input {
-            width: 100%;
-            padding-right: 40px; 
-            margin: 0;
-        }
+        .password-wrapper { position: relative; display: flex; width: 100%; }
+        .password-wrapper input { width: 100%; padding-right: 40px; margin: 0; }
         .toggle-password {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
-            background: none;
-            border: none;
-            color: #aaa;
-            font-size: 1.2rem;
-            padding: 0;
-            transition: color 0.2s;
+            position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer;
+            background: none; border: none; color: #aaa; font-size: 1.2rem; padding: 0; transition: color 0.2s;
         }
         .toggle-password:hover { color: var(--accent); }
 
         #btnLimparFiltros {
-            padding: 12px 20px; border-radius: 8px; background: #252525; color: #ff4444; border: 1px solid #ff4444; font-size: 0.95rem; font-weight: bold; cursor: pointer; transition: background 0.2s, color 0.2s;
+            padding: 12px 20px; border-radius: 8px; background: #252525; color: #ff4444; border: 1px solid #ff4444; 
+            font-size: 0.95rem; font-weight: bold; cursor: pointer; transition: background 0.2s, color 0.2s;
         }
         #btnLimparFiltros:hover { background: #ff4444; color: white; }
 
@@ -277,6 +253,35 @@
         .thumb-text-container { padding: 10px 8px; text-align: center; background: #222; flex-grow: 1; display: flex; flex-direction: column; justify-content: center; }
         .thumb-chassi { font-size: 0.8rem; font-weight: bold; color: white; word-break: break-all; margin-bottom: 4px; }
         .thumb-info { font-size: 0.65rem; color: #aaa; word-break: break-word; }
+
+        /* NOVA FERRAMENTA: ELIMINADOR NIV */
+        .eliminador-select-title { font-size: 1.2rem; border-bottom: 2px solid var(--accent); padding-bottom: 15px; margin-bottom: 25px; letter-spacing: 1px; line-height: 1.4; text-align: center; }
+        .eliminador-guide-text { font-size: 0.85rem; color: #aaa; margin-bottom: 30px; max-width: 600px; line-height: 1.5; text-align: center; }
+        .eliminador-guide-text span { color: var(--accent); display: block; margin-bottom: 8px; font-size: 0.95rem; font-weight:bold; }
+        
+        .btn-mode {
+            background: #111; border: 2px solid var(--accent); color: var(--accent); font-weight: bold; font-size: 1rem; 
+            padding: 15px 30px; margin: 10px; cursor: pointer; width: 280px; max-width: 90%; border-radius: 12px; transition: all 0.3s ease;
+        }
+        .btn-mode:hover { background: var(--accent); color: var(--primary); box-shadow: 0 0 15px var(--accent); }
+
+        .eliminador-instruction { font-size: 0.8rem; margin: 10px 0 20px 0; color: #aaa; text-align: center; max-width: 600px; }
+        
+        .eliminador-grid-container {
+            display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; background-color: #252525; padding: 20px; 
+            border-radius: 12px; border: 1px solid #444; margin-bottom: 15px;
+        }
+        .eliminador-dot {
+            width: 35px; height: 35px; border-radius: 50%; border: 2px solid var(--accent); background-color: transparent; 
+            cursor: pointer; transition: all 0.2s ease;
+        }
+        .eliminador-dot.active { background-color: var(--accent); box-shadow: 0 0 10px var(--accent); }
+        .eliminador-dot.active.forbidden { background-color: #ff4444 !important; border-color: #ff4444 !important; box-shadow: 0 0 15px #ff4444 !important; }
+        
+        .eliminador-results-box { width: 100%; text-align: center; margin-top: 10px; background: #111; padding: 15px; border-radius: 12px; border: 1px solid var(--accent); box-sizing: border-box; }
+        .eliminador-label { font-size: 0.9rem; margin-bottom: 5px; color:#aaa; }
+        .eliminador-possibilities { font-size: 2rem; font-weight: bold; color: var(--accent); word-spacing: 12px; line-height: 1.4; min-height: 40px; word-wrap: break-word; }
+
 
         /* MODAIS GERAIS (Fundo) */
         .modal-overlay {
@@ -362,7 +367,8 @@
     <button class="btn-flutuante" id="btnContribuir" onclick="abrirFormularioContribuicao()">📤 Enviar Novo Padrão</button>
     <button class="btn-flutuante" id="btnAtualizacoes" onclick="abrirModalAtualizacoes()">🔔 Últimas Atualizações</button>
 
-    <h2>Padrões de Gravação IDV (Motor, NIV, Vidros, Etas e Agregados)</h2>
+    <!-- Título do Sistema Atualizado -->
+    <h2>Sistemas de IDV/EFV</h2>
 
     <div style="font-size: 0.75rem; color: #666; margin-bottom: 5px; text-align: center; width: 100%;">
         Desenvolvido por Thiago Lins
@@ -373,52 +379,84 @@
         🤝 Mantenha este sistema no ar (Saiba como apoiar)
     </button>
 
-    <!-- Botão Principal de Login (Exibido para usuários deslogados ou pendentes) -->
+    <!-- Botão Principal de Login -->
     <button id="btnAcessoRestrito" onclick="abrirModalAuth()">
         🔒 Acessar Ferramentas Restritas
     </button>
 
-    <!-- NOVA ÁREA: DASHBOARD DE FERRAMENTAS -->
+    <!-- ÁREA DASHBOARD DE FERRAMENTAS -->
     <div id="areaDashboard" style="display: none; width: 100%; flex-direction: column; align-items: center;">
         
         <div class="grid-ferramentas">
-            <!-- Botão Ferramenta 1: Buscador -->
+            <!-- Ferramenta 1: Buscador -->
             <button class="btn-ferramenta" onclick="abrirBuscador()">
-                <!-- SVG Lupa Estilizada -->
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="10" cy="10" r="7"></circle>
-                    <line x1="21" y1="21" x2="15" y2="15"></line>
-                </svg>
+                <img src="lupa engrenagem.png" alt="Buscador de Padrões" class="icone-custom">
                 <span>Buscador de<br>Padrões</span>
             </button>
+
+            <!-- Ferramenta 2: Eliminador Honda -->
+            <button class="btn-ferramenta" onclick="abrirEliminador()">
+                <img src="padrao niv honda.png" alt="Eliminador Honda" class="icone-custom">
+                <span>Eliminador<br>NIV Honda</span>
+            </button>
             
-            <!-- FUTURAS FERRAMENTAS ENTRARÃO AQUI -->
         </div>
 
-        <!-- Botão de Sair no Menu Principal -->
         <button class="btn-sair" onclick="fazerLogout()">Sair da Ferramenta Restrita</button>
     </div>
 
-    <!-- FERRAMENTA 1: BUSCADOR DE PADRÕES (Ex-AreaRestrita) -->
+    <!-- FERRAMENTA 1: BUSCADOR DE PADRÕES -->
     <div id="areaBuscador" style="display: none; width: 100%; flex-direction: column; align-items: center; max-width: 1100px;">
-        
         <button class="btn-voltar-menu" onclick="voltarDashboard()">⬅ Voltar ao Painel</button>
-
         <div id="contadorFotos">📸 Carregando padrões...</div>
-
         <div id="searchContainer">
             <input type="text" id="searchInput" placeholder="Digite a sequência (ex: 9BD...)" autocomplete="off">
         </div>
-
         <div id="filterContainer">
             <select id="selectMarca" class="select-filtro"><option value="">Todas as Marcas</option></select>
             <select id="selectModelo" class="select-filtro" disabled><option value="">Todos os Modelos</option></select>
             <select id="selectAno" class="select-filtro" disabled><option value="">Todos os Anos</option></select>
             <button id="btnLimparFiltros" onclick="limparFiltros()">Limpar Filtros</button>
         </div>
-
         <div id="gallery"></div>
     </div>
+
+    <!-- FERRAMENTA 2: ELIMINADOR DE POSSIBILIDADES (HONDA) -->
+    <div id="areaEliminador" style="display: none; width: 100%; flex-direction: column; align-items: center; max-width: 800px;">
+        <button class="btn-voltar-menu" onclick="voltarDashboard()">⬅ Voltar ao Painel</button>
+
+        <!-- Seleção de Modo do Eliminador -->
+        <div id="eliminador-selection" style="display: flex; flex-direction: column; align-items: center; width: 100%;">
+            <div class="eliminador-select-title">ELIMINADOR DE POSSIBILIDADES<br>DE CARACTERES (HONDA)</div>
+            <p class="eliminador-guide-text">
+                <span>INSTRUÇÕES DE USO:</span>
+                ESCOLHA O TIPO DE GRAVAÇÃO ABAIXO. NA TELA SEGUINTE, MARQUE NA MATRIZ AS MOSSAS (PONTOS DE PUNÇÃO) VISÍVEIS NO METAL DA MOTOCICLETA. O SISTEMA DESCARTARÁ MATEMATICAMENTE OS CARACTERES INCOMPATÍVEIS COM O PADRÃO ORIGINAL.
+            </p>
+            <button class="btn-mode" onclick="setEliminadorMode('numeric')">NUMÉRICOS (0-9)</button>
+            <button class="btn-mode" onclick="setEliminadorMode('alpha')">ALFABÉTICOS (NIV)</button>
+        </div>
+
+        <!-- Interface de Matriz do Eliminador -->
+        <div id="eliminador-main" style="display: none; width: 100%; flex-direction: column; align-items: center;">
+            <h3 id="eliminador-app-title" style="color: var(--accent); margin-bottom: 5px; text-align:center;"></h3>
+            <p class="eliminador-instruction">
+                SELECIONE NO PADRÃO ABAIXO AS MARCAS APARENTES DO NIV ORIGINAL GRAVADOS NO QUADRO DA MOTOCICLETA
+            </p>
+
+            <div class="eliminador-grid-container" id="eliminador-grid"></div>
+
+            <div class="eliminador-results-box">
+                <div class="eliminador-label">CARACTERES ORIGINAIS POSSÍVEIS:</div>
+                <div class="eliminador-possibilities" id="eliminador-result">---</div>
+            </div>
+            
+            <div style="display: flex; gap: 15px; margin-top: 20px; width: 100%; justify-content: center; flex-wrap: wrap;">
+                <button class="btn-action" style="max-width: 200px; border-color: #888; color: #888;" onclick="showEliminadorSelection()">⬅ VOLTAR A SELEÇÃO</button>
+                <button class="btn-action" style="max-width: 200px;" onclick="resetEliminadorGrid()">LIMPAR MATRIZ</button>
+            </div>
+        </div>
+    </div>
+
 
     <br>
     <hr style="border: none; border-top: 1px solid #333; width: 80%; max-width: 800px; margin: 20px 0;">
@@ -438,7 +476,7 @@
     </div>
     <br><br>
 
-    <!-- MODAIS DE AUTENTICAÇÃO (LOGIN / CADASTRO) -->
+    <!-- MODAIS DE AUTENTICAÇÃO -->
     <div id="modalAuth" class="modal-overlay">
         <div class="modal-box" style="max-width: 400px; text-align: center;">
             <div class="modal-header" style="justify-content: center; position: relative;">
@@ -446,20 +484,16 @@
                 <button class="fechar-modal-btn" onclick="fecharModalAuth()" style="position: absolute; right: 0;">×</button>
             </div>
             
-            <!-- Formulário de Login -->
             <div id="formLogin" class="form-scroll">
                 <input type="email" id="loginEmail" class="select-filtro" placeholder="E-mail">
-                
                 <div class="password-wrapper">
                     <input type="password" id="loginSenha" class="select-filtro" placeholder="Senha">
                     <button class="toggle-password" onclick="toggleVisibility('loginSenha')">👁️</button>
                 </div>
-                
                 <button class="btn-action" onclick="fazerLogin()">Entrar</button>
                 <p style="font-size: 0.85rem; color: #ccc; cursor:pointer; text-decoration: underline; margin-bottom: 0;" onclick="toggleAuthMode()">Não tem conta? Solicitar acesso</p>
             </div>
 
-            <!-- Formulário de Cadastro -->
             <div id="formCadastro" class="form-scroll" style="display:none;">
                 <input type="text" id="cadNome" class="select-filtro" placeholder="Seu Nome / Matrícula">
                 <input type="text" id="cadCPF" class="select-filtro" placeholder="CPF (somente números)" maxlength="14" oninput="mascaraCPF(this)">
@@ -6630,6 +6664,15 @@
                 "ano": "2018",
                 "data": "03/08/2026",
                 "timestamp": 1785769422.9504845
+        },
+        {
+                "arquivo": "lupa engrenagem.png",
+                "chassi": "lupa engrenagem",
+                "marca": "",
+                "modelo": "",
+                "ano": "",
+                "data": "11/08/2026",
+                "timestamp": 1786486954.4744506
         }
 ];
         // =========================================================================
@@ -6652,6 +6695,7 @@
         const btnAcessoRestrito = document.getElementById('btnAcessoRestrito');
         const areaDashboard = document.getElementById('areaDashboard');
         const areaBuscador = document.getElementById('areaBuscador');
+        const areaEliminador = document.getElementById('areaEliminador');
         const modalAuth = document.getElementById('modalAuth');
         const formLogin = document.getElementById('formLogin');
         const formCadastro = document.getElementById('formCadastro');
@@ -6668,29 +6712,29 @@
                     database.ref('usuarios/' + user.uid).once('value').then(snapshot => {
                         const userData = snapshot.val();
                         if (userData && userData.status === 'aprovado') {
-                            // APROVADO! Mostra o Dashboard Principal
                             btnAcessoRestrito.style.display = 'none';
                             areaDashboard.style.display = 'flex';
                             areaBuscador.style.display = 'none';
+                            areaEliminador.style.display = 'none';
                             modalAuth.style.display = 'none';
                             modalPendente.style.display = 'none';
                             
                             initFiltros();
                             renderGallery();
                         } else {
-                            // PENDENTE!
                             btnAcessoRestrito.style.display = 'none';
                             areaDashboard.style.display = 'none';
                             areaBuscador.style.display = 'none';
+                            areaEliminador.style.display = 'none';
                             modalAuth.style.display = 'none';
                             modalPendente.style.display = 'flex';
                         }
                     });
                 } else {
-                    // DESLOGADO!
                     btnAcessoRestrito.style.display = 'block';
                     areaDashboard.style.display = 'none';
                     areaBuscador.style.display = 'none';
+                    areaEliminador.style.display = 'none';
                     modalAuth.style.display = 'none';
                     modalPendente.style.display = 'none';
                 }
@@ -6719,12 +6763,181 @@
         // =========================================================================
         function abrirBuscador() {
             areaDashboard.style.display = 'none';
+            areaEliminador.style.display = 'none';
             areaBuscador.style.display = 'flex';
+        }
+
+        function abrirEliminador() {
+            areaDashboard.style.display = 'none';
+            areaBuscador.style.display = 'none';
+            areaEliminador.style.display = 'flex';
+            showEliminadorSelection();
         }
 
         function voltarDashboard() {
             areaBuscador.style.display = 'none';
+            areaEliminador.style.display = 'none';
             areaDashboard.style.display = 'flex';
+        }
+
+        // =========================================================================
+        // NOVA FERRAMENTA: ELIMINADOR NIV HONDA
+        // =========================================================================
+        const digitMap = {
+            '0': [0,1,1,1,0, 1,0,0,0,1, 1,0,0,0,1, 1,0,0,0,1, 1,0,0,0,1, 1,0,0,0,1, 0,1,1,1,0],
+            '1': [0,0,0,1,1, 0,0,0,0,1, 0,0,0,0,1, 0,0,0,0,1, 0,0,0,0,1, 0,0,0,0,1, 0,0,0,0,1],
+            '2': [0,1,1,1,0, 1,0,0,0,1, 0,0,0,0,1, 0,0,1,1,0, 0,1,0,0,0, 1,0,0,0,0, 1,1,1,1,1],
+            '3': [0,1,1,1,0, 1,0,0,0,1, 0,0,0,0,1, 0,0,1,1,0, 0,0,0,0,1, 1,0,0,0,1, 0,1,1,1,0],
+            '4': [1,0,0,1,0, 1,0,0,1,0, 1,0,0,1,0, 1,0,0,1,0, 1,1,1,1,1, 0,0,0,1,0, 0,0,0,1,0],
+            '5': [1,1,1,1,1, 1,0,0,0,0, 1,0,0,0,0, 1,1,1,1,0, 0,0,0,0,1, 1,0,0,0,1, 0,1,1,1,0],
+            '6': [0,1,1,1,0, 1,0,0,0,1, 1,0,0,0,0, 1,1,1,1,0, 1,0,0,0,1, 1,0,0,0,1, 0,1,1,1,0],
+            '7': [1,1,1,1,1, 1,0,0,0,1, 0,0,0,1,0, 0,0,1,0,0, 0,0,1,0,0, 0,0,1,0,0, 0,0,1,0,0],
+            '8': [0,1,1,1,0, 1,0,0,0,1, 1,0,0,0,1, 0,1,1,1,0, 1,0,0,0,1, 1,0,0,0,1, 0,1,1,1,0],
+            '9': [0,1,1,1,0, 1,0,0,0,1, 1,0,0,0,1, 0,1,1,1,1, 0,0,0,0,1, 0,0,0,1,0, 1,1,1,0,0]
+        };
+
+        const alphaMap = {
+            'A': [0,0,1,0,0, 0,1,0,1,0, 1,0,0,0,1, 1,1,1,1,1, 1,0,0,0,1, 1,0,0,0,1, 1,0,0,0,1],
+            'B': [1,1,1,1,0, 1,0,0,0,1, 1,0,0,0,1, 1,1,1,1,0, 1,0,0,0,1, 1,0,0,0,1, 1,1,1,1,0],
+            'C': [0,1,1,1,0, 1,0,0,0,1, 1,0,0,0,0, 1,0,0,0,0, 1,0,0,0,0, 1,0,0,0,1, 0,1,1,1,0],
+            'D': [1,1,1,1,0, 1,0,0,0,1, 1,0,0,0,1, 1,0,0,0,1, 1,0,0,0,1, 1,0,0,0,1, 1,1,1,1,0],
+            'E': [1,1,1,1,1, 1,0,0,0,0, 1,0,0,0,0, 1,1,1,1,0, 1,0,0,0,0, 1,0,0,0,0, 1,1,1,1,1],
+            'F': [1,1,1,1,1, 1,0,0,0,0, 1,0,0,0,0, 1,1,1,1,0, 1,0,0,0,0, 1,0,0,0,0, 1,0,0,0,0],
+            'G': [0,1,1,1,0, 1,0,0,0,1, 1,0,0,0,0, 1,0,1,1,1, 1,0,0,0,1, 1,0,0,0,1, 0,1,1,1,0],
+            'H': [1,0,0,0,1, 1,0,0,0,1, 1,0,0,0,1, 1,1,1,1,1, 1,0,0,0,1, 1,0,0,0,1, 1,0,0,0,1],
+            'J': [0,0,0,1,1, 0,0,0,0,1, 0,0,0,0,1, 0,0,0,0,1, 0,0,0,0,1, 1,0,0,0,1, 0,1,1,1,0],
+            'K': [1,0,0,0,1, 1,0,0,1,0, 1,0,1,0,0, 1,1,0,0,0, 1,0,1,0,0, 1,0,0,1,0, 1,0,0,0,1],
+            'L': [1,0,0,0,0, 1,0,0,0,0, 1,0,0,0,0, 1,0,0,0,0, 1,0,0,0,0, 1,0,0,0,0, 1,1,1,1,1],
+            'M': [1,0,0,0,1, 1,1,0,1,1, 1,0,1,0,1, 1,0,0,0,1, 1,0,0,0,1, 1,0,0,0,1, 1,0,0,0,1],
+            'N': [1,0,0,0,1, 1,1,0,0,1, 1,0,1,0,1, 1,0,0,1,1, 1,0,0,0,1, 1,0,0,0,1, 1,0,0,0,1],
+            'P': [1,1,1,1,0, 1,0,0,0,1, 1,0,0,0,1, 1,1,1,1,0, 1,0,0,0,0, 1,0,0,0,0, 1,0,0,0,0],
+            'R': [1,1,1,1,0, 1,0,0,0,1, 1,0,0,0,1, 1,1,1,1,0, 1,0,1,0,0, 1,0,0,1,0, 1,0,0,0,1],
+            'S': [0,1,1,1,0, 1,0,0,0,1, 1,0,0,0,0, 0,1,1,1,0, 0,0,0,0,1, 1,0,0,0,1, 0,1,1,1,0],
+            'T': [1,1,1,1,1, 0,0,1,0,0, 0,0,1,0,0, 0,0,1,0,0, 0,0,1,0,0, 0,0,1,0,0, 0,0,1,0,0],
+            'U': [1,0,0,0,1, 1,0,0,0,1, 1,0,0,0,1, 1,0,0,0,1, 1,0,0,0,1, 1,0,0,0,1, 0,1,1,1,0],
+            'V': [1,0,0,0,1, 1,0,0,0,1, 1,0,0,0,1, 1,0,0,0,1, 1,0,0,0,1, 0,1,0,1,0, 0,0,1,0,0],
+            'W': [1,0,0,0,1, 1,0,0,0,1, 1,0,0,0,1, 1,0,1,0,1, 1,0,1,0,1, 1,1,0,1,1, 1,0,0,0,1],
+            'X': [1,0,0,0,1, 1,0,0,0,1, 0,1,0,1,0, 0,0,1,0,0, 0,1,0,1,0, 1,0,0,0,1, 1,0,0,0,1],
+            'Y': [1,0,0,0,1, 1,0,0,0,1, 0,1,0,1,0, 0,0,1,0,0, 0,0,1,0,0, 0,0,1,0,0, 0,0,1,0,0],
+            'Z': [1,1,1,1,1, 0,0,0,0,1, 0,0,0,1,0, 0,0,1,0,0, 0,1,0,0,0, 1,0,0,0,0, 1,1,1,1,1]
+        };
+
+        let elimCurrentMode = 'numeric';
+        let elimCandidates = [];
+        let elimSelectedIndices = new Set();
+        let elimDotElements = [];
+
+        const elimScreenSelection = document.getElementById('eliminador-selection');
+        const elimScreenMain = document.getElementById('eliminador-main');
+        const elimGridEl = document.getElementById('eliminador-grid');
+        const elimResultEl = document.getElementById('eliminador-result');
+        const elimAppTitleEl = document.getElementById('eliminador-app-title');
+
+        function setEliminadorMode(mode) {
+            elimCurrentMode = mode;
+            elimScreenSelection.style.display = 'none';
+            elimScreenMain.style.display = 'flex';
+            if (mode === 'numeric') {
+                elimAppTitleEl.textContent = "ELIMINADOR NUMÉRICO (0-9)";
+            } else {
+                elimAppTitleEl.textContent = "ELIMINADOR ALFABÉTICO (NIV)";
+            }
+            initEliminadorGrid();
+        }
+
+        function showEliminadorSelection() {
+            elimScreenSelection.style.display = 'flex';
+            elimScreenMain.style.display = 'none';
+        }
+
+        function initEliminadorGrid() {
+            elimGridEl.innerHTML = '';
+            elimSelectedIndices.clear();
+            elimDotElements = [];
+            
+            if (elimCurrentMode === 'numeric') {
+                elimCandidates = Object.keys(digitMap).sort();
+            } else {
+                elimCandidates = Object.keys(alphaMap).sort();
+            }
+
+            for (let i = 0; i < 35; i++) {
+                const dot = document.createElement('div');
+                dot.classList.add('eliminador-dot');
+                dot.dataset.index = i;
+                dot.onclick = () => toggleEliminadorDot(i, dot);
+                elimGridEl.appendChild(dot);
+                elimDotElements.push(dot); 
+            }
+            updateEliminadorResult(elimCandidates);
+        }
+
+        function toggleEliminadorDot(index, element) {
+            if (elimSelectedIndices.has(index)) {
+                elimSelectedIndices.delete(index);
+                element.classList.remove('active');
+                element.classList.remove('forbidden');
+            } else {
+                elimSelectedIndices.add(index);
+                element.classList.add('active');
+            }
+            calculateEliminadorPossibilities();
+        }
+
+        function calculateEliminadorPossibilities() {
+            const targetMap = (elimCurrentMode === 'numeric') ? digitMap : alphaMap;
+            const fullSet = Object.keys(targetMap).sort();
+
+            if (elimSelectedIndices.size === 0) {
+                elimDotElements.forEach(d => d.classList.remove('forbidden'));
+                updateEliminadorResult(fullSet);
+                return;
+            }
+
+            let candidates = [...fullSet];
+            let isValid = true;
+
+            for (let selectedIndex of elimSelectedIndices) {
+                let pointExists = false;
+                for (let char of fullSet) {
+                    if (targetMap[char][selectedIndex] === 1) {
+                        pointExists = true;
+                        break;
+                    }
+                }
+                if (!pointExists) {
+                    elimDotElements[selectedIndex].classList.add('forbidden');
+                    isValid = false;
+                } else {
+                    elimDotElements[selectedIndex].classList.remove('forbidden');
+                }
+            }
+
+            if (!isValid) {
+                updateEliminadorResult([]); 
+                return; 
+            }
+
+            for (let selectedIndex of elimSelectedIndices) {
+                candidates = candidates.filter(char => {
+                    return targetMap[char][selectedIndex] === 1;
+                });
+            }
+            updateEliminadorResult(candidates);
+        }
+
+        function updateEliminadorResult(finalCandidates) {
+            if (finalCandidates.length === 0) {
+                elimResultEl.textContent = "NENHUM";
+                elimResultEl.style.color = "#ff4444"; 
+            } else {
+                elimResultEl.textContent = finalCandidates.join(' ');
+                elimResultEl.style.color = "var(--accent)"; 
+            }
+        }
+
+        function resetEliminadorGrid() {
+            initEliminadorGrid();
         }
 
         // =========================================================================
