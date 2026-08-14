@@ -11,6 +11,8 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=DotGothic16&display=swap');
+
         :root {
             --primary: #1a1a1a;
             --accent: #7CFC00;
@@ -32,7 +34,7 @@
             overscroll-behavior: none;
         }
 
-        /* NOVA BARRA SUPERIOR (TOP BAR) */
+        /* BARRA SUPERIOR */
         .top-bar {
             position: fixed;
             top: 0;
@@ -51,6 +53,27 @@
             z-index: 1000;
         }
 
+        .topbar-left, .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* CONTADOR LED */
+        .led-counter {
+            font-family: 'DotGothic16', monospace;
+            font-size: 1.5rem;
+            color: var(--accent);
+            background-color: #050505;
+            border: 2px solid #222;
+            border-radius: 4px;
+            padding: 2px 10px;
+            letter-spacing: 4px;
+            text-shadow: 0 0 5px var(--accent);
+            box-shadow: inset 0 0 8px #000, 0 0 5px rgba(124, 252, 0, 0.2);
+            user-select: none;
+        }
+
         /* BOTÕES DA TOP BAR */
         .btn-topbar {
             border: none;
@@ -62,16 +85,14 @@
             transition: transform 0.2s, background 0.2s;
             display: flex;
             align-items: center;
-            gap: 5px;
         }
         .btn-topbar:hover { transform: translateY(-2px); }
 
         #btnContribuir { background: #252525; color: var(--accent); border: 1px solid var(--accent); }
         #btnContribuir:hover { background: var(--accent); color: var(--primary); }
-
         #btnAtualizacoes { background: var(--accent); color: var(--primary); }
 
-        /* TÍTULOS E CABEÇALHOS */
+        /* TÍTULOS GERAIS */
         h2 { 
             border-bottom: 2px solid var(--accent); 
             padding-bottom: 8px; 
@@ -82,156 +103,71 @@
             margin-top: 0;
         }
 
-        /* Botão de Doação Centralizado */
+        /* BOTÕES PRINCIPAIS */
         #btnDoacaoCentral {
-            background: var(--nubank);
-            color: #ffffff;
-            border: 2px solid var(--nubank);
-            padding: 12px 28px;
-            border-radius: 25px;
-            font-weight: bold;
-            font-size: 0.95rem;
-            cursor: pointer;
-            margin-top: 5px;
-            margin-bottom: 15px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(138, 5, 190, 0.4);
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            background: var(--nubank); color: #ffffff; border: 2px solid var(--nubank);
+            padding: 12px 28px; border-radius: 25px; font-weight: bold; font-size: 0.95rem;
+            cursor: pointer; margin-top: 5px; margin-bottom: 15px; transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(138, 5, 190, 0.4); display: flex; align-items: center; gap: 8px;
         }
-        
         #btnDoacaoCentral:hover {
-            background: var(--nubank-hover);
-            border-color: var(--nubank-hover);
-            color: #ffffff;
-            box-shadow: 0 6px 20px rgba(168, 36, 227, 0.6);
-            transform: scale(1.05);
+            background: var(--nubank-hover); border-color: var(--nubank-hover); transform: scale(1.05);
         }
 
-        /* Botão de Login Inicial */
         #btnAcessoRestrito {
-            background: #111;
-            color: var(--accent);
-            border: 2px solid var(--accent);
-            padding: 15px 30px;
-            border-radius: 12px;
-            font-weight: bold;
-            font-size: 1.1rem;
-            cursor: pointer;
-            margin-bottom: 15px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(124, 252, 0, 0.2);
+            background: #111; color: var(--accent); border: 2px solid var(--accent);
+            padding: 15px 30px; border-radius: 12px; font-weight: bold; font-size: 1.1rem;
+            cursor: pointer; margin-bottom: 15px; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(124, 252, 0, 0.2);
         }
-
-        #btnAcessoRestrito:hover {
-            background: var(--accent);
-            color: var(--primary);
-        }
+        #btnAcessoRestrito:hover { background: var(--accent); color: var(--primary); }
 
         /* DASHBOARD - GRID DE FERRAMENTAS */
         .grid-ferramentas {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-top: 10px;
-            margin-bottom: 15px;
-            width: 100%;
-            max-width: 800px;
+            display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+            margin-top: 10px; margin-bottom: 15px; width: 100%; max-width: 800px;
         }
 
         .btn-ferramenta {
-            background: #111;
-            border: 2px solid var(--accent);
-            border-radius: 12px;
-            width: 100%;
-            max-width: 280px; 
-            min-height: 70px; 
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            color: var(--accent);
-            font-weight: bold;
-            font-size: 1.15rem;
-            text-align: center;
-            padding: 12px 20px;
-            box-sizing: border-box;
-            letter-spacing: 0.5px;
+            background: #111; border: 2px solid var(--accent); border-radius: 12px;
+            width: 100%; max-width: 280px; min-height: 70px; display: flex;
+            justify-content: center; align-items: center; cursor: pointer;
+            transition: all 0.3s ease; text-decoration: none; color: var(--accent);
+            font-weight: bold; font-size: 1.15rem; text-align: center;
+            padding: 12px 20px; box-sizing: border-box; letter-spacing: 0.5px;
         }
-
         .btn-ferramenta:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(124, 252, 0, 0.3);
-            background: #1a1a1a;
+            transform: translateY(-3px); box-shadow: 0 5px 15px rgba(124, 252, 0, 0.3); background: #1a1a1a;
         }
 
         .btn-sair {
-            background: transparent;
-            border: 2px solid #ff4444;
-            color: #ff4444;
-            padding: 10px 30px;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-            max-width: 300px;
-            margin-bottom: 10px;
+            background: transparent; border: 2px solid #ff4444; color: #ff4444;
+            padding: 10px 30px; border-radius: 8px; font-weight: bold; cursor: pointer;
+            transition: 0.3s; max-width: 300px; margin-bottom: 10px;
         }
-
-        .btn-sair:hover {
-            background: #ff4444;
-            color: white;
-        }
+        .btn-sair:hover { background: #ff4444; color: white; }
 
         .btn-voltar-menu {
-            background: transparent;
-            color: var(--text);
-            border: 1px solid #444;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            margin-bottom: 20px;
-            align-self: flex-start;
-            font-size: 0.9rem;
-            transition: 0.2s;
-            font-weight: bold;
+            background: transparent; color: var(--text); border: 1px solid #444;
+            padding: 10px 20px; border-radius: 8px; cursor: pointer; margin-bottom: 20px;
+            align-self: flex-start; font-size: 0.9rem; transition: 0.2s; font-weight: bold;
         }
-        
-        .btn-voltar-menu:hover {
-            background: #333;
-            border-color: var(--accent);
-        }
+        .btn-voltar-menu:hover { background: #333; border-color: var(--accent); }
 
-        /* CONFIGURAÇÕES GERAIS DE ITENS */
+        /* BUSCADOR DE PADRÕES */
         #contadorFotos {
-            color: var(--accent);
-            font-weight: bold;
-            margin-bottom: 20px;
-            font-size: 1.1rem;
-            text-align: center;
-            background: #252525;
-            padding: 8px 20px;
-            border-radius: 20px;
-            border: 1px solid #333;
+            color: var(--accent); font-weight: bold; margin-bottom: 20px; font-size: 1.1rem;
+            text-align: center; background: #252525; padding: 8px 20px; border-radius: 20px; border: 1px solid #333;
         }
-
         #searchContainer { width: 100%; max-width: 600px; margin-bottom: 20px; }
-
         #searchInput {
             width: 100%; padding: 16px; font-size: 1.2rem; border-radius: 12px; border: 2px solid #333;
             background: #252525; color: white; box-shadow: 0 10px 20px rgba(0,0,0,0.4);
             transition: border-color 0.3s; box-sizing: border-box;
         }
         #searchInput:focus { outline: none; border-color: var(--accent); }
-
         #filterContainer {
             width: 100%; max-width: 800px; display: flex; gap: 10px; margin-bottom: 25px; justify-content: center; flex-wrap: wrap;
         }
-
         .select-filtro {
             padding: 12px 15px; border-radius: 8px; background: #252525; color: white; border: 1px solid #444; 
             font-size: 0.95rem; outline: none; flex-grow: 1; min-width: 150px; cursor: pointer; transition: border-color 0.2s; box-sizing: border-box;
@@ -256,7 +192,6 @@
         #gallery {
             display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; width: 100%; max-width: 1100px; padding-bottom: 40px;
         }
-
         .thumbnail { cursor: pointer; border-radius: 8px; overflow: hidden; background: #222; border: 1px solid #444; animation: fadeIn 0.2s ease-in; display: flex; flex-direction: column; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .thumbnail:hover { border-color: var(--accent); transform: translateY(-2px); transition: 0.2s; }
@@ -265,50 +200,25 @@
         .thumb-chassi { font-size: 0.8rem; font-weight: bold; color: white; word-break: break-all; margin-bottom: 2px; }
         .thumb-info { font-size: 0.65rem; color: #aaa; word-break: break-word; }
 
-        /* TEXTOS PADRÃO DAS FERRAMENTAS */
+        /* TEXTOS PADRÃO DAS FERRAMENTAS E ELIMINADOR */
         .tool-title { 
-            font-size: 1.2rem; 
-            font-weight: bold; 
-            border-bottom: 2px solid var(--accent); 
-            padding-bottom: 8px; 
-            margin-bottom: 12px; 
-            text-align: center; 
+            font-size: 1.2rem; font-weight: bold; border-bottom: 2px solid var(--accent); 
+            padding-bottom: 8px; margin-bottom: 12px; text-align: center; 
+        }
+        .tool-guide-title {
+            color: var(--accent); font-size: 1rem; font-weight: bold; text-align: center; margin-bottom: 8px;
         }
         .tool-guide-text { 
-            font-size: 0.9rem; 
-            color: #ccc; 
-            margin-bottom: 15px; 
-            max-width: 600px; 
-            line-height: 1.4; 
-            text-align: justify; 
-            text-indent: 1.5rem; 
-        }
-        .tool-guide-text span { 
-            color: var(--accent); 
-            display: block; 
-            margin-bottom: 6px; 
-            font-size: 1rem; 
-            font-weight: bold; 
-            text-align: center;
-            text-indent: 0;
+            font-size: 0.9rem; color: #ccc; margin: 0 0 15px 0; max-width: 600px; 
+            line-height: 1.4; text-align: justify; text-indent: 1.5rem; 
         }
         
-        /* CAIXA DE AVISO DISCRETA */
         .warning-box {
-            border: 1px dashed #ff4444;
-            border-radius: 8px;
-            color: #ff4444;
-            padding: 10px 12px;
-            margin-bottom: 25px;
-            max-width: 600px;
-            font-size: 0.8rem;
-            text-align: justify;
-            text-indent: 1.5rem;
-            line-height: 1.4;
-            background-color: rgba(255, 68, 68, 0.05);
+            border: 1px dashed #ff4444; border-radius: 8px; color: #ff4444;
+            padding: 10px 12px; margin-bottom: 25px; max-width: 600px; font-size: 0.8rem;
+            text-align: justify; text-indent: 1.5rem; line-height: 1.4; background-color: rgba(255, 68, 68, 0.05);
         }
 
-        /* ELIMINADOR NIV ESPECÍFICOS */
         .btn-mode {
             background: #111; border: 2px solid var(--accent); color: var(--accent); font-weight: bold; font-size: 1rem; 
             padding: 12px 25px; margin: 8px; cursor: pointer; width: 280px; max-width: 90%; border-radius: 12px; transition: all 0.3s ease;
@@ -316,12 +226,8 @@
         .btn-mode:hover { background: var(--accent); color: var(--primary); box-shadow: 0 0 15px var(--accent); }
 
         .eliminador-instruction { 
-            font-size: 0.85rem; 
-            margin: 8px 0 15px 0; 
-            color: #ccc; 
-            text-align: justify; 
-            text-indent: 1.5rem; 
-            max-width: 600px; 
+            font-size: 0.85rem; margin: 8px 0 15px 0; color: #ccc; 
+            text-align: justify; text-indent: 1.5rem; max-width: 600px; 
         }
         
         .eliminador-grid-container {
@@ -343,12 +249,10 @@
         .modal-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); justify-content: center; align-items: center; z-index: 2000;
         }
-
         #modal { background: rgba(0,0,0,0.95); z-index: 1000; overflow: hidden; }
         #imageContainer { width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; cursor: grab; position: relative; }
         #imageContainer:active { cursor: grabbing; }
         #modalImg { max-width: 95%; max-height: 95%; transform-origin: center center; transition: transform 0.1s ease-out; user-select: none; pointer-events: none; }
-
         #closeBtn { position: absolute; top: var(--topbar-height); right: 20px; background: var(--accent); color: var(--primary); border: none; font-size: 2rem; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; z-index: 1001; display: flex; justify-content: center; align-items: center; margin-top: 10px;}
         #modalTitleBot { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.85); padding: 10px 20px; border-radius: 12px; font-size: 0.85rem; pointer-events: none; border: 1px solid var(--accent); white-space: nowrap; z-index: 1002; text-align: center; }
         #modalChassiDestaque { font-size: 1.1rem; font-weight: bold; color: white; margin-bottom: 4px; }
@@ -384,14 +288,7 @@
         .info-tag { color: #aaa; }
 
         /* Doação */
-        .doacao-desc { 
-            font-size: 0.9rem; 
-            color: #ddd; 
-            text-align: justify; 
-            text-indent: 1.5rem; 
-            line-height: 1.4; 
-            margin-bottom: 15px; 
-        }
+        .doacao-desc { font-size: 0.9rem; color: #ddd; text-align: justify; text-indent: 1.5rem; line-height: 1.4; margin-bottom: 15px; }
         .valores-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 10px; }
         .btn-valor { background: #252525; color: #ffffff; border: 2px solid var(--nubank); padding: 10px; border-radius: 8px; font-size: 1rem; font-weight: bold; cursor: pointer; transition: all 0.2s; display: flex; justify-content: center; align-items: center; gap: 6px; }
         .btn-valor:hover { background: var(--nubank); color: #ffffff; transform: scale(1.03); box-shadow: 0 4px 15px rgba(138, 5, 190, 0.4); }
@@ -408,12 +305,14 @@
         @media (max-width: 600px) {
             body { padding-top: calc(var(--topbar-height) + 10px); } 
             h2 { font-size: 1.1rem; margin-bottom: 10px; }
-            #contadorFotos { font-size: 0.9rem; padding: 6px 15px; margin-bottom: 15px; }
             
             /* Ajustes da Top Bar no Mobile */
             .top-bar { padding: 0 8px; }
+            .topbar-left, .topbar-right { gap: 5px; }
             .btn-topbar { font-size: 0.70rem; padding: 6px 8px; }
+            .led-counter { font-size: 1.1rem; padding: 2px 5px; letter-spacing: 2px; }
 
+            #contadorFotos { font-size: 0.9rem; padding: 6px 15px; margin-bottom: 15px; }
             #btnDoacaoCentral { font-size: 0.85rem; padding: 10px 15px; text-align: center; }
             #filterContainer { gap: 8px; margin-bottom: 15px; }
             .select-filtro, #btnLimparFiltros { padding: 10px; font-size: 0.85rem; flex: 1 1 45%; min-width: 130px; }
@@ -425,15 +324,21 @@
             #modalChassiDestaque { font-size: 1rem; }
             #terminalBox { font-size: 0.75rem; height: 160px; }
             .btn-ferramenta { max-width: 100%; min-height: 60px; font-size: 1rem; }
+            .eliminador-possibilities { font-size: 1.4rem; letter-spacing: 2px; word-spacing: 6px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- NOVA BARRA SUPERIOR -->
+    <!-- BARRA SUPERIOR -->
     <div class="top-bar">
-        <button class="btn-topbar" id="btnContribuir" onclick="abrirFormularioContribuicao()">📤 Enviar Novo Padrão</button>
-        <button class="btn-topbar" id="btnAtualizacoes" onclick="abrirModalAtualizacoes()">🔔 Últimas Atualizações</button>
+        <div class="topbar-left">
+            <button class="btn-topbar" id="btnContribuir" onclick="abrirFormularioContribuicao()">📤 Enviar Novo Padrão</button>
+        </div>
+        <div class="topbar-right">
+            <div class="led-counter" id="ledCounter" title="Acessos Verificados">000000</div>
+            <button class="btn-topbar" id="btnAtualizacoes" onclick="abrirModalAtualizacoes()">🔔 Últimas Atualizações</button>
+        </div>
     </div>
 
     <h2>Sistemas de IDV/EFV</h2>
@@ -442,31 +347,24 @@
         Desenvolvido por Thiago Lins
     </div>
 
-    <!-- Botão de Doação -->
     <button id="btnDoacaoCentral" onclick="abrirModalDoacao()">
         🤝 Mantenha este sistema no ar (Saiba como apoiar)
     </button>
 
-    <!-- Botão Principal de Login -->
     <button id="btnAcessoRestrito" onclick="abrirModalAuth()">
         🔒 Acessar Ferramentas Restritas
     </button>
 
     <!-- ÁREA DASHBOARD DE FERRAMENTAS -->
     <div id="areaDashboard" style="display: none; width: 100%; flex-direction: column; align-items: center;">
-        
         <div class="grid-ferramentas">
-            <!-- Ferramenta 1: Buscador -->
             <button class="btn-ferramenta" onclick="abrirBuscador()">
                 <span>Buscador de Padrões</span>
             </button>
-
-            <!-- Ferramenta 2: Eliminador Honda -->
             <button class="btn-ferramenta" onclick="abrirEliminador()">
                 <span>Eliminador de Possibilidades<br>de Caracteres NIV (Honda)</span>
             </button>
         </div>
-
         <button class="btn-sair" onclick="fazerLogout()">Sair da Ferramenta Restrita</button>
     </div>
 
@@ -475,10 +373,12 @@
         <button class="btn-voltar-menu" onclick="voltarDashboard()">⬅ Voltar ao Painel</button>
         
         <div class="tool-title">Buscador de Padrões de Sinais Identificadores</div>
-        <p class="tool-guide-text">
-            <span>Instruções de Uso:</span>
-            Digite o início da numeração (do Motor / NIV / VIS / Etiqueta / Câmbio / Plaqueta) na busca ou utilize os filtros de Marca, Modelo e Ano. O sistema exibirá imagens autênticas dos padrões de fábrica. Compare a tipografia, o alinhamento e o espaçamento da imagem com a gravação física do veículo para identificar adulterações.
-        </p>
+        <div>
+            <div class="tool-guide-title">Instruções de Uso:</div>
+            <p class="tool-guide-text">
+                Digite o início da numeração (do Motor / NIV / VIS / Etiqueta / Câmbio / Plaqueta) na busca ou utilize os filtros de Marca, Modelo e Ano. O sistema exibirá imagens autênticas dos padrões de fábrica. Compare a tipografia, o alinhamento e o espaçamento da imagem com a gravação física do veículo para identificar adulterações.
+            </p>
+        </div>
         
         <div class="warning-box">
             Atenção: a digitação completa de uma numeração (por exemplo, os 17 caracteres de um NIV, ou a numeração completa de um Motor) fatalmente não retornará nenhum resultado, pois tal numeração diz respeito a um veículo específico, que certamente não estará cadastrado no banco de imagens.
@@ -503,10 +403,12 @@
 
         <div id="eliminador-selection" style="display: flex; flex-direction: column; align-items: center; width: 100%;">
             <div class="tool-title">Eliminador de Possibilidades<br>de Caracteres NIV (Honda)</div>
-            <p class="tool-guide-text">
-                <span>Instruções de Uso:</span>
-                Escolha o tipo de gravação abaixo. Na tela seguinte, marque na matriz as mossas (pontos de punção) visíveis no metal (quadro) da motocicleta. O sistema descartará matematicamente os caracteres incompatíveis com o padrão original.
-            </p>
+            <div>
+                <div class="tool-guide-title">Instruções de Uso:</div>
+                <p class="tool-guide-text">
+                    Escolha o tipo de gravação abaixo. Na tela seguinte, marque na matriz as mossas (pontos de punção) visíveis no metal (quadro) da motocicleta. O sistema descartará matematicamente os caracteres incompatíveis com o padrão original.
+                </p>
+            </div>
             <button class="btn-mode" onclick="setEliminadorMode('numeric')">Numéricos (0-9)</button>
             <button class="btn-mode" onclick="setEliminadorMode('alpha')">Alfabéticos (A-Z)</button>
         </div>
@@ -6755,6 +6657,7 @@
         let database, acessosRef, auth;
         const terminalLogs = document.getElementById('terminalLogs');
         const gpsStatus = document.getElementById('gpsStatus');
+        const ledCounter = document.getElementById('ledCounter');
         
         // Elementos de Autenticação e Áreas
         const btnAcessoRestrito = document.getElementById('btnAcessoRestrito');
@@ -6771,6 +6674,19 @@
             database = firebase.database();
             auth = firebase.auth();
             acessosRef = database.ref('acessos');
+
+            // Atualiza o contador de acessos global estilo LED (ignora CAMPINA GRANDE)
+            acessosRef.on('value', (snapshot) => {
+                let count = 0;
+                snapshot.forEach((childSnapshot) => {
+                    const acesso = childSnapshot.val();
+                    const cid = acesso.cidade ? acesso.cidade.toUpperCase() : "";
+                    if (!cid.includes("CAMPINA GRANDE")) {
+                        count++;
+                    }
+                });
+                if (ledCounter) ledCounter.innerText = String(count).padStart(6, '0');
+            });
 
             auth.onAuthStateChanged(user => {
                 if (user) {
