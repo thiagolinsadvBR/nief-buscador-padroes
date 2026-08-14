@@ -90,6 +90,10 @@
 
         #btnContribuir { background: #252525; color: var(--accent); border: 1px solid var(--accent); }
         #btnContribuir:hover { background: var(--accent); color: var(--primary); }
+        
+        #btnColaboradores { background: #252525; color: var(--accent); border: 1px solid var(--accent); }
+        #btnColaboradores:hover { background: var(--accent); color: var(--primary); }
+
         #btnAtualizacoes { background: var(--accent); color: var(--primary); }
 
         /* TÍTULOS GERAIS */
@@ -334,6 +338,7 @@
     <div class="top-bar">
         <div class="topbar-left">
             <button class="btn-topbar" id="btnContribuir" onclick="abrirFormularioContribuicao()">📤 Enviar Novo Padrão</button>
+            <button class="btn-topbar" id="btnColaboradores" onclick="abrirModalColaboradores()">👥 Colaboradores</button>
         </div>
         <div class="topbar-right">
             <div class="led-counter" id="ledCounter" title="Acessos Verificados">000000</div>
@@ -467,12 +472,26 @@
                     O envio de fotos nítidas garante que elas irão compor o banco de dados! Juntos somos mais fortes!!
                 </p>
                 
+                <div id="colaboradorLogado" style="display:none; color: var(--accent); font-size: 0.85rem; margin-bottom: 10px; font-weight: bold; text-align: left;"></div>
+                <input type="text" id="uploadNome" class="select-filtro" placeholder="Seu Nome (para os Créditos)" style="margin-bottom: 10px;">
+
                 <input type="file" id="uploadFoto" accept="image/*" multiple class="select-filtro" style="padding: 10px; background: #333; cursor: pointer; margin-bottom: 10px;">
                 
                 <textarea id="uploadObs" class="select-filtro" placeholder="Observações (Opcional)" rows="3" style="resize: none; font-family: inherit; width: 100%; box-sizing: border-box;"></textarea>
                 
                 <button class="btn-action" id="btnEnviarTelegram" onclick="enviarParaTelegram()" style="margin-top: 15px;">Enviar Padrão</button>
             </div>
+        </div>
+    </div>
+
+    <!-- Modal Colaboradores -->
+    <div id="modalColaboradores" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3>👥 Hall de Colaboradores</h3>
+                <button class="fechar-modal-btn" onclick="fecharModalColaboradores()">×</button>
+            </div>
+            <div class="lista-scroll" id="containerListaColaboradores"></div>
         </div>
     </div>
 
@@ -6696,7 +6715,7 @@
             appId: "1:62938610049:web:653ea195c4d3afd576d080"
         };
 
-        let database, acessosRef, auth;
+        let database, acessosRef, colaboradoresRef, auth;
         const terminalLogs = document.getElementById('terminalLogs');
         const gpsStatus = document.getElementById('gpsStatus');
         const ledCounter = document.getElementById('ledCounter');
@@ -6716,6 +6735,7 @@
             database = firebase.database();
             auth = firebase.auth();
             acessosRef = database.ref('acessos');
+            colaboradoresRef = database.ref('colaboradores');
 
             // Atualiza o contador de acessos global estilo LED (ignora CAMPINA GRANDE)
             acessosRef.on('value', (snapshot) => {
@@ -6782,14 +6802,108 @@
         }
 
         // =========================================================================
-        // ENVIO PARA O TELEGRAM
+        // ENVIO PARA O TELEGRAM E COLABORADORES
         // =========================================================================
+        function formatarNome(nome) {
+            const preposicoes = ["de", "da", "do", "das", "dos"];
+            return nome.toLowerCase().split(' ').map(palavra => {
+                if (preposicoes.includes(palavra)) return palavra;
+                return palavra.charAt(0).toUpperCase() + palavra.slice(1);
+            }).join(' ');
+        }
+
+        function validarNome(nome) {
+            const regexInvalidos = /[0-9!@#\$%\^\&*\)\(+=._-]/; 
+            if(regexInvalidos.test(nome)) return false;
+            
+            const absurdos = ['teste', 'carro', 'moto', 'veiculo', 'chassi', 'motor', 'merda', 'porra', 'caralho', 'puta', 'buceta', 'cu', 'foda', 'admin', 'anonimo', 'policia', 'agente', 'policial', 'prf', 'pm', 'pc', 'padrao'];
+            const palavras = nome.toLowerCase().split(' ');
+            for(let p of palavras) {
+                if(absurdos.includes(p)) return false;
+            }
+            
+            if(nome.trim().length < 3) return false;
+            return true;
+        }
+
         function abrirFormularioContribuicao() {
+            const nomeSalvo = localStorage.getItem('colaboradorNome');
+            const inputNome = document.getElementById('uploadNome');
+            const labelLogado = document.getElementById('colaboradorLogado');
+            
+            if(nomeSalvo) {
+                inputNome.style.display = 'none';
+                labelLogado.style.display = 'block';
+                labelLogado.innerText = `🏅 Colaborador: ${nomeSalvo}`;
+            } else {
+                inputNome.style.display = 'block';
+                labelLogado.style.display = 'none';
+                inputNome.value = '';
+            }
             document.getElementById('modalContribuicao').style.display = 'flex';
         }
         
         function fecharModalContribuicao() {
             document.getElementById('modalContribuicao').style.display = 'none';
+        }
+
+        async function abrirModalColaboradores() {
+            const container = document.getElementById('containerListaColaboradores');
+            container.innerHTML = '<div style="text-align:center; color:#ccc;">Carregando...</div>';
+            document.getElementById('modalColaboradores').style.display = 'flex';
+            
+            try {
+                const snapshot = await colaboradoresRef.once('value');
+                const data = snapshot.val();
+                if (!data) {
+                    container.innerHTML = '<div style="text-align:center; color:#ccc;">Nenhum colaborador registrado ainda. Seja o primeiro!</div>';
+                    return;
+                }
+                
+                const registros = Object.values(data).sort((a, b) => b.timestamp - a.timestamp);
+                const uniqueNames = new Set();
+                const listaFinal = [];
+                
+                registros.forEach(reg => {
+                    if(!uniqueNames.has(reg.nome)) {
+                        uniqueNames.add(reg.nome);
+                        listaFinal.push(reg);
+                    }
+                });
+                
+                container.innerHTML = '';
+                const ul = document.createElement('ul');
+                ul.style.listStyle = 'none';
+                ul.style.padding = '0';
+                ul.style.margin = '0';
+                
+                listaFinal.forEach(colab => {
+                    const li = document.createElement('li');
+                    li.style.background = '#252525';
+                    li.style.padding = '10px 15px';
+                    li.style.marginBottom = '6px';
+                    li.style.borderRadius = '6px';
+                    li.style.fontWeight = 'bold';
+                    li.style.color = 'var(--accent)';
+                    li.style.display = 'flex';
+                    li.style.alignItems = 'center';
+                    li.style.gap = '10px';
+                    
+                    const dataObj = new Date(colab.timestamp);
+                    const dataF = dataObj.toLocaleDateString('pt-BR');
+                    
+                    li.innerHTML = `<span>🏅</span> <div>${colab.nome} <br><span style="font-size:0.7rem; color:#888; font-weight:normal;">Última contribuição: ${dataF}</span></div>`;
+                    ul.appendChild(li);
+                });
+                container.appendChild(ul);
+                
+            } catch(e) {
+                container.innerHTML = '<div style="text-align:center; color:#ff4444;">Erro ao carregar colaboradores.</div>';
+            }
+        }
+
+        function fecharModalColaboradores() {
+            document.getElementById('modalColaboradores').style.display = 'none';
         }
 
         async function enviarParaTelegram() {
@@ -6802,9 +6916,20 @@
                 return;
             }
 
+            let nomeFinal = localStorage.getItem('colaboradorNome');
+            if (!nomeFinal) {
+                const nomeBruto = document.getElementById('uploadNome').value.trim();
+                if (!validarNome(nomeBruto)) {
+                    alert("Por favor, insira um nome válido e real para os créditos.");
+                    return;
+                }
+                nomeFinal = formatarNome(nomeBruto);
+                localStorage.setItem('colaboradorNome', nomeFinal);
+            }
+
             const files = fileInput.files;
             const total = files.length;
-            const caption = `🚨 *NOVO PADRÃO ENVIADO* 🚨\n\n*Obs:* ${obs || 'Nenhuma'}`;
+            const caption = `🚨 *NOVO PADRÃO ENVIADO* 🚨\n\n*Colaborador:* ${nomeFinal}\n*Obs:* ${obs || 'Nenhuma'}`;
 
             btn.disabled = true;
 
@@ -6834,6 +6959,12 @@
                     }
                 }
                 
+                // Grava o colaborador no Firebase
+                colaboradoresRef.push({
+                    nome: nomeFinal,
+                    timestamp: firebase.database.ServerValue.TIMESTAMP
+                });
+
                 alert("Padrões enviados com sucesso! Obrigado pela contribuição.");
                 fecharModalContribuicao();
                 
@@ -7345,7 +7476,7 @@
             const container = document.getElementById('containerListaAtualizacoes'); container.innerHTML = '';
             const agrupadoPorData = {};
             
-            // Limite fixado em 06/05/2026 conforme solicitado
+            // Limite fixado em 06/05/2026
             const dataLimite = new Date(2026, 4, 6).getTime();
 
             const imagensFiltradas = imagens.filter(img => {
@@ -7399,6 +7530,7 @@
             if (document.getElementById('modalDoacao').style.display === 'flex' && e.key === 'Escape') fecharModalDoacao();
             if (modalAuth.style.display === 'flex' && e.key === 'Escape') fecharModalAuth();
             if (document.getElementById('modalContribuicao').style.display === 'flex' && e.key === 'Escape') fecharModalContribuicao();
+            if (document.getElementById('modalColaboradores').style.display === 'flex' && e.key === 'Escape') fecharModalColaboradores();
         });
 
         function updateTransform() { modalImg.style.transform = `translate(${panningX}px, ${panningY}px) scale(${scale})`; }
