@@ -467,7 +467,7 @@
                     O envio de fotos nítidas garante que elas irão compor o banco de dados! Juntos somos mais fortes!!
                 </p>
                 
-                <input type="file" id="uploadFoto" accept="image/*" class="select-filtro" style="padding: 10px; background: #333; cursor: pointer; margin-bottom: 10px;">
+                <input type="file" id="uploadFoto" accept="image/*" multiple class="select-filtro" style="padding: 10px; background: #333; cursor: pointer; margin-bottom: 10px;">
                 
                 <textarea id="uploadObs" class="select-filtro" placeholder="Observações (Opcional)" rows="3" style="resize: none; font-family: inherit; width: 100%; box-sizing: border-box;"></textarea>
                 
@@ -6798,40 +6798,50 @@
             const btn = document.getElementById('btnEnviarTelegram');
 
             if (!fileInput.files.length) {
-                alert("A foto é obrigatória!");
+                alert("Pelo menos uma foto é obrigatória!");
                 return;
             }
 
-            const file = fileInput.files[0];
+            const files = fileInput.files;
+            const total = files.length;
             const caption = `🚨 *NOVO PADRÃO ENVIADO* 🚨\n\n*Obs:* ${obs || 'Nenhuma'}`;
 
-            const formData = new FormData();
-            formData.append('chat_id', '1945271271');
-            formData.append('photo', file);
-            formData.append('caption', caption);
-            formData.append('parse_mode', 'Markdown');
-
-            btn.innerText = "⏳ Enviando...";
             btn.disabled = true;
 
             try {
-                const res = await fetch('https://api.telegram.org/bot8274657364:AAHT3DKU6ysZFf3nP3b1_z5r9jokYO0jc2U/sendPhoto', {
-                    method: 'POST',
-                    body: formData
-                });
-                const data = await res.json();
-                
-                if (data.ok) {
-                    alert("Padrão enviado com sucesso! Obrigado pela contribuição.");
-                    fecharModalContribuicao();
+                for (let i = 0; i < total; i++) {
+                    btn.innerText = `⏳ Enviando (${i + 1}/${total})...`;
                     
-                    fileInput.value = '';
-                    document.getElementById('uploadObs').value = '';
-                } else {
-                    alert("Erro ao enviar: " + data.description);
+                    const formData = new FormData();
+                    formData.append('chat_id', '1945271271');
+                    formData.append('document', files[i]);
+                    
+                    if (i === 0) {
+                        formData.append('caption', caption);
+                        formData.append('parse_mode', 'Markdown');
+                    }
+
+                    const res = await fetch('https://api.telegram.org/bot8274657364:AAHT3DKU6ysZFf3nP3b1_z5r9jokYO0jc2U/sendDocument', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    const data = await res.json();
+                    
+                    if (!data.ok) {
+                        alert(`Erro na foto ${i + 1}: ` + data.description);
+                        break; 
+                    }
                 }
+                
+                alert("Padrões enviados com sucesso! Obrigado pela contribuição.");
+                fecharModalContribuicao();
+                
+                fileInput.value = '';
+                document.getElementById('uploadObs').value = '';
+                
             } catch (err) {
-                alert("Erro de conexão ao enviar a foto.");
+                alert("Erro de conexão ao enviar as fotos.");
             } finally {
                 btn.innerText = "Enviar Padrão";
                 btn.disabled = false;
