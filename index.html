@@ -288,7 +288,14 @@
         .info-tag { color: #aaa; }
 
         /* Doação */
-        .doacao-desc { font-size: 0.9rem; color: #ddd; text-align: justify; text-indent: 1.5rem; line-height: 1.4; margin-bottom: 15px; }
+        .doacao-desc { 
+            font-size: 0.9rem; 
+            color: #ddd; 
+            text-align: justify; 
+            text-indent: 1.5rem; 
+            line-height: 1.4; 
+            margin-bottom: 15px; 
+        }
         .valores-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 10px; }
         .btn-valor { background: #252525; color: #ffffff; border: 2px solid var(--nubank); padding: 10px; border-radius: 8px; font-size: 1rem; font-weight: bold; cursor: pointer; transition: all 0.2s; display: flex; justify-content: center; align-items: center; gap: 6px; }
         .btn-valor:hover { background: var(--nubank); color: #ffffff; transform: scale(1.03); box-shadow: 0 4px 15px rgba(138, 5, 190, 0.4); }
@@ -542,8 +549,10 @@
                 <button class="fechar-modal-btn" onclick="fecharModalDoacao()" style="position: absolute; right: 0;">×</button>
             </div>
             <p class="doacao-desc">
-                Companheiro de missão, este sistema nasceu nas ruas e para as ruas. Ele é mantido de forma 100% independente, com recursos próprios e muitas madrugadas de trabalho, sempre com o objetivo de dar mais segurança e agilidade às nossas abordagens.<br><br>
-                Se esta ferramenta já te ajudou em campo, considere retribuir! Qualquer contribuição é fundamental para cobrir os custos do servidor e me motiva a continuar criando novas funcionalidades para todos nós. Tamo junto! 👊🚓
+                Companheiro de missão, este sistema nasceu nas ruas e para as ruas. Ele é mantido de forma 100% independente, e com muitas madrugadas de trabalho, sempre com o objetivo de dar mais segurança e agilidade às nossas abordagens.
+            </p>
+            <p class="doacao-desc">
+                Se esta ferramenta já te ajudou em campo, considere contribuir! Qualquer contribuição nos motiva a continuar criando novas funcionalidades para todos nós. Tamo junto! 👊🚓
             </p>
             <div class="valores-grid">
                 <button class="btn-valor" onclick="window.open('https://nubank.com.br/cobrar/vxfnx/6a6b548b-5dfa-41f6-bc15-7fb60bb15fcb', '_blank')">R$ 1,00</button>
