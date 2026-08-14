@@ -7344,7 +7344,22 @@
         function abrirModalAtualizacoes() {
             const container = document.getElementById('containerListaAtualizacoes'); container.innerHTML = '';
             const agrupadoPorData = {};
-            [...imagens].sort((a, b) => b.timestamp - a.timestamp).forEach(img => { if (!agrupadoPorData[img.data]) agrupadoPorData[img.data] = []; agrupadoPorData[img.data].push(img); });
+            
+            // Limite fixado em 06/05/2026 conforme solicitado
+            const dataLimite = new Date(2026, 4, 6).getTime();
+
+            const imagensFiltradas = imagens.filter(img => {
+                if (!img.data) return false;
+                const partes = img.data.split('/');
+                const dataImg = new Date(partes[2], partes[1] - 1, partes[0]).getTime();
+                return dataImg >= dataLimite;
+            });
+
+            [...imagensFiltradas].sort((a, b) => b.timestamp - a.timestamp).forEach(img => { 
+                if (!agrupadoPorData[img.data]) agrupadoPorData[img.data] = []; 
+                agrupadoPorData[img.data].push(img); 
+            });
+
             for (const [data, fotos] of Object.entries(agrupadoPorData)) {
                 const divDia = document.createElement('div'); divDia.className = 'dia-atualizacao';
                 divDia.innerHTML = `<h4>📅 ${data}</h4>`;
