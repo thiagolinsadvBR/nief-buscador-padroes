@@ -87,7 +87,7 @@
             color: var(--primary);
         }
 
-        /* DASHBOARD - GRID DE FERRAMENTAS */
+        /* DASHBOARD - GRID DE FERRAMENTAS REFORMULADO (TEXTO APENAS) */
         .grid-ferramentas {
             display: flex;
             gap: 15px;
@@ -104,8 +104,8 @@
             border: 2px solid var(--accent);
             border-radius: 12px;
             width: 100%;
-            max-width: 280px; 
-            min-height: 80px; 
+            max-width: 280px; /* Largura ideal para caber bem no celular e no desktop */
+            min-height: 80px; /* Proporção retangular */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -242,24 +242,24 @@
         .thumb-chassi { font-size: 0.8rem; font-weight: bold; color: white; word-break: break-all; margin-bottom: 4px; }
         .thumb-info { font-size: 0.65rem; color: #aaa; word-break: break-word; }
 
-        /* ELIMINADOR NIV - PADRONIZADO COM O SISTEMA */
-        .eliminador-select-title { 
+        /* TEXTOS PADRÃO DAS FERRAMENTAS */
+        .tool-title { 
             font-size: 1.2rem; 
-            font-weight: bold; /* Adicionado Negrito */
+            font-weight: bold; 
             border-bottom: 2px solid var(--accent); 
             padding-bottom: 10px; 
             margin-bottom: 15px; 
             text-align: center; 
         }
-        .eliminador-guide-text { 
+        .tool-guide-text { 
             font-size: 0.9rem; 
-            color: #ccc; /* Cor suavizada para combinar com os outros modais */
-            margin-bottom: 30px; 
+            color: #ccc; 
+            margin-bottom: 15px; 
             max-width: 600px; 
             line-height: 1.5; 
             text-align: center; 
         }
-        .eliminador-guide-text span { 
+        .tool-guide-text span { 
             color: var(--accent); 
             display: block; 
             margin-bottom: 8px; 
@@ -267,6 +267,21 @@
             font-weight: bold; 
         }
         
+        /* CAIXA DE AVISO DISCRETA */
+        .warning-box {
+            border: 1px dashed #ff4444;
+            border-radius: 8px;
+            color: #ff4444;
+            padding: 12px 15px;
+            margin-bottom: 30px;
+            max-width: 600px;
+            font-size: 0.8rem;
+            text-align: center;
+            line-height: 1.4;
+            background-color: rgba(255, 68, 68, 0.05);
+        }
+
+        /* ELIMINADOR NIV ESPECÍFICOS */
         .btn-mode {
             background: #111; border: 2px solid var(--accent); color: var(--accent); font-weight: bold; font-size: 1rem; 
             padding: 15px 30px; margin: 10px; cursor: pointer; width: 280px; max-width: 90%; border-radius: 12px; transition: all 0.3s ease;
@@ -367,7 +382,6 @@
             #modalChassiDestaque { font-size: 1rem; }
             #terminalBox { font-size: 0.75rem; height: 180px; }
             
-            /* Ajuste para botões retangulares do Dashboard no Celular */
             .btn-ferramenta { max-width: 100%; min-height: 70px; font-size: 1rem; }
         }
     </style>
@@ -377,6 +391,7 @@
     <button class="btn-flutuante" id="btnContribuir" onclick="abrirFormularioContribuicao()">📤 Enviar Novo Padrão</button>
     <button class="btn-flutuante" id="btnAtualizacoes" onclick="abrirModalAtualizacoes()">🔔 Últimas Atualizações</button>
 
+    <!-- Título do Sistema Atualizado -->
     <h2>Sistemas de IDV/EFV</h2>
 
     <div style="font-size: 0.75rem; color: #666; margin-bottom: 5px; text-align: center; width: 100%;">
@@ -393,7 +408,7 @@
         🔒 Acessar Ferramentas Restritas
     </button>
 
-    <!-- ÁREA DASHBOARD DE FERRAMENTAS (BOTOES APENAS TEXTO) -->
+    <!-- ÁREA DASHBOARD DE FERRAMENTAS -->
     <div id="areaDashboard" style="display: none; width: 100%; flex-direction: column; align-items: center;">
         
         <div class="grid-ferramentas">
@@ -414,6 +429,17 @@
     <!-- FERRAMENTA 1: BUSCADOR DE PADRÕES -->
     <div id="areaBuscador" style="display: none; width: 100%; flex-direction: column; align-items: center; max-width: 1100px;">
         <button class="btn-voltar-menu" onclick="voltarDashboard()">⬅ Voltar ao Painel</button>
+        
+        <div class="tool-title">Buscador de Padrões IDV</div>
+        <p class="tool-guide-text">
+            <span>Instruções de Uso:</span>
+            Digite o início da numeração (do Motor / NIV / VIS / Etiqueta / Câmbio / Plaqueta) na busca ou utilize os filtros de Marca, Modelo e Ano. O sistema exibirá imagens autênticas dos padrões de fábrica. Compare a tipografia, o alinhamento e o espaçamento da imagem com a gravação física do veículo para identificar adulterações.
+        </p>
+        
+        <div class="warning-box">
+            Atenção: a digitação completa de uma numeração (por exemplo, os 17 caracteres de um NIV, ou a numeração completa de um Motor) fatalmente não retornará nenhum resultado, pois tal numeração diz respeito a um veículo específico, que certamente não estará cadastrado no banco de imagens.
+        </div>
+
         <div id="contadorFotos">📸 Carregando padrões...</div>
         <div id="searchContainer">
             <input type="text" id="searchInput" placeholder="Digite a sequência (ex: 9BD...)" autocomplete="off">
@@ -432,13 +458,13 @@
         <button class="btn-voltar-menu" onclick="voltarDashboard()">⬅ Voltar ao Painel</button>
 
         <div id="eliminador-selection" style="display: flex; flex-direction: column; align-items: center; width: 100%;">
-            <div class="eliminador-select-title">Eliminador de Possibilidades<br>de Caracteres (Honda)</div>
-            <p class="eliminador-guide-text">
+            <div class="tool-title">Eliminador de Possibilidades<br>de Caracteres (Honda)</div>
+            <p class="tool-guide-text">
                 <span>Instruções de Uso:</span>
-                Escolha o tipo de gravação abaixo. Na tela seguinte, marque na matriz as mossas (pontos de punção) visíveis no metal da motocicleta. O sistema descartará matematicamente os caracteres incompatíveis com o padrão original.
+                Escolha o tipo de gravação abaixo. Na tela seguinte, marque na matriz as mossas (pontos de punção) visíveis no metal (quadro) da motocicleta. O sistema descartará matematicamente os caracteres incompatíveis com o padrão original.
             </p>
             <button class="btn-mode" onclick="setEliminadorMode('numeric')">Numéricos (0-9)</button>
-            <button class="btn-mode" onclick="setEliminadorMode('alpha')">Alfabéticos (NIV)</button>
+            <button class="btn-mode" onclick="setEliminadorMode('alpha')">Alfabéticos (A-Z)</button>
         </div>
 
         <div id="eliminador-main" style="display: none; width: 100%; flex-direction: column; align-items: center;">
@@ -6835,7 +6861,7 @@
             if (mode === 'numeric') {
                 elimAppTitleEl.textContent = "Eliminador Numérico (0-9)";
             } else {
-                elimAppTitleEl.textContent = "Eliminador Alfabético (NIV)";
+                elimAppTitleEl.textContent = "Eliminador Alfabético (A-Z)";
             }
             initEliminadorGrid();
         }
