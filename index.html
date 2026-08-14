@@ -90,7 +90,7 @@
         /* DASHBOARD - GRID DE FERRAMENTAS */
         .grid-ferramentas {
             display: flex;
-            gap: 25px;
+            gap: 15px;
             justify-content: center;
             flex-wrap: wrap;
             margin-top: 20px;
@@ -102,11 +102,11 @@
         .btn-ferramenta {
             background: #111;
             border: 2px solid var(--accent);
-            border-radius: 18px;
-            width: 150px;
-            height: 150px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 280px; 
+            min-height: 80px; 
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
             cursor: pointer;
@@ -114,30 +114,17 @@
             text-decoration: none;
             color: var(--accent);
             font-weight: bold;
-            font-size: 0.95rem;
+            font-size: 1.15rem;
             text-align: center;
-            line-height: 1.2;
-            padding: 10px;
+            padding: 15px 20px;
             box-sizing: border-box;
+            letter-spacing: 0.5px;
         }
 
         .btn-ferramenta:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 20px rgba(124, 252, 0, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(124, 252, 0, 0.3);
             background: #1a1a1a;
-        }
-
-        .btn-ferramenta img.icone-custom {
-            width: 55px;
-            height: 55px;
-            margin-bottom: 15px;
-            transition: all 0.3s ease;
-            filter: invert(60%);
-            object-fit: contain;
-        }
-
-        .btn-ferramenta:hover img.icone-custom {
-            filter: invert(80%) drop-shadow(0px 0px 5px rgba(255,255,255,0.5));
         }
 
         .btn-sair {
@@ -168,6 +155,7 @@
             align-self: flex-start;
             font-size: 0.9rem;
             transition: 0.2s;
+            font-weight: bold;
         }
         
         .btn-voltar-menu:hover {
@@ -254,10 +242,30 @@
         .thumb-chassi { font-size: 0.8rem; font-weight: bold; color: white; word-break: break-all; margin-bottom: 4px; }
         .thumb-info { font-size: 0.65rem; color: #aaa; word-break: break-word; }
 
-        /* NOVA FERRAMENTA: ELIMINADOR NIV */
-        .eliminador-select-title { font-size: 1.2rem; border-bottom: 2px solid var(--accent); padding-bottom: 15px; margin-bottom: 25px; letter-spacing: 1px; line-height: 1.4; text-align: center; }
-        .eliminador-guide-text { font-size: 0.85rem; color: #aaa; margin-bottom: 30px; max-width: 600px; line-height: 1.5; text-align: center; }
-        .eliminador-guide-text span { color: var(--accent); display: block; margin-bottom: 8px; font-size: 0.95rem; font-weight:bold; }
+        /* ELIMINADOR NIV - PADRONIZADO COM O SISTEMA */
+        .eliminador-select-title { 
+            font-size: 1.2rem; 
+            font-weight: bold; /* Adicionado Negrito */
+            border-bottom: 2px solid var(--accent); 
+            padding-bottom: 10px; 
+            margin-bottom: 15px; 
+            text-align: center; 
+        }
+        .eliminador-guide-text { 
+            font-size: 0.9rem; 
+            color: #ccc; /* Cor suavizada para combinar com os outros modais */
+            margin-bottom: 30px; 
+            max-width: 600px; 
+            line-height: 1.5; 
+            text-align: center; 
+        }
+        .eliminador-guide-text span { 
+            color: var(--accent); 
+            display: block; 
+            margin-bottom: 8px; 
+            font-size: 1rem; 
+            font-weight: bold; 
+        }
         
         .btn-mode {
             background: #111; border: 2px solid var(--accent); color: var(--accent); font-weight: bold; font-size: 1rem; 
@@ -265,7 +273,7 @@
         }
         .btn-mode:hover { background: var(--accent); color: var(--primary); box-shadow: 0 0 15px var(--accent); }
 
-        .eliminador-instruction { font-size: 0.8rem; margin: 10px 0 20px 0; color: #aaa; text-align: center; max-width: 600px; }
+        .eliminador-instruction { font-size: 0.85rem; margin: 10px 0 20px 0; color: #ccc; text-align: center; max-width: 600px; }
         
         .eliminador-grid-container {
             display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; background-color: #252525; padding: 20px; 
@@ -279,9 +287,8 @@
         .eliminador-dot.active.forbidden { background-color: #ff4444 !important; border-color: #ff4444 !important; box-shadow: 0 0 15px #ff4444 !important; }
         
         .eliminador-results-box { width: 100%; text-align: center; margin-top: 10px; background: #111; padding: 15px; border-radius: 12px; border: 1px solid var(--accent); box-sizing: border-box; }
-        .eliminador-label { font-size: 0.9rem; margin-bottom: 5px; color:#aaa; }
+        .eliminador-label { font-size: 0.9rem; margin-bottom: 5px; color:#aaa; font-weight: bold; }
         .eliminador-possibilities { font-size: 2rem; font-weight: bold; color: var(--accent); word-spacing: 12px; line-height: 1.4; min-height: 40px; word-wrap: break-word; }
-
 
         /* MODAIS GERAIS (Fundo) */
         .modal-overlay {
@@ -359,6 +366,9 @@
             #modalTitleBot { bottom: 25px; width: 85%; white-space: normal; padding: 8px 15px; }
             #modalChassiDestaque { font-size: 1rem; }
             #terminalBox { font-size: 0.75rem; height: 180px; }
+            
+            /* Ajuste para botões retangulares do Dashboard no Celular */
+            .btn-ferramenta { max-width: 100%; min-height: 70px; font-size: 1rem; }
         }
     </style>
 </head>
@@ -367,7 +377,6 @@
     <button class="btn-flutuante" id="btnContribuir" onclick="abrirFormularioContribuicao()">📤 Enviar Novo Padrão</button>
     <button class="btn-flutuante" id="btnAtualizacoes" onclick="abrirModalAtualizacoes()">🔔 Últimas Atualizações</button>
 
-    <!-- Título do Sistema Atualizado -->
     <h2>Sistemas de IDV/EFV</h2>
 
     <div style="font-size: 0.75rem; color: #666; margin-bottom: 5px; text-align: center; width: 100%;">
@@ -384,22 +393,19 @@
         🔒 Acessar Ferramentas Restritas
     </button>
 
-    <!-- ÁREA DASHBOARD DE FERRAMENTAS -->
+    <!-- ÁREA DASHBOARD DE FERRAMENTAS (BOTOES APENAS TEXTO) -->
     <div id="areaDashboard" style="display: none; width: 100%; flex-direction: column; align-items: center;">
         
         <div class="grid-ferramentas">
             <!-- Ferramenta 1: Buscador -->
             <button class="btn-ferramenta" onclick="abrirBuscador()">
-                <img src="lupa engrenagem.png" alt="Buscador de Padrões" class="icone-custom">
-                <span>Buscador de<br>Padrões</span>
+                <span>Buscador de Padrões</span>
             </button>
 
             <!-- Ferramenta 2: Eliminador Honda -->
             <button class="btn-ferramenta" onclick="abrirEliminador()">
-                <img src="padrao niv honda.png" alt="Eliminador Honda" class="icone-custom">
-                <span>Eliminador<br>NIV Honda</span>
+                <span>Eliminador NIV Honda</span>
             </button>
-            
         </div>
 
         <button class="btn-sair" onclick="fazerLogout()">Sair da Ferramenta Restrita</button>
@@ -425,34 +431,32 @@
     <div id="areaEliminador" style="display: none; width: 100%; flex-direction: column; align-items: center; max-width: 800px;">
         <button class="btn-voltar-menu" onclick="voltarDashboard()">⬅ Voltar ao Painel</button>
 
-        <!-- Seleção de Modo do Eliminador -->
         <div id="eliminador-selection" style="display: flex; flex-direction: column; align-items: center; width: 100%;">
-            <div class="eliminador-select-title">ELIMINADOR DE POSSIBILIDADES<br>DE CARACTERES (HONDA)</div>
+            <div class="eliminador-select-title">Eliminador de Possibilidades<br>de Caracteres (Honda)</div>
             <p class="eliminador-guide-text">
-                <span>INSTRUÇÕES DE USO:</span>
-                ESCOLHA O TIPO DE GRAVAÇÃO ABAIXO. NA TELA SEGUINTE, MARQUE NA MATRIZ AS MOSSAS (PONTOS DE PUNÇÃO) VISÍVEIS NO METAL DA MOTOCICLETA. O SISTEMA DESCARTARÁ MATEMATICAMENTE OS CARACTERES INCOMPATÍVEIS COM O PADRÃO ORIGINAL.
+                <span>Instruções de Uso:</span>
+                Escolha o tipo de gravação abaixo. Na tela seguinte, marque na matriz as mossas (pontos de punção) visíveis no metal da motocicleta. O sistema descartará matematicamente os caracteres incompatíveis com o padrão original.
             </p>
-            <button class="btn-mode" onclick="setEliminadorMode('numeric')">NUMÉRICOS (0-9)</button>
-            <button class="btn-mode" onclick="setEliminadorMode('alpha')">ALFABÉTICOS (NIV)</button>
+            <button class="btn-mode" onclick="setEliminadorMode('numeric')">Numéricos (0-9)</button>
+            <button class="btn-mode" onclick="setEliminadorMode('alpha')">Alfabéticos (NIV)</button>
         </div>
 
-        <!-- Interface de Matriz do Eliminador -->
         <div id="eliminador-main" style="display: none; width: 100%; flex-direction: column; align-items: center;">
             <h3 id="eliminador-app-title" style="color: var(--accent); margin-bottom: 5px; text-align:center;"></h3>
             <p class="eliminador-instruction">
-                SELECIONE NO PADRÃO ABAIXO AS MARCAS APARENTES DO NIV ORIGINAL GRAVADOS NO QUADRO DA MOTOCICLETA
+                Selecione no padrão abaixo as marcas aparentes do NIV original gravados no quadro da motocicleta.
             </p>
 
             <div class="eliminador-grid-container" id="eliminador-grid"></div>
 
             <div class="eliminador-results-box">
-                <div class="eliminador-label">CARACTERES ORIGINAIS POSSÍVEIS:</div>
+                <div class="eliminador-label">Caracteres Originais Possíveis:</div>
                 <div class="eliminador-possibilities" id="eliminador-result">---</div>
             </div>
             
             <div style="display: flex; gap: 15px; margin-top: 20px; width: 100%; justify-content: center; flex-wrap: wrap;">
-                <button class="btn-action" style="max-width: 200px; border-color: #888; color: #888;" onclick="showEliminadorSelection()">⬅ VOLTAR A SELEÇÃO</button>
-                <button class="btn-action" style="max-width: 200px;" onclick="resetEliminadorGrid()">LIMPAR MATRIZ</button>
+                <button class="btn-action" style="max-width: 200px; border-color: #888; color: #888;" onclick="showEliminadorSelection()">⬅ Voltar à Seleção</button>
+                <button class="btn-action" style="max-width: 200px;" onclick="resetEliminadorGrid()">Limpar Matriz</button>
             </div>
         </div>
     </div>
@@ -461,7 +465,7 @@
     <br>
     <hr style="border: none; border-top: 1px solid #333; width: 80%; max-width: 800px; margin: 20px 0;">
 
-    <!-- SEÇÃO DE REGISTRO DE ACESSO (Pública) -->
+    <!-- SEÇÃO DE REGISTRO DE ACESSO -->
     <div style="width: 100%; max-width: 800px; margin-top: 20px; text-align: center; display: flex; flex-direction: column; align-items: center;">
         <h3 id="tituloTerminal" style="color: var(--accent); margin-bottom: 15px; font-size: 1.1rem; user-select: none; cursor: default;">📡 Terminal de Acessos Globais (Ao Vivo)</h3>
         <div style="width: 100%; max-width: 700px;">
@@ -6664,15 +6668,6 @@
                 "ano": "2018",
                 "data": "03/08/2026",
                 "timestamp": 1785769422.9504845
-        },
-        {
-                "arquivo": "lupa engrenagem.png",
-                "chassi": "lupa engrenagem",
-                "marca": "",
-                "modelo": "",
-                "ano": "",
-                "data": "11/08/2026",
-                "timestamp": 1786486954.4744506
         }
 ];
         // =========================================================================
@@ -6838,9 +6833,9 @@
             elimScreenSelection.style.display = 'none';
             elimScreenMain.style.display = 'flex';
             if (mode === 'numeric') {
-                elimAppTitleEl.textContent = "ELIMINADOR NUMÉRICO (0-9)";
+                elimAppTitleEl.textContent = "Eliminador Numérico (0-9)";
             } else {
-                elimAppTitleEl.textContent = "ELIMINADOR ALFABÉTICO (NIV)";
+                elimAppTitleEl.textContent = "Eliminador Alfabético (NIV)";
             }
             initEliminadorGrid();
         }
