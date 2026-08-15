@@ -19,7 +19,6 @@
             --text: #ffffff;
             --nubank: #8A05BE;
             --nubank-hover: #A824E3;
-            --topbar-height: 60px;
         }
 
         body {
@@ -27,152 +26,203 @@
             background-color: var(--primary);
             color: var(--text);
             margin: 0;
-            padding: calc(var(--topbar-height) + 15px) 20px 20px 20px;
+            padding: 70px 20px 20px 20px; 
             display: flex;
             flex-direction: column;
             align-items: center;
             overscroll-behavior: none;
         }
 
-        /* BARRA SUPERIOR */
-        .top-bar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: var(--topbar-height);
-            background-color: rgba(26, 26, 26, 0.95);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border-bottom: 1px solid #333;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 15px;
-            box-sizing: border-box;
-            z-index: 1000;
-        }
-
-        .topbar-left, .topbar-right {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        /* CONTADOR LED */
-        .led-counter {
-            font-family: 'DotGothic16', monospace;
-            font-size: 1.5rem;
-            color: var(--accent);
-            background-color: #050505;
-            border: 2px solid #222;
-            border-radius: 4px;
-            padding: 2px 10px;
-            letter-spacing: 4px;
-            text-shadow: 0 0 5px var(--accent);
-            box-shadow: inset 0 0 8px #000, 0 0 5px rgba(124, 252, 0, 0.2);
-            user-select: none;
-        }
-
-        /* BOTÕES DA TOP BAR */
-        .btn-topbar {
-            border: none;
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-weight: bold;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: transform 0.2s, background 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        .btn-topbar:hover { transform: translateY(-2px); }
-
-        #btnContribuir { background: #252525; color: var(--accent); border: 1px solid var(--accent); }
-        #btnContribuir:hover { background: var(--accent); color: var(--primary); }
-        
-        #btnColaboradores { background: #252525; color: var(--accent); border: 1px solid var(--accent); }
-        #btnColaboradores:hover { background: var(--accent); color: var(--primary); }
-
-        #btnAtualizacoes { background: var(--accent); color: var(--primary); }
-
-        /* TÍTULOS GERAIS */
         h2 { 
             border-bottom: 2px solid var(--accent); 
-            padding-bottom: 8px; 
-            margin-bottom: 10px; 
+            padding-bottom: 10px; 
+            margin-bottom: 15px; 
             text-align: center; 
             max-width: 95%;
             word-wrap: break-word;
-            margin-top: 0;
         }
 
-        /* BOTÕES PRINCIPAIS */
+        /* Botão de Doação Centralizado */
         #btnDoacaoCentral {
-            background: var(--nubank); color: #ffffff; border: 2px solid var(--nubank);
-            padding: 12px 28px; border-radius: 25px; font-weight: bold; font-size: 0.95rem;
-            cursor: pointer; margin-top: 5px; margin-bottom: 15px; transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(138, 5, 190, 0.4); display: flex; align-items: center; gap: 8px;
+            background: var(--nubank);
+            color: #ffffff;
+            border: 2px solid var(--nubank);
+            padding: 12px 28px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 0.95rem;
+            cursor: pointer;
+            margin-top: 10px;
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(138, 5, 190, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
+        
         #btnDoacaoCentral:hover {
-            background: var(--nubank-hover); border-color: var(--nubank-hover); transform: scale(1.05);
+            background: var(--nubank-hover);
+            border-color: var(--nubank-hover);
+            color: #ffffff;
+            box-shadow: 0 6px 20px rgba(168, 36, 227, 0.6);
+            transform: scale(1.05);
         }
 
+        /* Botão de Login Inicial */
         #btnAcessoRestrito {
-            background: #111; color: var(--accent); border: 2px solid var(--accent);
-            padding: 15px 30px; border-radius: 12px; font-weight: bold; font-size: 1.1rem;
-            cursor: pointer; margin-bottom: 15px; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(124, 252, 0, 0.2);
+            background: #111;
+            color: var(--accent);
+            border: 2px solid var(--accent);
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(124, 252, 0, 0.2);
         }
-        #btnAcessoRestrito:hover { background: var(--accent); color: var(--primary); }
+
+        #btnAcessoRestrito:hover {
+            background: var(--accent);
+            color: var(--primary);
+        }
 
         /* DASHBOARD - GRID DE FERRAMENTAS */
         .grid-ferramentas {
-            display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
-            margin-top: 10px; margin-bottom: 15px; width: 100%; max-width: 800px;
+            display: flex;
+            gap: 25px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+            margin-bottom: 50px;
+            width: 100%;
+            max-width: 800px;
         }
 
         .btn-ferramenta {
-            background: #111; border: 2px solid var(--accent); border-radius: 12px;
-            width: 100%; max-width: 280px; min-height: 70px; display: flex;
-            justify-content: center; align-items: center; cursor: pointer;
-            transition: all 0.3s ease; text-decoration: none; color: var(--accent);
-            font-weight: bold; font-size: 1.15rem; text-align: center;
-            padding: 12px 20px; box-sizing: border-box; letter-spacing: 0.5px;
+            background: #111;
+            border: 2px solid var(--accent);
+            border-radius: 18px;
+            width: 150px;
+            height: 150px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: var(--accent);
+            font-weight: bold;
+            font-size: 0.95rem;
+            text-align: center;
+            line-height: 1.2;
+            padding: 10px;
+            box-sizing: border-box;
         }
+
         .btn-ferramenta:hover {
-            transform: translateY(-3px); box-shadow: 0 5px 15px rgba(124, 252, 0, 0.3); background: #1a1a1a;
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(124, 252, 0, 0.3);
+            background: #1a1a1a;
+        }
+
+        .btn-ferramenta img.icone-custom {
+            width: 55px;
+            height: 55px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+            filter: invert(60%);
+            object-fit: contain;
+        }
+
+        .btn-ferramenta:hover img.icone-custom {
+            filter: invert(80%) drop-shadow(0px 0px 5px rgba(255,255,255,0.5));
         }
 
         .btn-sair {
-            background: transparent; border: 2px solid #ff4444; color: #ff4444;
-            padding: 10px 30px; border-radius: 8px; font-weight: bold; cursor: pointer;
-            transition: 0.3s; max-width: 300px; margin-bottom: 10px;
+            background: transparent;
+            border: 2px solid #ff4444;
+            color: #ff4444;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            max-width: 300px;
         }
-        .btn-sair:hover { background: #ff4444; color: white; }
+
+        .btn-sair:hover {
+            background: #ff4444;
+            color: white;
+        }
 
         .btn-voltar-menu {
-            background: transparent; color: var(--text); border: 1px solid #444;
-            padding: 10px 20px; border-radius: 8px; cursor: pointer; margin-bottom: 20px;
-            align-self: flex-start; font-size: 0.9rem; transition: 0.2s; font-weight: bold;
+            background: transparent;
+            color: var(--text);
+            border: 1px solid #444;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 25px;
+            align-self: flex-start;
+            font-size: 0.9rem;
+            transition: 0.2s;
         }
-        .btn-voltar-menu:hover { background: #333; border-color: var(--accent); }
+        
+        .btn-voltar-menu:hover {
+            background: #333;
+            border-color: var(--accent);
+        }
 
-        /* BUSCADOR DE PADRÕES */
+        /* CONFIGURAÇÕES GERAIS DE ITENS */
         #contadorFotos {
-            color: var(--accent); font-weight: bold; margin-bottom: 20px; font-size: 1.1rem;
-            text-align: center; background: #252525; padding: 8px 20px; border-radius: 20px; border: 1px solid #333;
+            color: var(--accent);
+            font-weight: bold;
+            margin-bottom: 25px;
+            font-size: 1.1rem;
+            text-align: center;
+            background: #252525;
+            padding: 8px 20px;
+            border-radius: 20px;
+            border: 1px solid #333;
         }
+
+        .btn-flutuante {
+            position: fixed; 
+            top: 20px;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 0.85rem;
+            cursor: pointer;
+            z-index: 900;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            transition: transform 0.2s, background 0.2s;
+        }
+        .btn-flutuante:hover { transform: translateY(-2px); }
+
+        #btnContribuir { left: 20px; background: #252525; color: var(--accent); border: 1px solid var(--accent); }
+        #btnContribuir:hover { background: var(--accent); color: var(--primary); }
+
+        #btnAtualizacoes { right: 20px; background: var(--accent); color: var(--primary); }
+
         #searchContainer { width: 100%; max-width: 600px; margin-bottom: 20px; }
+
         #searchInput {
-            width: 100%; padding: 16px; font-size: 1.2rem; border-radius: 12px; border: 2px solid #333;
+            width: 100%; padding: 18px; font-size: 1.3rem; border-radius: 12px; border: 2px solid #333;
             background: #252525; color: white; box-shadow: 0 10px 20px rgba(0,0,0,0.4);
             transition: border-color 0.3s; box-sizing: border-box;
         }
         #searchInput:focus { outline: none; border-color: var(--accent); }
+
         #filterContainer {
-            width: 100%; max-width: 800px; display: flex; gap: 10px; margin-bottom: 25px; justify-content: center; flex-wrap: wrap;
+            width: 100%; max-width: 800px; display: flex; gap: 10px; margin-bottom: 30px; justify-content: center; flex-wrap: wrap;
         }
+
         .select-filtro {
             padding: 12px 15px; border-radius: 8px; background: #252525; color: white; border: 1px solid #444; 
             font-size: 0.95rem; outline: none; flex-grow: 1; min-width: 150px; cursor: pointer; transition: border-color 0.2s; box-sizing: border-box;
@@ -195,112 +245,99 @@
         #btnLimparFiltros:hover { background: #ff4444; color: white; }
 
         #gallery {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; width: 100%; max-width: 1100px; padding-bottom: 40px;
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; width: 100%; max-width: 1100px; padding-bottom: 50px;
         }
+
         .thumbnail { cursor: pointer; border-radius: 8px; overflow: hidden; background: #222; border: 1px solid #444; animation: fadeIn 0.2s ease-in; display: flex; flex-direction: column; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .thumbnail:hover { border-color: var(--accent); transform: translateY(-2px); transition: 0.2s; }
         .thumbnail img { width: 100%; height: 130px; object-fit: cover; display: block; }
-        .thumb-text-container { padding: 8px 6px; text-align: center; background: #222; flex-grow: 1; display: flex; flex-direction: column; justify-content: center; }
-        .thumb-chassi { font-size: 0.8rem; font-weight: bold; color: white; word-break: break-all; margin-bottom: 2px; }
+        .thumb-text-container { padding: 10px 8px; text-align: center; background: #222; flex-grow: 1; display: flex; flex-direction: column; justify-content: center; }
+        .thumb-chassi { font-size: 0.8rem; font-weight: bold; color: white; word-break: break-all; margin-bottom: 4px; }
         .thumb-info { font-size: 0.65rem; color: #aaa; word-break: break-word; }
 
-        /* TEXTOS PADRÃO DAS FERRAMENTAS E ELIMINADOR */
-        .tool-title { 
-            font-size: 1.2rem; font-weight: bold; border-bottom: 2px solid var(--accent); 
-            padding-bottom: 8px; margin-bottom: 12px; text-align: center; 
-        }
-        .tool-guide-title {
-            color: var(--accent); font-size: 1rem; font-weight: bold; text-align: center; margin-bottom: 8px;
-        }
-        .tool-guide-text { 
-            font-size: 0.9rem; color: #ccc; margin: 0 0 15px 0; max-width: 600px; 
-            line-height: 1.4; text-align: justify; text-indent: 1.5rem; 
-        }
+        /* NOVA FERRAMENTA: ELIMINADOR NIV */
+        .eliminador-select-title { font-size: 1.2rem; border-bottom: 2px solid var(--accent); padding-bottom: 15px; margin-bottom: 25px; letter-spacing: 1px; line-height: 1.4; text-align: center; }
+        .eliminador-guide-text { font-size: 0.85rem; color: #aaa; margin-bottom: 30px; max-width: 600px; line-height: 1.5; text-align: center; }
+        .eliminador-guide-text span { color: var(--accent); display: block; margin-bottom: 8px; font-size: 0.95rem; font-weight:bold; }
         
-        .warning-box {
-            border: 1px dashed #ff4444; border-radius: 8px; color: #ff4444;
-            padding: 10px 12px; margin-bottom: 25px; max-width: 600px; font-size: 0.8rem;
-            text-align: justify; text-indent: 1.5rem; line-height: 1.4; background-color: rgba(255, 68, 68, 0.05);
-        }
-
         .btn-mode {
             background: #111; border: 2px solid var(--accent); color: var(--accent); font-weight: bold; font-size: 1rem; 
-            padding: 12px 25px; margin: 8px; cursor: pointer; width: 280px; max-width: 90%; border-radius: 12px; transition: all 0.3s ease;
+            padding: 15px 30px; margin: 10px; cursor: pointer; width: 280px; max-width: 90%; border-radius: 12px; transition: all 0.3s ease;
         }
         .btn-mode:hover { background: var(--accent); color: var(--primary); box-shadow: 0 0 15px var(--accent); }
 
-        .eliminador-instruction { 
-            font-size: 0.85rem; margin: 8px 0 15px 0; color: #ccc; 
-            text-align: justify; text-indent: 1.5rem; max-width: 600px; 
-        }
+        .eliminador-instruction { font-size: 0.8rem; margin: 10px 0 20px 0; color: #aaa; text-align: center; max-width: 600px; }
         
         .eliminador-grid-container {
-            display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; background-color: #252525; padding: 15px; 
+            display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; background-color: #252525; padding: 20px; 
             border-radius: 12px; border: 1px solid #444; margin-bottom: 15px;
         }
         .eliminador-dot {
-            width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--accent); background-color: transparent; 
+            width: 35px; height: 35px; border-radius: 50%; border: 2px solid var(--accent); background-color: transparent; 
             cursor: pointer; transition: all 0.2s ease;
         }
         .eliminador-dot.active { background-color: var(--accent); box-shadow: 0 0 10px var(--accent); }
         .eliminador-dot.active.forbidden { background-color: #ff4444 !important; border-color: #ff4444 !important; box-shadow: 0 0 15px #ff4444 !important; }
         
-        .eliminador-results-box { width: 100%; text-align: center; margin-top: 10px; background: #111; padding: 12px; border-radius: 12px; border: 1px solid var(--accent); box-sizing: border-box; }
-        .eliminador-label { font-size: 0.9rem; margin-bottom: 5px; color:#aaa; font-weight: bold; }
-        .eliminador-possibilities { font-size: 1.8rem; font-weight: bold; color: var(--accent); word-spacing: 12px; line-height: 1.4; min-height: 35px; word-wrap: break-word; }
+        .eliminador-results-box { width: 100%; text-align: center; margin-top: 10px; background: #111; padding: 15px; border-radius: 12px; border: 1px solid var(--accent); box-sizing: border-box; }
+        .eliminador-label { font-size: 0.9rem; margin-bottom: 5px; color:#aaa; }
+        .eliminador-possibilities { font-size: 2rem; font-weight: bold; color: var(--accent); word-spacing: 12px; line-height: 1.4; min-height: 40px; word-wrap: break-word; }
+
 
         /* MODAIS GERAIS (Fundo) */
         .modal-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); justify-content: center; align-items: center; z-index: 2000;
         }
+
         #modal { background: rgba(0,0,0,0.95); z-index: 1000; overflow: hidden; }
         #imageContainer { width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; cursor: grab; position: relative; }
         #imageContainer:active { cursor: grabbing; }
         #modalImg { max-width: 95%; max-height: 95%; transform-origin: center center; transition: transform 0.1s ease-out; user-select: none; pointer-events: none; }
-        #closeBtn { position: absolute; top: var(--topbar-height); right: 20px; background: var(--accent); color: var(--primary); border: none; font-size: 2rem; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; z-index: 1001; display: flex; justify-content: center; align-items: center; margin-top: 10px;}
-        #modalTitleBot { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.85); padding: 10px 20px; border-radius: 12px; font-size: 0.85rem; pointer-events: none; border: 1px solid var(--accent); white-space: nowrap; z-index: 1002; text-align: center; }
-        #modalChassiDestaque { font-size: 1.1rem; font-weight: bold; color: white; margin-bottom: 4px; }
-        #modalInfoExtra { font-size: 0.75rem; color: #ccc; }
 
-        .action-buttons { position: absolute; bottom: 70px; right: 20px; display: flex; flex-direction: column; gap: 8px; z-index: 1001; }
+        #closeBtn { position: absolute; top: 20px; right: 20px; background: var(--accent); color: var(--primary); border: none; font-size: 2rem; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; z-index: 1001; display: flex; justify-content: center; align-items: center; }
+        #modalTitleBot { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.85); padding: 12px 25px; border-radius: 12px; font-size: 0.9rem; pointer-events: none; border: 1px solid var(--accent); white-space: nowrap; z-index: 1002; text-align: center; }
+        #modalChassiDestaque { font-size: 1.2rem; font-weight: bold; color: white; margin-bottom: 5px; }
+        #modalInfoExtra { font-size: 0.8rem; color: #ccc; }
+
+        .action-buttons { position: absolute; bottom: 70px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 1001; }
         .btn-action { background: #252525; color: var(--accent); border: 2px solid var(--accent); padding: 10px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 0.85rem; text-align: center; width: 100%; box-sizing: border-box; }
         .btn-action:hover { background: var(--accent); color: var(--primary); }
         #reportBtn { border-color: #ff4444; color: #ff4444; }
         #reportBtn:hover { background: #ff4444; color: white; }
 
         /* BOX DOS MODAIS */
-        .modal-box { background: #1a1a1a; width: 90%; max-width: 600px; max-height: 85vh; border-radius: 12px; border: 1px solid var(--accent); padding: 20px; box-shadow: 0 15px 30px rgba(0,0,0,0.6); position: relative; display: flex; flex-direction: column; box-sizing: border-box; }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding-bottom: 12px; margin-bottom: 12px; flex-shrink: 0; }
-        .modal-header h3 { margin: 0; color: var(--text); font-size: 1.1rem; }
-        .fechar-modal-btn { background: transparent; color: var(--text); border: none; font-size: 1.6rem; cursor: pointer; line-height: 1; }
+        .modal-box { background: #1a1a1a; width: 90%; max-width: 600px; max-height: 85vh; border-radius: 12px; border: 1px solid var(--accent); padding: 25px; box-shadow: 0 15px 30px rgba(0,0,0,0.6); position: relative; display: flex; flex-direction: column; box-sizing: border-box; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding-bottom: 15px; margin-bottom: 15px; flex-shrink: 0; }
+        .modal-header h3 { margin: 0; color: var(--text); }
+        .fechar-modal-btn { background: transparent; color: var(--text); border: none; font-size: 1.8rem; cursor: pointer; line-height: 1; }
 
         .lista-scroll { overflow-y: auto; flex-grow: 1; padding-right: 10px; }
         .lista-scroll::-webkit-scrollbar { width: 8px; }
         .lista-scroll::-webkit-scrollbar-track { background: #111; border-radius: 4px; }
         .lista-scroll::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 4px; }
         
-        .form-scroll { overflow-y: auto; padding-right: 5px; display: flex; flex-direction: column; gap: 12px; }
+        .form-scroll { overflow-y: auto; padding-right: 5px; display: flex; flex-direction: column; gap: 15px; }
         .form-scroll::-webkit-scrollbar { width: 6px; }
         .form-scroll::-webkit-scrollbar-track { background: #111; border-radius: 4px; }
         .form-scroll::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 4px; }
 
-        .dia-atualizacao { margin-bottom: 20px; }
-        .dia-atualizacao h4 { color: var(--accent); margin: 0 0 8px 0; font-size: 1rem; border-bottom: 1px dashed #333; padding-bottom: 4px; }
+        .dia-atualizacao { margin-bottom: 25px; }
+        .dia-atualizacao h4 { color: var(--accent); margin: 0 0 10px 0; font-size: 1.1rem; border-bottom: 1px dashed #333; padding-bottom: 5px; }
         .dia-atualizacao ul { list-style: none; padding: 0; margin: 0; }
-        .dia-atualizacao li { background: #252525; padding: 8px 12px; margin-bottom: 6px; border-radius: 6px; font-size: 0.8rem; }
-        .chassi-tag { color: white; font-weight: bold; font-size: 0.9rem; display: block; margin-bottom: 2px; }
+        .dia-atualizacao li { background: #252525; padding: 10px 15px; margin-bottom: 8px; border-radius: 6px; font-size: 0.85rem; }
+        .chassi-tag { color: white; font-weight: bold; font-size: 0.95rem; display: block; margin-bottom: 3px; }
         .info-tag { color: #aaa; }
 
         /* Doação */
-        .doacao-desc { font-size: 0.9rem; color: #ddd; text-align: justify; text-indent: 1.5rem; line-height: 1.4; margin-bottom: 15px; }
-        .valores-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 10px; }
-        .btn-valor { background: #252525; color: #ffffff; border: 2px solid var(--nubank); padding: 10px; border-radius: 8px; font-size: 1rem; font-weight: bold; cursor: pointer; transition: all 0.2s; display: flex; justify-content: center; align-items: center; gap: 6px; }
+        .doacao-desc { font-size: 0.95rem; color: #ddd; text-align: center; line-height: 1.5; margin-bottom: 20px; }
+        .valores-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 15px; }
+        .btn-valor { background: #252525; color: #ffffff; border: 2px solid var(--nubank); padding: 12px; border-radius: 10px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: all 0.2s; display: flex; justify-content: center; align-items: center; gap: 8px; }
         .btn-valor:hover { background: var(--nubank); color: #ffffff; transform: scale(1.03); box-shadow: 0 4px 15px rgba(138, 5, 190, 0.4); }
 
         /* Terminal */
-        #terminalBox { font-family: 'Courier New', Courier, monospace; text-align: left; background: #0a0a0a; padding: 12px; border-radius: 8px; font-size: 0.8rem; border: 1px solid #333; box-shadow: inset 0 0 10px rgba(0,0,0,0.8); height: 200px; display: flex; flex-direction: column; }
-        #terminalHeader { color: #aaa; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px dashed #333; flex-shrink: 0; }
+        #terminalBox { font-family: 'Courier New', Courier, monospace; text-align: left; background: #0a0a0a; padding: 15px; border-radius: 8px; font-size: 0.85rem; border: 1px solid #333; box-shadow: inset 0 0 10px rgba(0,0,0,0.8); height: 220px; display: flex; flex-direction: column; }
+        #terminalHeader { color: #aaa; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px dashed #333; flex-shrink: 0; }
         #terminalLogs { overflow-y: auto; flex-grow: 1; scroll-behavior: smooth; padding-right: 5px; color: var(--accent); }
         #terminalLogs::-webkit-scrollbar { width: 6px; }
         #terminalLogs::-webkit-scrollbar-track { background: #111; border-radius: 4px; }
@@ -308,88 +345,72 @@
         #terminalLogs::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 
         @media (max-width: 600px) {
-            body { padding-top: calc(var(--topbar-height) + 10px); } 
-            h2 { font-size: 1.1rem; margin-bottom: 10px; }
-            
-            /* Ajustes da Top Bar no Mobile */
-            .top-bar { padding: 0 8px; }
-            .topbar-left, .topbar-right { gap: 5px; }
-            .btn-topbar { font-size: 0.70rem; padding: 6px 8px; }
-            .led-counter { font-size: 1.1rem; padding: 2px 5px; letter-spacing: 2px; }
-
-            #contadorFotos { font-size: 0.9rem; padding: 6px 15px; margin-bottom: 15px; }
+            body { padding-top: 110px; } 
+            h2 { font-size: 1.1rem; margin-bottom: 15px; }
+            #contadorFotos { font-size: 0.9rem; padding: 6px 15px; margin-bottom: 20px; }
+            .btn-flutuante { font-size: 0.70rem; padding: 8px 10px; }
+            #btnContribuir { top: 10px; left: 10px; }
+            #btnAtualizacoes { top: 10px; right: 10px; }
             #btnDoacaoCentral { font-size: 0.85rem; padding: 10px 15px; text-align: center; }
-            #filterContainer { gap: 8px; margin-bottom: 15px; }
+            #filterContainer { gap: 8px; }
             .select-filtro, #btnLimparFiltros { padding: 10px; font-size: 0.85rem; flex: 1 1 45%; min-width: 130px; }
             .valores-grid { grid-template-columns: 1fr 1fr; }
             #gallery { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
             .action-buttons { bottom: 80px; right: 0; width: 100%; flex-direction: row; flex-wrap: wrap; justify-content: center; padding: 0 10px; box-sizing: border-box; }
-            .btn-action { flex: 1 1 45%; font-size: 0.75rem; padding: 10px 5px; }
+            .btn-action { flex: 1 1 45%; font-size: 0.75rem; padding: 12px 5px; }
             #modalTitleBot { bottom: 25px; width: 85%; white-space: normal; padding: 8px 15px; }
             #modalChassiDestaque { font-size: 1rem; }
-            #terminalBox { font-size: 0.75rem; height: 160px; }
-            .btn-ferramenta { max-width: 100%; min-height: 60px; font-size: 1rem; }
-            .eliminador-possibilities { font-size: 1.4rem; letter-spacing: 2px; word-spacing: 6px; }
+            #terminalBox { font-size: 0.75rem; height: 180px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- BARRA SUPERIOR -->
-    <div class="top-bar">
-        <div class="topbar-left">
-            <button class="btn-topbar" id="btnContribuir" onclick="abrirFormularioContribuicao()">📤 Enviar Novo Padrão</button>
-            <button class="btn-topbar" id="btnColaboradores" onclick="abrirModalColaboradores()">👥 Colaboradores</button>
-        </div>
-        <div class="topbar-right">
-            <div class="led-counter" id="ledCounter" title="Acessos Verificados">000000</div>
-            <button class="btn-topbar" id="btnAtualizacoes" onclick="abrirModalAtualizacoes()">🔔 Últimas Atualizações</button>
-        </div>
-    </div>
+    <button class="btn-flutuante" id="btnContribuir" onclick="abrirFormularioContribuicao()">📤 Enviar Novo Padrão</button>
+    <button class="btn-flutuante" id="btnColaboradores" onclick="abrirModalColaboradores()" style="left: 175px;">👥 Colaboradores</button>
+    <button class="btn-flutuante" id="btnAtualizacoes" onclick="abrirModalAtualizacoes()">🔔 Últimas Atualizações</button>
 
+    <!-- Título do Sistema Atualizado -->
     <h2>Sistemas de IDV/EFV</h2>
 
     <div style="font-size: 0.75rem; color: #666; margin-bottom: 5px; text-align: center; width: 100%;">
         Desenvolvido por Thiago Lins
     </div>
 
+    <!-- Botão de Doação -->
     <button id="btnDoacaoCentral" onclick="abrirModalDoacao()">
         🤝 Mantenha este sistema no ar (Saiba como apoiar)
     </button>
 
+    <!-- Botão Principal de Login -->
     <button id="btnAcessoRestrito" onclick="abrirModalAuth()">
         🔒 Acessar Ferramentas Restritas
     </button>
 
     <!-- ÁREA DASHBOARD DE FERRAMENTAS -->
     <div id="areaDashboard" style="display: none; width: 100%; flex-direction: column; align-items: center;">
+        
         <div class="grid-ferramentas">
+            <!-- Ferramenta 1: Buscador -->
             <button class="btn-ferramenta" onclick="abrirBuscador()">
-                <span>Buscador de Padrões</span>
+                <img src="lupa engrenagem.png" alt="Buscador de Padrões" class="icone-custom">
+                <span>Buscador de<br>Padrões</span>
             </button>
+
+            <!-- Ferramenta 2: Eliminador Honda -->
             <button class="btn-ferramenta" onclick="abrirEliminador()">
-                <span>Eliminador de Possibilidades<br>de Caracteres NIV (Honda)</span>
+                <img src="padrao niv honda.png" alt="Eliminador Honda" class="icone-custom">
+                <span>Eliminador<br>NIV Honda</span>
             </button>
+            
         </div>
+
         <button class="btn-sair" onclick="fazerLogout()">Sair da Ferramenta Restrita</button>
     </div>
 
     <!-- FERRAMENTA 1: BUSCADOR DE PADRÕES -->
     <div id="areaBuscador" style="display: none; width: 100%; flex-direction: column; align-items: center; max-width: 1100px;">
         <button class="btn-voltar-menu" onclick="voltarDashboard()">⬅ Voltar ao Painel</button>
-        
-        <div class="tool-title">Buscador de Padrões de Sinais Identificadores</div>
-        <div>
-            <div class="tool-guide-title">Instruções de Uso:</div>
-            <p class="tool-guide-text">
-                Digite o início da numeração (do Motor / NIV / VIS / Etiqueta / Câmbio / Plaqueta) na busca ou utilize os filtros de Marca, Modelo e Ano. O sistema exibirá imagens autênticas dos padrões de fábrica. Compare a tipografia, o alinhamento e o espaçamento da imagem com a gravação física do veículo para identificar adulterações.
-            </p>
-        </div>
-        
-        <div class="warning-box">
-            Atenção: a digitação completa de uma numeração (por exemplo, os 17 caracteres de um NIV, ou a numeração completa de um Motor) fatalmente não retornará nenhum resultado, pois tal numeração diz respeito a um veículo específico, que certamente não estará cadastrado no banco de imagens.
-        </div>
-
         <div id="contadorFotos">📸 Carregando padrões...</div>
         <div id="searchContainer">
             <input type="text" id="searchInput" placeholder="Digite a sequência (ex: 9BD...)" autocomplete="off">
@@ -407,45 +428,45 @@
     <div id="areaEliminador" style="display: none; width: 100%; flex-direction: column; align-items: center; max-width: 800px;">
         <button class="btn-voltar-menu" onclick="voltarDashboard()">⬅ Voltar ao Painel</button>
 
+        <!-- Seleção de Modo do Eliminador -->
         <div id="eliminador-selection" style="display: flex; flex-direction: column; align-items: center; width: 100%;">
-            <div class="tool-title">Eliminador de Possibilidades<br>de Caracteres NIV (Honda)</div>
-            <div>
-                <div class="tool-guide-title">Instruções de Uso:</div>
-                <p class="tool-guide-text">
-                    Escolha o tipo de gravação abaixo. Na tela seguinte, marque na matriz as mossas (pontos de punção) visíveis no metal (quadro) da motocicleta. O sistema descartará matematicamente os caracteres incompatíveis com o padrão original.
-                </p>
-            </div>
-            <button class="btn-mode" onclick="setEliminadorMode('numeric')">Numéricos (0-9)</button>
-            <button class="btn-mode" onclick="setEliminadorMode('alpha')">Alfabéticos (A-Z)</button>
+            <div class="eliminador-select-title">ELIMINADOR DE POSSIBILIDADES<br>DE CARACTERES (HONDA)</div>
+            <p class="eliminador-guide-text">
+                <span>INSTRUÇÕES DE USO:</span>
+                ESCOLHA O TIPO DE GRAVAÇÃO ABAIXO. NA TELA SEGUINTE, MARQUE NA MATRIZ AS MOSSAS (PONTOS DE PUNÇÃO) VISÍVEIS NO METAL DA MOTOCICLETA. O SISTEMA DESCARTARÁ MATEMATICAMENTE OS CARACTERES INCOMPATÍVEIS COM O PADRÃO ORIGINAL.
+            </p>
+            <button class="btn-mode" onclick="setEliminadorMode('numeric')">NUMÉRICOS (0-9)</button>
+            <button class="btn-mode" onclick="setEliminadorMode('alpha')">ALFABÉTICOS (NIV)</button>
         </div>
 
+        <!-- Interface de Matriz do Eliminador -->
         <div id="eliminador-main" style="display: none; width: 100%; flex-direction: column; align-items: center;">
             <h3 id="eliminador-app-title" style="color: var(--accent); margin-bottom: 5px; text-align:center;"></h3>
             <p class="eliminador-instruction">
-                Selecione no padrão abaixo as marcas aparentes do NIV original gravados no quadro da motocicleta.
+                SELECIONE NO PADRÃO ABAIXO AS MARCAS APARENTES DO NIV ORIGINAL GRAVADOS NO QUADRO DA MOTOCICLETA
             </p>
 
             <div class="eliminador-grid-container" id="eliminador-grid"></div>
 
             <div class="eliminador-results-box">
-                <div class="eliminador-label">Caracteres Originais Possíveis:</div>
+                <div class="eliminador-label">CARACTERES ORIGINAIS POSSÍVEIS:</div>
                 <div class="eliminador-possibilities" id="eliminador-result">---</div>
             </div>
             
             <div style="display: flex; gap: 15px; margin-top: 20px; width: 100%; justify-content: center; flex-wrap: wrap;">
-                <button class="btn-action" style="max-width: 200px; border-color: #888; color: #888;" onclick="showEliminadorSelection()">⬅ Voltar à Seleção</button>
-                <button class="btn-action" style="max-width: 200px;" onclick="resetEliminadorGrid()">Limpar Matriz</button>
+                <button class="btn-action" style="max-width: 200px; border-color: #888; color: #888;" onclick="showEliminadorSelection()">⬅ VOLTAR A SELEÇÃO</button>
+                <button class="btn-action" style="max-width: 200px;" onclick="resetEliminadorGrid()">LIMPAR MATRIZ</button>
             </div>
         </div>
     </div>
 
 
     <br>
-    <hr style="border: none; border-top: 1px solid #333; width: 80%; max-width: 800px; margin: 10px 0;">
+    <hr style="border: none; border-top: 1px solid #333; width: 80%; max-width: 800px; margin: 20px 0;">
 
-    <!-- SEÇÃO DE REGISTRO DE ACESSO -->
-    <div style="width: 100%; max-width: 800px; margin-top: 10px; text-align: center; display: flex; flex-direction: column; align-items: center;">
-        <h3 id="tituloTerminal" style="color: var(--accent); margin-bottom: 12px; font-size: 1.1rem; user-select: none; cursor: default;">📡 Terminal de Acessos Globais (Ao Vivo)</h3>
+    <!-- SEÇÃO DE REGISTRO DE ACESSO (Pública) -->
+    <div style="width: 100%; max-width: 800px; margin-top: 20px; text-align: center; display: flex; flex-direction: column; align-items: center;">
+        <h3 id="tituloTerminal" style="color: var(--accent); margin-bottom: 15px; font-size: 1.1rem; user-select: none; cursor: default;">📡 Terminal de Acessos Globais (Ao Vivo)</h3>
         <div style="width: 100%; max-width: 700px;">
             <div id="terminalBox">
                 <div id="terminalHeader">
@@ -469,12 +490,12 @@
             </div>
             
             <div class="form-scroll">
-                <p class="tool-guide-text" style="text-align: justify; margin-bottom: 15px; font-size: 0.85rem;">
+                <p class="tool-guide-text" style="text-align: center; margin-bottom: 15px; font-size: 0.85rem;">
                     O envio de fotos nítidas garante que elas irão compor o banco de dados! Juntos somos mais fortes!!
                 </p>
                 
-                <div id="colaboradorLogado" style="display:none; color: var(--accent); font-size: 0.85rem; margin-bottom: 10px; font-weight: bold; text-align: left;"></div>
-                <input type="text" id="uploadNome" class="select-filtro" placeholder="Seu Nome (para os Créditos)" style="margin-bottom: 10px;">
+                <!-- Nome automático (identificado pelo banco de dados do firebase) -->
+                <div id="colaboradorLogado" style="color: var(--accent); font-size: 0.85rem; margin-bottom: 10px; font-weight: bold; text-align: left;">🏅 Colaborador: Carregando...</div>
 
                 <input type="file" id="uploadFoto" accept="image/*" multiple class="select-filtro" style="padding: 10px; background: #333; cursor: pointer; margin-bottom: 10px;">
                 
@@ -584,10 +605,8 @@
                 <button class="fechar-modal-btn" onclick="fecharModalDoacao()" style="position: absolute; right: 0;">×</button>
             </div>
             <p class="doacao-desc">
-                Companheiro de missão, este sistema nasceu nas ruas e para as ruas. Ele é mantido de forma 100% independente, e com muitas madrugadas de trabalho, sempre com o objetivo de dar mais segurança e agilidade às nossas abordagens.
-            </p>
-            <p class="doacao-desc">
-                Se esta ferramenta já te ajudou em campo, considere contribuir! Qualquer contribuição nos motiva a continuar criando novas funcionalidades para todos nós. Tamo junto! 👊🚓
+                Companheiro de missão, este sistema nasceu nas ruas e para as ruas. Ele é mantido de forma 100% independente, com recursos próprios e muitas madrugadas de trabalho, sempre com o objetivo de dar mais segurança e agilidade às nossas abordagens.<br><br>
+                Se esta ferramenta já te ajudou em campo, considere retribuir! Qualquer contribuição é fundamental para cobrir os custos do servidor e me motiva a continuar criando novas funcionalidades para todos nós. Tamo junto! 👊🚓
             </p>
             <div class="valores-grid">
                 <button class="btn-valor" onclick="window.open('https://nubank.com.br/cobrar/vxfnx/6a6b548b-5dfa-41f6-bc15-7fb60bb15fcb', '_blank')">R$ 1,00</button>
@@ -625,7 +644,16 @@
         let database, acessosRef, colaboradoresRef, auth;
         const terminalLogs = document.getElementById('terminalLogs');
         const gpsStatus = document.getElementById('gpsStatus');
-        const ledCounter = document.getElementById('ledCounter');
+        
+        let currentUserNome = 'Usuário Anônimo';
+
+        function formatarNome(nome) {
+            const preposicoes = ["de", "da", "do", "das", "dos"];
+            return nome.toLowerCase().split(' ').map(palavra => {
+                if (preposicoes.includes(palavra)) return palavra;
+                return palavra.charAt(0).toUpperCase() + palavra.slice(1);
+            }).join(' ');
+        }
         
         // Elementos de Autenticação e Áreas
         const btnAcessoRestrito = document.getElementById('btnAcessoRestrito');
@@ -644,23 +672,13 @@
             acessosRef = database.ref('acessos');
             colaboradoresRef = database.ref('colaboradores');
 
-            // Atualiza o contador de acessos global estilo LED (ignora CAMPINA GRANDE)
-            acessosRef.on('value', (snapshot) => {
-                let count = 0;
-                snapshot.forEach((childSnapshot) => {
-                    const acesso = childSnapshot.val();
-                    const cid = acesso.cidade ? acesso.cidade.toUpperCase() : "";
-                    if (!cid.includes("CAMPINA GRANDE")) {
-                        count++;
-                    }
-                });
-                if (ledCounter) ledCounter.innerText = String(count).padStart(6, '0');
-            });
-
             auth.onAuthStateChanged(user => {
                 if (user) {
                     database.ref('usuarios/' + user.uid).once('value').then(snapshot => {
                         const userData = snapshot.val();
+                        if (userData && userData.nome) {
+                            currentUserNome = formatarNome(userData.nome);
+                        }
                         if (userData && userData.status === 'aprovado') {
                             btnAcessoRestrito.style.display = 'none';
                             areaDashboard.style.display = 'flex';
@@ -681,6 +699,7 @@
                         }
                     });
                 } else {
+                    currentUserNome = 'Usuário Anônimo';
                     btnAcessoRestrito.style.display = 'block';
                     areaDashboard.style.display = 'none';
                     areaBuscador.style.display = 'none';
@@ -711,29 +730,8 @@
         // =========================================================================
         // ENVIO PARA O TELEGRAM E COLABORADORES
         // =========================================================================
-        function formatarNome(nome) {
-            const preposicoes = ["de", "da", "do", "das", "dos"];
-            return nome.toLowerCase().split(' ').map(palavra => {
-                if (preposicoes.includes(palavra)) return palavra;
-                return palavra.charAt(0).toUpperCase() + palavra.slice(1);
-            }).join(' ');
-        }
 
-        function validarNome(nome) {
-            const regexInvalidos = /[0-9!@#\$%\^\&*\)\(+=._-]/; 
-            if(regexInvalidos.test(nome)) return false;
-            
-            const absurdos = ['teste', 'carro', 'moto', 'veiculo', 'chassi', 'motor', 'merda', 'porra', 'caralho', 'puta', 'buceta', 'cu', 'foda', 'admin', 'anonimo', 'policia', 'agente', 'policial', 'prf', 'pm', 'pc', 'padrao'];
-            const palavras = nome.toLowerCase().split(' ');
-            for(let p of palavras) {
-                if(absurdos.includes(p)) return false;
-            }
-            
-            if(nome.trim().length < 3) return false;
-            return true;
-        }
-
-        // Deleta todo o banco de colaboradores (Zera o Hall)
+        // Limpa a base (se solicitado no prompt anterior). Apenas 1x.
         async function zerarColaboradores() {
             try {
                 await colaboradoresRef.remove();
@@ -742,27 +740,15 @@
                 console.error("Erro ao limpar colaboradores:", err);
             }
         }
-
-        // Chama a limpeza 1 vez se ainda não foi limpo neste dispositivo
         if (!localStorage.getItem('hallZerado')) {
             zerarColaboradores();
             localStorage.setItem('hallZerado', 'true');
         }
 
         function abrirFormularioContribuicao() {
-            const nomeSalvo = localStorage.getItem('colaboradorNome');
-            const inputNome = document.getElementById('uploadNome');
             const labelLogado = document.getElementById('colaboradorLogado');
-            
-            if(nomeSalvo && nomeSalvo !== 'Usuário Anônimo') {
-                inputNome.style.display = 'none';
-                labelLogado.style.display = 'block';
-                labelLogado.innerText = `🏅 Colaborador: ${nomeSalvo}`;
-            } else {
-                inputNome.style.display = 'block';
-                labelLogado.style.display = 'none';
-                inputNome.value = '';
-            }
+            labelLogado.style.display = 'block';
+            labelLogado.innerText = `🏅 Colaborador: ${currentUserNome}`;
             document.getElementById('modalContribuicao').style.display = 'flex';
         }
         
@@ -783,17 +769,15 @@
                     return;
                 }
                 
-                // Agrupa as fotos pelo nome do colaborador
                 const contagemEnvios = {};
                 Object.values(data).forEach(reg => {
                     const nome = reg.nome || 'Usuário Anônimo';
                     if (!contagemEnvios[nome]) {
                         contagemEnvios[nome] = 0;
                     }
-                    contagemEnvios[nome] += (reg.quantidadeFotos || 1); // Soma a quantidade de fotos enviadas
+                    contagemEnvios[nome] += (reg.quantidadeFotos || 1); 
                 });
                 
-                // Converte em array e ordena por quantidade (Ranking)
                 const ranking = Object.entries(contagemEnvios).sort((a, b) => b[1] - a[1]);
                 
                 container.innerHTML = '';
@@ -804,9 +788,9 @@
                 
                 ranking.forEach(([nome, qtdeFotos], index) => {
                     let icone = '🏅';
-                    if (index === 0) icone = '🏆'; // 1º lugar
-                    else if (index === 1) icone = '🥈'; // 2º lugar
-                    else if (index === 2) icone = '🥉'; // 3º lugar
+                    if (index === 0) icone = '🏆'; 
+                    else if (index === 1) icone = '🥈'; 
+                    else if (index === 2) icone = '🥉'; 
 
                     const li = document.createElement('li');
                     li.style.background = '#252525';
@@ -817,7 +801,7 @@
                     li.style.color = 'var(--accent)';
                     li.style.display = 'flex';
                     li.style.alignItems = 'center';
-                    li.style.justifyContent = 'space-between'; // Separa o nome do contador
+                    li.style.justifyContent = 'space-between';
                     li.style.gap = '10px';
                     
                     li.innerHTML = `
@@ -852,55 +836,16 @@
                 return;
             }
 
-            let nomeFinal = localStorage.getItem('colaboradorNome');
-            let nomeDisplay = "Usuário Anônimo";
-
-            // Se o usuário está autenticado, pega o nome dele
-            const currentUser = auth.currentUser;
-
-            if (currentUser) {
-                try {
-                    const userSnap = await database.ref('usuarios/' + currentUser.uid).once('value');
-                    const userData = userSnap.val();
-                    if (userData && userData.nome) {
-                        nomeFinal = formatarNome(userData.nome);
-                        nomeDisplay = nomeFinal;
-                        localStorage.setItem('colaboradorNome', nomeFinal);
-                    }
-                } catch (e) {
-                    console.error("Erro ao buscar nome do usuário logado:", e);
-                }
-            } 
-            
-            // Se não pegou do auth, tenta o LocalStorage ou o Input
-            if (!nomeFinal || nomeFinal === 'Usuário Anônimo') {
-                const inputNomeEl = document.getElementById('uploadNome');
-                if(inputNomeEl && inputNomeEl.style.display !== 'none') {
-                    const nomeBruto = inputNomeEl.value.trim();
-                    if (nomeBruto !== '') {
-                        if (!validarNome(nomeBruto)) {
-                            alert("Por favor, insira um nome válido e real para os créditos.");
-                            return;
-                        }
-                        nomeFinal = formatarNome(nomeBruto);
-                        nomeDisplay = nomeFinal;
-                        localStorage.setItem('colaboradorNome', nomeFinal);
-                    }
-                } else if(nomeFinal && nomeFinal !== 'Usuário Anônimo'){
-                    nomeDisplay = nomeFinal;
-                }
-            }
-
             const files = fileInput.files;
             const total = files.length;
-            const caption = `🚨 *NOVO PADRÃO ENVIADO* 🚨\n\n*Colaborador:* ${nomeDisplay}\n*Obs:* ${obs || 'Nenhuma'}`;
+            const caption = `🚨 *NOVO PADRÃO ENVIADO* 🚨\n\n*Colaborador:* ${currentUserNome}\n*Obs:* ${obs || 'Nenhuma'}`;
 
             btn.disabled = true;
+            const originalBg = btn.style.background;
+            const originalColor = btn.style.color;
 
             try {
                 for (let i = 0; i < total; i++) {
-                    btn.innerText = `⏳ Enviando (${i + 1}/${total})...`;
-                    
                     const formData = new FormData();
                     formData.append('chat_id', '1945271271');
                     formData.append('document', files[i]);
@@ -910,22 +855,43 @@
                         formData.append('parse_mode', 'Markdown');
                     }
 
-                    const res = await fetch('https://api.telegram.org/bot8274657364:AAHT3DKU6ysZFf3nP3b1_z5r9jokYO0jc2U/sendDocument', {
-                        method: 'POST',
-                        body: formData
+                    // Promessa contendo a requisição XHR para progresso
+                    const responseData = await new Promise((resolve, reject) => {
+                        const xhr = new XMLHttpRequest();
+                        xhr.open('POST', 'https://api.telegram.org/bot8274657364:AAHT3DKU6ysZFf3nP3b1_z5r9jokYO0jc2U/sendDocument');
+                        
+                        xhr.upload.onprogress = function(event) {
+                            if (event.lengthComputable) {
+                                const percentComplete = Math.round((event.loaded / event.total) * 100);
+                                btn.innerText = `⏳ Enviando (${i + 1}/${total}) - ${percentComplete}%`;
+                                btn.style.background = `linear-gradient(to right, var(--accent) ${percentComplete}%, #252525 ${percentComplete}%)`;
+                                btn.style.color = percentComplete > 50 ? 'var(--primary)' : 'var(--accent)';
+                            }
+                        };
+
+                        xhr.onload = function() {
+                            if (xhr.status >= 200 && xhr.status < 300) {
+                                resolve(JSON.parse(xhr.responseText));
+                            } else {
+                                reject(xhr.statusText);
+                            }
+                        };
+
+                        xhr.onerror = function() {
+                            reject("Network Error");
+                        };
+
+                        xhr.send(formData);
                     });
-                    
-                    const data = await res.json();
-                    
-                    if (!data.ok) {
-                        alert(`Erro na foto ${i + 1}: ` + data.description);
+
+                    if (!responseData.ok) {
+                        alert(`Erro na foto ${i + 1}: ` + responseData.description);
                         break; 
                     }
                 }
                 
-                // Grava o colaborador e a quantidade de fotos enviadas nesta sessão
                 colaboradoresRef.push({
-                    nome: nomeDisplay,
+                    nome: currentUserNome,
                     quantidadeFotos: total,
                     timestamp: firebase.database.ServerValue.TIMESTAMP
                 });
@@ -941,6 +907,8 @@
             } finally {
                 btn.innerText = "Enviar Padrão";
                 btn.disabled = false;
+                btn.style.background = originalBg;
+                btn.style.color = originalColor;
             }
         }
 
@@ -1024,9 +992,9 @@
             elimScreenSelection.style.display = 'none';
             elimScreenMain.style.display = 'flex';
             if (mode === 'numeric') {
-                elimAppTitleEl.textContent = "Eliminador Numérico (0-9)";
+                elimAppTitleEl.textContent = "ELIMINADOR NUMÉRICO (0-9)";
             } else {
-                elimAppTitleEl.textContent = "Eliminador Alfabético (A-Z)";
+                elimAppTitleEl.textContent = "ELIMINADOR ALFABÉTICO (NIV)";
             }
             initEliminadorGrid();
         }
