@@ -254,8 +254,11 @@
         #imageContainer:active { cursor: grabbing; }
         #modalImg { max-width: 95%; max-height: 95%; transform-origin: center center; transition: transform 0.1s ease-out; user-select: none; pointer-events: none; }
         #closeBtn { position: absolute; top: var(--topbar-height); right: 20px; background: var(--accent); color: var(--primary); border: none; font-size: 2rem; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; z-index: 1001; display: flex; justify-content: center; align-items: center; margin-top: 10px;}
+        
         #modalTitleBot { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.85); padding: 10px 20px; border-radius: 12px; font-size: 0.85rem; pointer-events: none; border: 1px solid var(--accent); white-space: nowrap; z-index: 1002; text-align: center; }
-        #modalChassiDestaque { font-size: 1.1rem; font-weight: bold; color: white; margin-bottom: 4px; }
+        #modalChassiContainer { display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 4px; }
+        #modalChassiDestaque { font-size: 1.1rem; font-weight: bold; color: white; }
+        #modalTagsContainer { display: flex; gap: 4px; }
         #modalInfoExtra { font-size: 0.75rem; color: #ccc; }
 
         .action-buttons { position: absolute; bottom: 70px; right: 20px; display: flex; flex-direction: column; gap: 8px; z-index: 1001; }
@@ -265,7 +268,7 @@
         #reportBtn:hover { background: #ff4444; color: white; }
 
         /* BOX DOS MODAIS */
-        .modal-box { background: #1a1a1a; width: 90%; max-width: 600px; max-height: 85vh; border-radius: 12px; border: 1px solid var(--accent); padding: 20px; box-shadow: 0 15px 30px rgba(0,0,0,0.6); position: relative; display: flex; flex-direction: column; box-sizing: border-box; }
+        .modal-box { background: #1a1a1a; width: 90%; max-width: 650px; max-height: 85vh; border-radius: 12px; border: 1px solid var(--accent); padding: 20px; box-shadow: 0 15px 30px rgba(0,0,0,0.6); position: relative; display: flex; flex-direction: column; box-sizing: border-box; }
         .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding-bottom: 12px; margin-bottom: 12px; flex-shrink: 0; }
         .modal-header h3 { margin: 0; color: var(--text); font-size: 1.1rem; }
         .fechar-modal-btn { background: transparent; color: var(--text); border: none; font-size: 1.6rem; cursor: pointer; line-height: 1; }
@@ -283,22 +286,22 @@
         .dia-atualizacao { margin-bottom: 20px; }
         .dia-atualizacao h4 { color: var(--accent); margin: 0 0 8px 0; font-size: 1rem; border-bottom: 1px dashed #333; padding-bottom: 4px; }
         .dia-atualizacao ul { list-style: none; padding: 0; margin: 0; }
-        .dia-atualizacao li { background: #252525; padding: 8px 12px; margin-bottom: 6px; border-radius: 6px; font-size: 0.8rem; }
-        .chassi-tag { color: white; font-weight: bold; font-size: 0.9rem; display: inline-block; margin-bottom: 2px; }
+        .dia-atualizacao li { background: #252525; padding: 10px 12px; margin-bottom: 8px; border-radius: 6px; font-size: 0.8rem; }
+        .chassi-tag { color: white; font-weight: bold; font-size: 0.95rem; display: block; margin-bottom: 2px; }
         .info-tag { color: #aaa; display: block; }
 
-        /* NOVA CLASSE DA NATUREZA TRACEJADA VERDE */
         .natureza-tag {
-            border: 1px dashed var(--accent);
-            color: var(--accent);
-            background-color: rgba(124, 252, 0, 0.05);
-            padding: 2px 6px;
             border-radius: 4px;
-            font-size: 0.65rem;
-            margin-left: 6px;
+            font-size: 0.75rem;
             text-transform: uppercase;
-            display: inline-block;
-            vertical-align: middle;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 10px;
+            height: 100%;
+            box-sizing: border-box;
+            letter-spacing: 0.5px;
         }
 
         /* Doação */
@@ -319,13 +322,10 @@
         @media (max-width: 600px) {
             body { padding-top: calc(var(--topbar-height) + 10px); } 
             h2 { font-size: 1.1rem; margin-bottom: 10px; }
-            
-            /* Ajustes da Top Bar no Mobile */
             .top-bar { padding: 0 8px; }
             .topbar-left, .topbar-right { gap: 5px; }
             .btn-topbar { font-size: 0.70rem; padding: 6px 8px; }
             .led-counter { font-size: 1.1rem; padding: 2px 5px; letter-spacing: 2px; }
-
             #contadorFotos { font-size: 0.9rem; padding: 6px 15px; margin-bottom: 15px; }
             #btnDoacaoCentral { font-size: 0.85rem; padding: 10px 15px; text-align: center; }
             #filterContainer { gap: 8px; margin-bottom: 15px; }
@@ -447,7 +447,6 @@
         </div>
     </div>
 
-
     <br>
     <hr style="border: none; border-top: 1px solid #333; width: 80%; max-width: 800px; margin: 10px 0;">
 
@@ -467,8 +466,6 @@
     <br><br>
 
     <!-- MODAIS DE AUTENTICAÇÃO E ENVIO -->
-    
-    <!-- Modal Enviar Padrão (Telegram) -->
     <div id="modalContribuicao" class="modal-overlay">
         <div class="modal-box" style="max-width: 400px; text-align: center;">
             <div class="modal-header" style="justify-content: center; position: relative;">
@@ -480,11 +477,8 @@
                 <p class="tool-guide-text" style="text-align: justify; margin-bottom: 15px; font-size: 0.85rem;">
                     O envio de fotos nítidas garante que elas irão compor o banco de dados! Juntos somos mais fortes!!
                 </p>
-                
                 <input type="file" id="uploadFoto" accept="image/*" class="select-filtro" style="padding: 10px; background: #333; cursor: pointer; margin-bottom: 10px;">
-                
                 <textarea id="uploadObs" class="select-filtro" placeholder="Observações (Opcional)" rows="3" style="resize: none; font-family: inherit; width: 100%; box-sizing: border-box;"></textarea>
-                
                 <button class="btn-action" id="btnEnviarTelegram" onclick="enviarParaTelegram()" style="margin-top: 15px;">Enviar Padrão</button>
             </div>
         </div>
@@ -544,13 +538,17 @@
         </div>
     </div>
 
+    <!-- MODAL DE VISUALIZAÇÃO DA IMAGEM -->
     <div id="modal" class="modal-overlay">
         <button id="closeBtn" onclick="closeModal()">×</button>
         <div id="imageContainer">
             <img id="modalImg" src="">
         </div>
         <div id="modalTitleBot">
-            <div id="modalChassiDestaque"></div>
+            <div id="modalChassiContainer">
+                <div id="modalChassiDestaque"></div>
+                <div id="modalTagsContainer"></div>
+            </div>
             <div id="modalInfoExtra"></div>
         </div>
         <div class="action-buttons">
@@ -591,9 +589,6 @@
                 <button class="btn-valor" onclick="window.open('https://nubank.com.br/cobrar/vxfnx/6a68cb97-9597-443f-8f36-310a693a2da1', '_blank')">R$ 15,00</button>
                 <button class="btn-valor" onclick="window.open('https://nubank.com.br/cobrar/vxfnx/6a68cba9-b3e2-498e-b804-0245b96c79dc', '_blank')">R$ 50,00</button>
             </div>
-            <p style="font-size: 0.75rem; color: #888; text-align: center; margin-top: 10px;">
-                * O link abrirá a página segura do Nubank exibindo o QR Code e a chave Copia e Cola.
-            </p>
         </div>
     </div>
 
@@ -604,933 +599,6 @@
         // ATENÇÃO: COLE A SUA LISTA DE IMAGENS COMPLETA LOGO ABAIXO!
         // =========================================================================
         const imagens = [
-        {
-                "arquivo": "_CHEVROLET_CLASSIC LS_2014 NIV.jpg",
-                "chassi": "",
-                "marca": "CHEVROLET",
-                "modelo": "CLASSIC LS",
-                "ano": "2014",
-                "natureza": [
-                        "NIV"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877119.3706906
-        },
-        {
-                "arquivo": "_CHEVROLET_CLASSIC LS_2014 VIS.jpg",
-                "chassi": "",
-                "marca": "CHEVROLET",
-                "modelo": "CLASSIC LS",
-                "ano": "2014",
-                "natureza": [
-                        "VIS"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877112.610557
-        },
-        {
-                "arquivo": "_CHEVROLET_CLASSIC LS_2015 ETIQUETA PLAQUETA.jpg",
-                "chassi": "",
-                "marca": "CHEVROLET",
-                "modelo": "CLASSIC LS",
-                "ano": "2015",
-                "natureza": [
-                        "ETIQUETA",
-                        "PLAQUETA"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877280.8980947
-        },
-        {
-                "arquivo": "_CHEVROLET_CLASSIC LS_2015 ETIQUETA.jpg",
-                "chassi": "",
-                "marca": "CHEVROLET",
-                "modelo": "CLASSIC LS",
-                "ano": "2015",
-                "natureza": [
-                        "ETIQUETA"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877270.6824274
-        },
-        {
-                "arquivo": "_CHEVROLET_ONIX 10MT JOYE_2019 ETIQUETA.jpg",
-                "chassi": "",
-                "marca": "CHEVROLET",
-                "modelo": "ONIX 10MT JOYE",
-                "ano": "2019",
-                "natureza": [
-                        "ETIQUETA"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877545.7458515
-        },
-        {
-                "arquivo": "_CHEVROLET_ONIX 10MT JOYE_2019 VIS.jpg",
-                "chassi": "",
-                "marca": "CHEVROLET",
-                "modelo": "ONIX 10MT JOYE",
-                "ano": "2019",
-                "natureza": [
-                        "VIS"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877560.0152304
-        },
-        {
-                "arquivo": "_CHEV_ONIX 10MT LT2_20203 ETIQUETA.jpg",
-                "chassi": "",
-                "marca": "CHEV",
-                "modelo": "ONIX 10MT LT2",
-                "ano": "20203",
-                "natureza": [
-                        "ETIQUETA"
-                ],
-                "data": "31/05/2026",
-                "timestamp": 1780232520.0
-        },
-        {
-                "arquivo": "_CHEV_ONIX 10MT LT2_2023 ETIQUETA.jpg",
-                "chassi": "",
-                "marca": "CHEV",
-                "modelo": "ONIX 10MT LT2",
-                "ano": "2023",
-                "natureza": [
-                        "ETIQUETA"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877734.1492822
-        },
-        {
-                "arquivo": "_CHEV_ONIX 10MT LT2_2023 NIV.jpg",
-                "chassi": "",
-                "marca": "CHEV",
-                "modelo": "ONIX 10MT LT2",
-                "ano": "2023",
-                "natureza": [
-                        "NIV"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877726.9082596
-        },
-        {
-                "arquivo": "_CHEV_ONIX 10MT LT2_2023 VIS.jpg",
-                "chassi": "",
-                "marca": "CHEV",
-                "modelo": "ONIX 10MT LT2",
-                "ano": "2023",
-                "natureza": [
-                        "VIS"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877738.3277218
-        },
-        {
-                "arquivo": "_CHEV_TRAILBLAZER PRE D4A_2020 ETIQUETA.jpg",
-                "chassi": "",
-                "marca": "CHEV",
-                "modelo": "TRAILBLAZER PRE D4A",
-                "ano": "2020",
-                "natureza": [
-                        "ETIQUETA"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877929.8251452
-        },
-        {
-                "arquivo": "_CHEV_TRAILBLAZER PRE D4A_2020 NIV.jpg",
-                "chassi": "",
-                "marca": "CHEV",
-                "modelo": "TRAILBLAZER PRE D4A",
-                "ano": "2020",
-                "natureza": [
-                        "NIV"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877504.745571
-        },
-        {
-                "arquivo": "_CHEV_TRAILBLAZER PRE D4A_2020 VIS.jpg",
-                "chassi": "",
-                "marca": "CHEV",
-                "modelo": "TRAILBLAZER PRE D4A",
-                "ano": "2020",
-                "natureza": [
-                        "VIS"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877495.6444113
-        },
-        {
-                "arquivo": "_FIAT_FASTBACK DRIVE_2024 NIV.jpg",
-                "chassi": "",
-                "marca": "FIAT",
-                "modelo": "FASTBACK DRIVE",
-                "ano": "2024",
-                "natureza": [
-                        "NIV"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877299.858118
-        },
-        {
-                "arquivo": "_FIAT_FASTBACK DRIVE_2024 VIS.jpg",
-                "chassi": "",
-                "marca": "FIAT",
-                "modelo": "FASTBACK DRIVE",
-                "ano": "2024",
-                "natureza": [
-                        "VIS"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877292.8751245
-        },
-        {
-                "arquivo": "_FIAT_PALIO FIRE ECONOMY_2010 ETIQUETA.jpg",
-                "chassi": "",
-                "marca": "FIAT",
-                "modelo": "PALIO FIRE ECONOMY",
-                "ano": "2010",
-                "natureza": [
-                        "ETIQUETA"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877583.059654
-        },
-        {
-                "arquivo": "_FIAT_PALIO FIRE ECONOMY_2010 NIV.jpg",
-                "chassi": "",
-                "marca": "FIAT",
-                "modelo": "PALIO FIRE ECONOMY",
-                "ano": "2010",
-                "natureza": [
-                        "NIV"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877950.4676375
-        },
-        {
-                "arquivo": "_FIAT_PALIO FIRE ECONOMY_2010 VIS.jpg",
-                "chassi": "",
-                "marca": "FIAT",
-                "modelo": "PALIO FIRE ECONOMY",
-                "ano": "2010",
-                "natureza": [
-                        "VIS"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877955.0791533
-        },
-        {
-                "arquivo": "_FIAT_SIENA TETRAFUEL 1.4_2015 ETIQUETA.jpg",
-                "chassi": "",
-                "marca": "FIAT",
-                "modelo": "SIENA TETRAFUEL 1.4",
-                "ano": "2015",
-                "natureza": [
-                        "ETIQUETA"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877967.0444381
-        },
-        {
-                "arquivo": "_FIAT_SIENA TETRAFUEL 1.4_2015 VIS.jpg",
-                "chassi": "",
-                "marca": "FIAT",
-                "modelo": "SIENA TETRAFUEL 1.4",
-                "ano": "2015",
-                "natureza": [
-                        "VIS"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877959.4745204
-        },
-        {
-                "arquivo": "_FIAT_TORO ENDURANCE AT6_2021 ETIQUETA.jpg",
-                "chassi": "",
-                "marca": "FIAT",
-                "modelo": "TORO ENDURANCE AT6",
-                "ano": "2021",
-                "natureza": [
-                        "ETIQUETA"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877468.2334585
-        },
-        {
-                "arquivo": "_FIAT_TORO ENDURANCE AT6_2021 NIV.jpg",
-                "chassi": "",
-                "marca": "FIAT",
-                "modelo": "TORO ENDURANCE AT6",
-                "ano": "2021",
-                "natureza": [
-                        "NIV"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877912.4436166
-        },
-        {
-                "arquivo": "_FIAT_UNO ELECTRONIC_1995 NIV.jpg",
-                "chassi": "",
-                "marca": "FIAT",
-                "modelo": "UNO ELECTRONIC",
-                "ano": "1995",
-                "natureza": [
-                        "NIV"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877136.7642114
-        },
-        {
-                "arquivo": "_FIAT_UNO ELECTRONIC_1995 PLAQUETA.jpg",
-                "chassi": "",
-                "marca": "FIAT",
-                "modelo": "UNO ELECTRONIC",
-                "ano": "1995",
-                "natureza": [
-                        "PLAQUETA"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877126.2874866
-        },
-        {
-                "arquivo": "_FORD_FIESTA_2004 VIS.jpg",
-                "chassi": "",
-                "marca": "FORD",
-                "modelo": "FIESTA",
-                "ano": "2004",
-                "natureza": [
-                        "VIS"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877358.0738795
-        },
-        {
-                "arquivo": "_FORD_FIESTA_2005 NIV.jpg",
-                "chassi": "",
-                "marca": "FORD",
-                "modelo": "FIESTA",
-                "ano": "2005",
-                "natureza": [
-                        "NIV"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786876895.6334121
-        },
-        {
-                "arquivo": "_FORD_KA SE PLUS 1.0 HA C_2020 ETIQUETA.jpg",
-                "chassi": "",
-                "marca": "FORD",
-                "modelo": "KA SE PLUS 1.0 HA C",
-                "ano": "2020",
-                "natureza": [
-                        "ETIQUETA"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877984.786224
-        },
-        {
-                "arquivo": "_FORD_KA SE PLUS 1.0 HA C_2020 VIS.jpg",
-                "chassi": "",
-                "marca": "FORD",
-                "modelo": "KA SE PLUS 1.0 HA C",
-                "ano": "2020",
-                "natureza": [
-                        "VIS"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877989.775813
-        },
-        {
-                "arquivo": "_GM_ASTRA SEDAN_2002 MOTOR.jpg",
-                "chassi": "",
-                "marca": "GM",
-                "modelo": "ASTRA SEDAN",
-                "ano": "2002",
-                "natureza": [
-                        "MOTOR"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877107.488879
-        },
-        {
-                "arquivo": "_HONDA_BIZ 125_2017 MOTOR.jpg",
-                "chassi": "",
-                "marca": "HONDA",
-                "modelo": "BIZ 125",
-                "ano": "2017",
-                "natureza": [
-                        "MOTOR"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877193.3987803
-        },
-        {
-                "arquivo": "_HONDA_CG 125 FAN KS_2012 MOTOR.jpg",
-                "chassi": "",
-                "marca": "HONDA",
-                "modelo": "CG 125 FAN KS",
-                "ano": "2012",
-                "natureza": [
-                        "MOTOR"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786878025.7413461
-        },
-        {
-                "arquivo": "_HONDA_CG 125 FAN KS_2013 MOTOR.jpg",
-                "chassi": "",
-                "marca": "HONDA",
-                "modelo": "CG 125 FAN KS",
-                "ano": "2013",
-                "natureza": [
-                        "MOTOR"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877885.672587
-        },
-        {
-                "arquivo": "_HONDA_CG 125 FAN KS_2015 MOTOR.jpg",
-                "chassi": "",
-                "marca": "HONDA",
-                "modelo": "CG 125 FAN KS",
-                "ano": "2015",
-                "natureza": [
-                        "MOTOR"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786876851.2633455
-        },
-        {
-                "arquivo": "_HONDA_CG 125 FAN_2006 MOTOR.jpg",
-                "chassi": "",
-                "marca": "HONDA",
-                "modelo": "CG 125 FAN",
-                "ano": "2006",
-                "natureza": [
-                        "MOTOR"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786876863.7181795
-        },
-        {
-                "arquivo": "_HONDA_CG 125 TITAN_1996 NIV.jpg",
-                "chassi": "",
-                "marca": "HONDA",
-                "modelo": "CG 125 TITAN",
-                "ano": "1996",
-                "natureza": [
-                        "NIV"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877000.7216816
-        },
-        {
-                "arquivo": "_HONDA_CG 150 TITAN ESD_2015 MOTOR.jpg",
-                "chassi": "",
-                "marca": "HONDA",
-                "modelo": "CG 150 TITAN ESD",
-                "ano": "2015",
-                "natureza": [
-                        "MOTOR"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877209.003963
-        },
-        {
-                "arquivo": "_HONDA_CG 150 TITAN EX_2011 NIV.jpg",
-                "chassi": "",
-                "marca": "HONDA",
-                "modelo": "CG 150 TITAN EX",
-                "ano": "2011",
-                "natureza": [
-                        "NIV"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877973.0597103
-        },
-        {
-                "arquivo": "_HONDA_CG 150 TITAN KS_2005 MOTOR.jpg",
-                "chassi": "",
-                "marca": "HONDA",
-                "modelo": "CG 150 TITAN KS",
-                "ano": "2005",
-                "natureza": [
-                        "MOTOR"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786878009.3887458
-        },
-        {
-                "arquivo": "_HONDA_CG 150 TITAN KS_2006 MOTOR.jpg",
-                "chassi": "",
-                "marca": "HONDA",
-                "modelo": "CG 150 TITAN KS",
-                "ano": "2006",
-                "natureza": [
-                        "MOTOR"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877222.9000728
-        },
-        {
-                "arquivo": "_HONDA_CG 150 TITAN KS_2006 NIV.jpg",
-                "chassi": "",
-                "marca": "HONDA",
-                "modelo": "CG 150 TITAN KS",
-                "ano": "2006",
-                "natureza": [
-                        "NIV"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877216.7942848
-        },
-        {
-                "arquivo": "_HONDA_CG 160 FAN_2020 ETIQUETA.jpg",
-                "chassi": "",
-                "marca": "HONDA",
-                "modelo": "CG 160 FAN",
-                "ano": "2020",
-                "natureza": [
-                        "ETIQUETA"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786878033.0786066
-        },
-        {
-                "arquivo": "_HONDA_CG 160 FAN_2022 MOTOR.jpg",
-                "chassi": "",
-                "marca": "HONDA",
-                "modelo": "CG 160 FAN",
-                "ano": "2022",
-                "natureza": [
-                        "MOTOR"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786876902.0529494
-        },
-        {
-                "arquivo": "_HONDA_CG 160 FAN_2022 NIV.jpg",
-                "chassi": "",
-                "marca": "HONDA",
-                "modelo": "CG 160 FAN",
-                "ano": "2022",
-                "natureza": [
-                        "NIV"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786876911.8320801
-        },
-        {
-                "arquivo": "_HONDA_CG 160 START_2024 MOTOR.jpg",
-                "chassi": "",
-                "marca": "HONDA",
-                "modelo": "CG 160 START",
-                "ano": "2024",
-                "natureza": [
-                        "MOTOR"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877905.5628273
-        },
-        {
-                "arquivo": "_HONDA_CG 160 START_2024 NIV.jpg",
-                "chassi": "",
-                "marca": "HONDA",
-                "modelo": "CG 160 START",
-                "ano": "2024",
-                "natureza": [
-                        "NIV"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877452.8660808
-        },
-        {
-                "arquivo": "_HONDA_CG 160 TITAN_2023 MOTOR.jpg",
-                "chassi": "",
-                "marca": "HONDA",
-                "modelo": "CG 160 TITAN",
-                "ano": "2023",
-                "natureza": [
-                        "MOTOR"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786878004.0109277
-        },
-        {
-                "arquivo": "_HONDA_HR-V TOURING_2017 ETIQUETA.jpg",
-                "chassi": "",
-                "marca": "HONDA",
-                "modelo": "HR-V TOURING",
-                "ano": "2017",
-                "natureza": [
-                        "ETIQUETA"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877312.3589003
-        },
-        {
-                "arquivo": "_HONDA_HR-V TOURING_2017 NIV.jpg",
-                "chassi": "",
-                "marca": "HONDA",
-                "modelo": "HR-V TOURING",
-                "ano": "2017",
-                "natureza": [
-                        "NIV"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877327.4320533
-        },
-        {
-                "arquivo": "_HONDA_HR-V TOURING_2017 VIS.jpg",
-                "chassi": "",
-                "marca": "HONDA",
-                "modelo": "HR-V TOURING",
-                "ano": "2017",
-                "natureza": [
-                        "VIS"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877305.436892
-        },
-        {
-                "arquivo": "_HONDA_NXR150 BROS ES_2013 NIV.jpg",
-                "chassi": "",
-                "marca": "HONDA",
-                "modelo": "NXR150 BROS ES",
-                "ano": "2013",
-                "natureza": [
-                        "NIV"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877853.233847
-        },
-        {
-                "arquivo": "_HONDA_NXR160 BROS ESDD_2019 MOTOR.jpg",
-                "chassi": "",
-                "marca": "HONDA",
-                "modelo": "NXR160 BROS ESDD",
-                "ano": "2019",
-                "natureza": [
-                        "MOTOR"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877860.0525672
-        },
-        {
-                "arquivo": "_HONDA_NXR160 BROS ESDD_2023 MOTOR.jpg",
-                "chassi": "",
-                "marca": "HONDA",
-                "modelo": "NXR160 BROS ESDD",
-                "ano": "2023",
-                "natureza": [
-                        "MOTOR"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877068.934436
-        },
-        {
-                "arquivo": "_HONDA_NXR160 BROS ESDD_2023 NIV.jpg",
-                "chassi": "",
-                "marca": "HONDA",
-                "modelo": "NXR160 BROS ESDD",
-                "ano": "2023",
-                "natureza": [
-                        "NIV"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877062.778761
-        },
-        {
-                "arquivo": "_HONDA_POP 110I ES_2025 ETIQUETA.jpg",
-                "chassi": "",
-                "marca": "HONDA",
-                "modelo": "POP 110I ES",
-                "ano": "2025",
-                "natureza": [
-                        "ETIQUETA"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877873.3444393
-        },
-        {
-                "arquivo": "_HONDA_POP 110I ES_2025 MOTOR.jpg",
-                "chassi": "",
-                "marca": "HONDA",
-                "modelo": "POP 110I ES",
-                "ano": "2025",
-                "natureza": [
-                        "MOTOR"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877879.7649248
-        },
-        {
-                "arquivo": "_HONDA_POP 110I_2017 ETIQUETA.jpg",
-                "chassi": "",
-                "marca": "HONDA",
-                "modelo": "POP 110I",
-                "ano": "2017",
-                "natureza": [
-                        "ETIQUETA"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877404.834792
-        },
-        {
-                "arquivo": "_HONDA_POP 110I_2023 MOTOR.jpg",
-                "chassi": "",
-                "marca": "HONDA",
-                "modelo": "POP 110I",
-                "ano": "2023",
-                "natureza": [
-                        "MOTOR"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877412.7380903
-        },
-        {
-                "arquivo": "_HONDA_POP 110I_2024 MOTOR.jpg",
-                "chassi": "",
-                "marca": "HONDA",
-                "modelo": "POP 110I",
-                "ano": "2024",
-                "natureza": [
-                        "MOTOR"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877459.761885
-        },
-        {
-                "arquivo": "_HYUNDAI_HB20 1.0M_2013 ETIQUETA PLAQUETA.jpg",
-                "chassi": "",
-                "marca": "HYUNDAI",
-                "modelo": "HB20 1.0M",
-                "ano": "2013",
-                "natureza": [
-                        "ETIQUETA",
-                        "PLAQUETA"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877891.243645
-        },
-        {
-                "arquivo": "_JTZ_NK150_2023 NIV.jpg",
-                "chassi": "",
-                "marca": "JTZ",
-                "modelo": "NK150",
-                "ano": "2023",
-                "natureza": [
-                        "NIV"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877366.2093706
-        },
-        {
-                "arquivo": "_MITSUBISHI_PAJERO GLS B_1999 NIV.jpg",
-                "chassi": "",
-                "marca": "MITSUBISHI",
-                "modelo": "PAJERO GLS B",
-                "ano": "1999",
-                "natureza": [
-                        "NIV"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877102.6171267
-        },
-        {
-                "arquivo": "_NISSAN_VERSA 16 SL_2019 MOTOR.jpg",
-                "chassi": "",
-                "marca": "NISSAN",
-                "modelo": "VERSA 16 SL",
-                "ano": "2019",
-                "natureza": [
-                        "MOTOR"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877919.796753
-        },
-        {
-                "arquivo": "_PEUGEOT_208 ROADTRIP A_2024 ETIQUETA.jpg",
-                "chassi": "",
-                "marca": "PEUGEOT",
-                "modelo": "208 ROADTRIP A",
-                "ano": "2024",
-                "natureza": [
-                        "ETIQUETA"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877045.537124
-        },
-        {
-                "arquivo": "_PEUGEOT_BOXER M330M 23S_2011 VIS.jpg",
-                "chassi": "",
-                "marca": "PEUGEOT",
-                "modelo": "BOXER M330M 23S",
-                "ano": "2011",
-                "natureza": [
-                        "VIS"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786878038.1882563
-        },
-        {
-                "arquivo": "_RENAULT_KWID ZEN 2_2026 ETIQUETA.jpg",
-                "chassi": "",
-                "marca": "RENAULT",
-                "modelo": "KWID ZEN 2",
-                "ano": "2026",
-                "natureza": [
-                        "ETIQUETA"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877006.9514368
-        },
-        {
-                "arquivo": "_RENAULT_LOGAN DYNA 16 M_2017 VIS.jpg",
-                "chassi": "",
-                "marca": "RENAULT",
-                "modelo": "LOGAN DYNA 16 M",
-                "ano": "2017",
-                "natureza": [
-                        "VIS"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786878047.8611574
-        },
-        {
-                "arquivo": "_TOYOTA_COROLLA GLI18 CVT_2016 ETIQUETA.jpg",
-                "chassi": "",
-                "marca": "TOYOTA",
-                "modelo": "COROLLA GLI18 CVT",
-                "ano": "2016",
-                "natureza": [
-                        "ETIQUETA"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877572.083211
-        },
-        {
-                "arquivo": "_TOYOTA_COROLLA GLI18 CVT_2016 VIS.jpg",
-                "chassi": "",
-                "marca": "TOYOTA",
-                "modelo": "COROLLA GLI18 CVT",
-                "ano": "2016",
-                "natureza": [
-                        "VIS"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877577.4310508
-        },
-        {
-                "arquivo": "_TOYOTA_COROLLA XLI16VVT_2004 PLAQUETA.jpg",
-                "chassi": "",
-                "marca": "TOYOTA",
-                "modelo": "COROLLA XLI16VVT",
-                "ano": "2004",
-                "natureza": [
-                        "PLAQUETA"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877183.0411012
-        },
-        {
-                "arquivo": "_TOYOTA_FIELDER_2006 NIV.jpg",
-                "chassi": "",
-                "marca": "TOYOTA",
-                "modelo": "FIELDER",
-                "ano": "2006",
-                "natureza": [
-                        "NIV"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877081.6656098
-        },
-        {
-                "arquivo": "_TOYOTA_FIELDER_2006 PLAQUETA.jpg",
-                "chassi": "",
-                "marca": "TOYOTA",
-                "modelo": "FIELDER",
-                "ano": "2006",
-                "natureza": [
-                        "PLAQUETA"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877076.0158758
-        },
-        {
-                "arquivo": "_VW_GOL 1.0, AUTOMOVEL_2009 ETIQUETA PLAQUETA.jpg",
-                "chassi": "",
-                "marca": "VW",
-                "modelo": "GOL 1.0, AUTOMOVEL",
-                "ano": "2009",
-                "natureza": [
-                        "ETIQUETA",
-                        "PLAQUETA"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877540.0481272
-        },
-        {
-                "arquivo": "_VW_GOL 1.0_2009 ETIQUETA.jpg",
-                "chassi": "",
-                "marca": "VW",
-                "modelo": "GOL 1.0",
-                "ano": "2009",
-                "natureza": [
-                        "ETIQUETA"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877940.098895
-        },
-        {
-                "arquivo": "_YAMAHA_CROSSER Z ABS_2024 MOTOR.jpg",
-                "chassi": "",
-                "marca": "YAMAHA",
-                "modelo": "CROSSER Z ABS",
-                "ano": "2024",
-                "natureza": [
-                        "MOTOR"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877199.766259
-        },
-        {
-                "arquivo": "_YAMAHA_FACTOR YBR125 E_2009 MOTOR.jpg",
-                "chassi": "",
-                "marca": "YAMAHA",
-                "modelo": "FACTOR YBR125 E",
-                "ano": "2009",
-                "natureza": [
-                        "MOTOR"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877979.51101
-        },
-        {
-                "arquivo": "_YAMAHA_MT03 ABS_2026 ETIQUETA.jpg",
-                "chassi": "",
-                "marca": "YAMAHA",
-                "modelo": "MT03 ABS",
-                "ano": "2026",
-                "natureza": [
-                        "ETIQUETA"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877055.2723966
-        },
-        {
-                "arquivo": "_YAMAHA_MT03 ABS_2026 MOTOR.jpg",
-                "chassi": "",
-                "marca": "YAMAHA",
-                "modelo": "MT03 ABS",
-                "ano": "2026",
-                "natureza": [
-                        "MOTOR"
-                ],
-                "data": "16/08/2026",
-                "timestamp": 1786877050.7183945
-        },
         {
                 "arquivo": "10DBSS0019449_Peugeot_207Passion XR S_2009.jpg",
                 "chassi": "10DBSS0019449",
@@ -1623,7 +691,7 @@
         },
         {
                 "arquivo": "146A701-6162684-_Fiat_Uno Mille Smart_2001.jpg",
-                "chassi": "146A701-6162684-",
+                "chassi": "146A701 6162684",
                 "marca": "Fiat",
                 "modelo": "Uno Mille Smart",
                 "ano": "2001",
@@ -1653,7 +721,7 @@
         },
         {
                 "arquivo": "160FMJ-BR114212_JTZ_DR160 S_2026.jpg",
-                "chassi": "160FMJ-BR114212",
+                "chassi": "160FMJ BR114212",
                 "marca": "JTZ",
                 "modelo": "DR160 S",
                 "ano": "2026",
@@ -1685,7 +753,7 @@
                 "arquivo": "162FMJRC052090_Shineray_XY150-8_2024.jpg",
                 "chassi": "162FMJRC052090",
                 "marca": "Shineray",
-                "modelo": "XY150-8",
+                "modelo": "XY150 8",
                 "ano": "2024",
                 "natureza": [],
                 "data": "13/08/2026",
@@ -1865,7 +933,7 @@
                 "arquivo": "1P54FMIBRD054356_Shineray_XY125-6A_2025.JPG",
                 "chassi": "1P54FMIBRD054356",
                 "marca": "Shineray",
-                "modelo": "XY125-6A",
+                "modelo": "XY125 6A",
                 "ano": "2025",
                 "natureza": [],
                 "data": "13/08/2026",
@@ -1930,6 +998,18 @@
                 "natureza": [],
                 "data": "13/08/2026",
                 "timestamp": 1786590240.917341
+        },
+        {
+                "arquivo": "48150642_FORD_FIESTA_2004 VIS.jpg",
+                "chassi": "48150642",
+                "marca": "FORD",
+                "modelo": "FIESTA",
+                "ano": "2004",
+                "natureza": [
+                        "VIS"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877358.0738795
         },
         {
                 "arquivo": "4989061_Fiat_Palio EDX_1997.jpg",
@@ -2172,6 +1252,31 @@
                 "timestamp": 1786590241.0242789
         },
         {
+                "arquivo": "8AGSU19F0FR144937_CHEVROLET_CLASSIC LS_2015 ETIQUETA PLAQUETA.jpg",
+                "chassi": "8AGSU19F0FR144937",
+                "marca": "CHEVROLET",
+                "modelo": "CLASSIC LS",
+                "ano": "2015",
+                "natureza": [
+                        "ETIQUETA",
+                        "PLAQUETA"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877280.8980947
+        },
+        {
+                "arquivo": "8AGSU19F0FR144937_CHEVROLET_CLASSIC LS_2015 ETIQUETA.jpg",
+                "chassi": "8AGSU19F0FR144937",
+                "marca": "CHEVROLET",
+                "modelo": "CLASSIC LS",
+                "ano": "2015",
+                "natureza": [
+                        "ETIQUETA"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877270.6824274
+        },
+        {
                 "arquivo": "8AGSU19F0FR144937_Chevrolet_Classic LS_2015.JPG",
                 "chassi": "8AGSU19F0FR144937",
                 "marca": "Chevrolet",
@@ -2352,10 +1457,22 @@
                 "timestamp": 1786590241.086611
         },
         {
+                "arquivo": "93HRV2890HZ231361_HONDA_HR-V TOURING_2017 NIV.jpg",
+                "chassi": "93HRV2890HZ231361",
+                "marca": "HONDA",
+                "modelo": "HR V TOURING",
+                "ano": "2017",
+                "natureza": [
+                        "NIV"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877327.4320533
+        },
+        {
                 "arquivo": "93HRV2890HZ231361_HONDA_HR-V TOURING_2017.JPG",
                 "chassi": "93HRV2890HZ231361",
                 "marca": "HONDA",
-                "modelo": "HR-V TOURING",
+                "modelo": "HR V TOURING",
                 "ano": "2017",
                 "natureza": [],
                 "data": "13/08/2026",
@@ -2532,6 +1649,18 @@
                 "timestamp": 1786590241.1397233
         },
         {
+                "arquivo": "9882261CBMKD46754_FIAT_TORO ENDURANCE AT6_2021 NIV.jpg",
+                "chassi": "9882261CBMKD46754",
+                "marca": "FIAT",
+                "modelo": "TORO ENDURANCE AT6",
+                "ano": "2021",
+                "natureza": [
+                        "NIV"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877912.4436166
+        },
+        {
                 "arquivo": "988611132LK306067_JEEP_RENEGADE LIMITED AT_2020.jpg",
                 "chassi": "988611132LK306067",
                 "marca": "JEEP",
@@ -2570,6 +1699,18 @@
                 "natureza": [],
                 "data": "13/08/2026",
                 "timestamp": 1786590241.149717
+        },
+        {
+                "arquivo": "99KJCK4PKPM120180_JTZ_NK150_2023 NIV.jpg",
+                "chassi": "99KJCK4PKPM120180",
+                "marca": "JTZ",
+                "modelo": "NK150",
+                "ano": "2023",
+                "natureza": [
+                        "NIV"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877366.2093706
         },
         {
                 "arquivo": "99KPCKGMKTM114212_JTZ_DR160 S_2026.jpg",
@@ -2622,6 +1763,30 @@
                 "timestamp": 1786590241.1628704
         },
         {
+                "arquivo": "9BD146000S5460480_FIAT_UNO ELECTRONIC_1995 NIV.jpg",
+                "chassi": "9BD146000S5460480",
+                "marca": "FIAT",
+                "modelo": "UNO ELECTRONIC",
+                "ano": "1995",
+                "natureza": [
+                        "NIV"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877136.7642114
+        },
+        {
+                "arquivo": "9BD146000S5460480_FIAT_UNO ELECTRONIC_1995 PLAQUETA.jpg",
+                "chassi": "9BD146000S5460480",
+                "marca": "FIAT",
+                "modelo": "UNO ELECTRONIC",
+                "ano": "1995",
+                "natureza": [
+                        "PLAQUETA"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877126.2874866
+        },
+        {
                 "arquivo": "9BD146048V5911710_FIAT_UNO MILLE SX_1997.JPG",
                 "chassi": "9BD146048V5911710",
                 "marca": "FIAT",
@@ -2650,6 +1815,18 @@
                 "natureza": [],
                 "data": "13/08/2026",
                 "timestamp": 1786590241.1758618
+        },
+        {
+                "arquivo": "9BD17164LA5519975_FIAT_PALIO FIRE ECONOMY_2010 NIV.jpg",
+                "chassi": "9BD17164LA5519975",
+                "marca": "FIAT",
+                "modelo": "PALIO FIRE ECONOMY",
+                "ano": "2010",
+                "natureza": [
+                        "NIV"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877950.4676375
         },
         {
                 "arquivo": "9BD17164LA5519975_FIAT_PALIO FIRE ECONOMY_2010.jpg",
@@ -2722,6 +1899,18 @@
                 "timestamp": 1786590241.1935036
         },
         {
+                "arquivo": "9BD376A11RYB63433_FIAT_FASTBACK DRIVE_2024 NIV.jpg",
+                "chassi": "9BD376A11RYB63433",
+                "marca": "FIAT",
+                "modelo": "FASTBACK DRIVE",
+                "ano": "2024",
+                "natureza": [
+                        "NIV"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877299.858118
+        },
+        {
                 "arquivo": "9BD376A11RYB63433_FIAT_FASTBACK DRIVE_2024.JPG",
                 "chassi": "9BD376A11RYB63433",
                 "marca": "FIAT",
@@ -2750,6 +1939,18 @@
                 "natureza": [],
                 "data": "13/08/2026",
                 "timestamp": 1786590241.2015033
+        },
+        {
+                "arquivo": "9BFZF10B658331984_FORD_FIESTA_2005 NIV.jpg",
+                "chassi": "9BFZF10B658331984",
+                "marca": "FORD",
+                "modelo": "FIESTA",
+                "ano": "2005",
+                "natureza": [
+                        "NIV"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786876895.6334121
         },
         {
                 "arquivo": "9BFZF10B658331984_FORD_FIESTA_2005.jpg",
@@ -2793,13 +1994,51 @@
         },
         {
                 "arquivo": "9BG156YK0LC409272 ETIQUETA.jpg",
-                "chassi": "9BG156YK0LC409272 ETIQUETA",
+                "chassi": "9BG156YK0LC409272",
                 "marca": "",
                 "modelo": "",
                 "ano": "",
-                "natureza": [],
+                "natureza": [
+                        "ETIQUETA"
+                ],
                 "data": "16/08/2026",
                 "timestamp": 1786877513.1422033
+        },
+        {
+                "arquivo": "9BG156YK0LC409272_CHEV_TRAILBLAZER PRE D4A_2020 ETIQUETA.jpg",
+                "chassi": "9BG156YK0LC409272",
+                "marca": "CHEV",
+                "modelo": "TRAILBLAZER PRE D4A",
+                "ano": "2020",
+                "natureza": [
+                        "ETIQUETA"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877929.8251452
+        },
+        {
+                "arquivo": "9BG156YK0LC409272_CHEV_TRAILBLAZER PRE D4A_2020 NIV.jpg",
+                "chassi": "9BG156YK0LC409272",
+                "marca": "CHEV",
+                "modelo": "TRAILBLAZER PRE D4A",
+                "ano": "2020",
+                "natureza": [
+                        "NIV"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877504.745571
+        },
+        {
+                "arquivo": "9BGEB48A0PG221070 ETIQUETA.jpg",
+                "chassi": "9BGEB48A0PG221070",
+                "marca": "",
+                "modelo": "",
+                "ano": "",
+                "natureza": [
+                        "ETIQUETA"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877236.0389197
         },
         {
                 "arquivo": "9BGEB48A0PG221070_CHEVROLET_ONIX 10MT LT2_2023.JPG",
@@ -2810,6 +2049,42 @@
                 "natureza": [],
                 "data": "13/08/2026",
                 "timestamp": 1786590241.2232745
+        },
+        {
+                "arquivo": "9BGEB48A0PG221070_CHEV_ONIX 10MT LT2_20203 ETIQUETA.jpg",
+                "chassi": "9BGEB48A0PG221070",
+                "marca": "CHEV",
+                "modelo": "ONIX 10MT LT2",
+                "ano": "20203",
+                "natureza": [
+                        "ETIQUETA"
+                ],
+                "data": "31/05/2026",
+                "timestamp": 1780232520.0
+        },
+        {
+                "arquivo": "9BGEB48A0PG221070_CHEV_ONIX 10MT LT2_2023 ETIQUETA.jpg",
+                "chassi": "9BGEB48A0PG221070",
+                "marca": "CHEV",
+                "modelo": "ONIX 10MT LT2",
+                "ano": "2023",
+                "natureza": [
+                        "ETIQUETA"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877734.1492822
+        },
+        {
+                "arquivo": "9BGEB48A0PG221070_CHEV_ONIX 10MT LT2_2023 NIV.jpg",
+                "chassi": "9BGEB48A0PG221070",
+                "marca": "CHEV",
+                "modelo": "ONIX 10MT LT2",
+                "ano": "2023",
+                "natureza": [
+                        "NIV"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877726.9082596
         },
         {
                 "arquivo": "9BGEB48A0PG221070 1_CHEVROLET_ONIX 10MT LT2_2023.JPG",
@@ -2830,16 +2105,6 @@
                 "natureza": [],
                 "data": "13/08/2026",
                 "timestamp": 1786590241.2202735
-        },
-        {
-                "arquivo": "9BGEB48A0PG221070 ETIQUETA.jpg",
-                "chassi": "9BGEB48A0PG221070 ETIQUETA",
-                "marca": "",
-                "modelo": "",
-                "ano": "",
-                "natureza": [],
-                "data": "16/08/2026",
-                "timestamp": 1786877236.0389197
         },
         {
                 "arquivo": "9BGEN48H0TG181226 ETA PORTA_CHEVROLET_ONIX 10TAT LTZ_2026.jpg",
@@ -2872,6 +2137,30 @@
                 "timestamp": 1786590241.230268
         },
         {
+                "arquivo": "9BGKL48U0KB254661 ETIQUETA.jpg",
+                "chassi": "9BGKL48U0KB254661",
+                "marca": "",
+                "modelo": "",
+                "ano": "",
+                "natureza": [
+                        "ETIQUETA"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877566.4934506
+        },
+        {
+                "arquivo": "9BGKL48U0KB254661_CHEVROLET_ONIX 10MT JOYE_2019 ETIQUETA.jpg",
+                "chassi": "9BGKL48U0KB254661",
+                "marca": "CHEVROLET",
+                "modelo": "ONIX 10MT JOYE",
+                "ano": "2019",
+                "natureza": [
+                        "ETIQUETA"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877545.7458515
+        },
+        {
                 "arquivo": "9BGKL48U0KB254661_CHEVROLET_ONIX 10MT JOYE_2019.jpg",
                 "chassi": "9BGKL48U0KB254661",
                 "marca": "CHEVROLET",
@@ -2890,16 +2179,6 @@
                 "natureza": [],
                 "data": "13/08/2026",
                 "timestamp": 1786590241.238415
-        },
-        {
-                "arquivo": "9BGKL48U0KB254661 ETIQUETA.jpg",
-                "chassi": "9BGKL48U0KB254661 ETIQUETA",
-                "marca": "",
-                "modelo": "",
-                "ano": "",
-                "natureza": [],
-                "data": "16/08/2026",
-                "timestamp": 1786877566.4934506
         },
         {
                 "arquivo": "9BGKS69V0KG136709_CHEVROLET_PRISMA 1.4MT LT_2019.JPG",
@@ -3052,6 +2331,18 @@
                 "timestamp": 1786590241.3046153
         },
         {
+                "arquivo": "9BGSU19F0EC106227_CHEVROLET_CLASSIC LS_2014 NIV.jpg",
+                "chassi": "9BGSU19F0EC106227",
+                "marca": "CHEVROLET",
+                "modelo": "CLASSIC LS",
+                "ano": "2014",
+                "natureza": [
+                        "NIV"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877119.3706906
+        },
+        {
                 "arquivo": "9BHBG51DAEP115508_HYUNDAI_HB20 1.6M_2014.jpg",
                 "chassi": "9BHBG51DAEP115508",
                 "marca": "HYUNDAI",
@@ -3070,6 +2361,18 @@
                 "natureza": [],
                 "data": "13/08/2026",
                 "timestamp": 1786590241.3066134
+        },
+        {
+                "arquivo": "9BR53ZEC148510016_TOYOTA_COROLLA XLI16VVT_2004 PLAQUETA.jpg",
+                "chassi": "9BR53ZEC148510016",
+                "marca": "TOYOTA",
+                "modelo": "COROLLA XLI16VVT",
+                "ano": "2004",
+                "natureza": [
+                        "PLAQUETA"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877183.0411012
         },
         {
                 "arquivo": "9BR53ZEC248541935_TOYOTA_COROLLA XEI18VVT_2004.jpg",
@@ -3100,6 +2403,30 @@
                 "natureza": [],
                 "data": "13/08/2026",
                 "timestamp": 1786590241.3422494
+        },
+        {
+                "arquivo": "9BR72ZEC268635751_TOYOTA_FIELDER_2006 NIV.jpg",
+                "chassi": "9BR72ZEC268635751",
+                "marca": "TOYOTA",
+                "modelo": "FIELDER",
+                "ano": "2006",
+                "natureza": [
+                        "NIV"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877081.6656098
+        },
+        {
+                "arquivo": "9BR72ZEC268635751_TOYOTA_FIELDER_2006 PLAQUETA.jpg",
+                "chassi": "9BR72ZEC268635751",
+                "marca": "TOYOTA",
+                "modelo": "FIELDER",
+                "ano": "2006",
+                "natureza": [
+                        "PLAQUETA"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877076.0158758
         },
         {
                 "arquivo": "9BR72ZEC268635751_TOYOTA_FIELDER_2006.jpg",
@@ -3220,6 +2547,18 @@
                 "natureza": [],
                 "data": "13/08/2026",
                 "timestamp": 1786590241.3980129
+        },
+        {
+                "arquivo": "9BRBLWHE6G0038385_TOYOTA_COROLLA GLI18 CVT_2016 ETIQUETA.jpg",
+                "chassi": "9BRBLWHE6G0038385",
+                "marca": "TOYOTA",
+                "modelo": "COROLLA GLI18 CVT",
+                "ano": "2016",
+                "natureza": [
+                        "ETIQUETA"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877572.083211
         },
         {
                 "arquivo": "9BRBLWHE6G0038385_TOYOTA_COROLLA GLI18 CVT_2016.jpg",
@@ -3420,6 +2759,18 @@
                 "natureza": [],
                 "data": "13/08/2026",
                 "timestamp": 1786590241.4704783
+        },
+        {
+                "arquivo": "9C2JB0100HR278071_HONDA_POP 110I_2017 ETIQUETA.jpg",
+                "chassi": "9C2JB0100HR278071",
+                "marca": "HONDA",
+                "modelo": "POP 110I",
+                "ano": "2017",
+                "natureza": [
+                        "ETIQUETA"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877404.834792
         },
         {
                 "arquivo": "9C2JB0100KR312146_HONDA_POP 110I_2019.jpg",
@@ -3700,6 +3051,18 @@
                 "natureza": [],
                 "data": "13/08/2026",
                 "timestamp": 1786590241.9703803
+        },
+        {
+                "arquivo": "9C2JC250TTR060033_HONDA_CG 125 TITAN_1996 NIV.jpg",
+                "chassi": "9C2JC250TTR060033",
+                "marca": "HONDA",
+                "modelo": "CG 125 TITAN",
+                "ano": "1996",
+                "natureza": [
+                        "NIV"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877000.7216816
         },
         {
                 "arquivo": "9C2JC250TTR060033_HONDA_CG 125 TITAN_1996.jpg",
@@ -4032,6 +3395,18 @@
                 "timestamp": 1786590242.081258
         },
         {
+                "arquivo": "9C2KC08106R939022_HONDA_CG 150 TITAN KS_2006 NIV.jpg",
+                "chassi": "9C2KC08106R939022",
+                "marca": "HONDA",
+                "modelo": "CG 150 TITAN KS",
+                "ano": "2006",
+                "natureza": [
+                        "NIV"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877216.7942848
+        },
+        {
                 "arquivo": "9C2KC08106R939022_HONDA_CG 150 TITAN KS_2006.JPG",
                 "chassi": "9C2KC08106R939022",
                 "marca": "HONDA",
@@ -4122,6 +3497,18 @@
                 "timestamp": 1786590242.103729
         },
         {
+                "arquivo": "9C2KC1660BR507820_HONDA_CG 150 TITAN EX_2011 NIV.jpg",
+                "chassi": "9C2KC1660BR507820",
+                "marca": "HONDA",
+                "modelo": "CG 150 TITAN EX",
+                "ano": "2011",
+                "natureza": [
+                        "NIV"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877973.0597103
+        },
+        {
                 "arquivo": "9C2KC1660DR533453_HONDA_CG 150 TITAN EX_2013.jpg",
                 "chassi": "9C2KC1660DR533453",
                 "marca": "HONDA",
@@ -4160,6 +3547,30 @@
                 "natureza": [],
                 "data": "13/08/2026",
                 "timestamp": 1786590242.10975
+        },
+        {
+                "arquivo": "9C2KC2200LR007629_HONDA_CG 160 FAN_2020 ETIQUETA.jpg",
+                "chassi": "9C2KC2200LR007629",
+                "marca": "HONDA",
+                "modelo": "CG 160 FAN",
+                "ano": "2020",
+                "natureza": [
+                        "ETIQUETA"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786878033.0786066
+        },
+        {
+                "arquivo": "9C2KC2200NR211541_HONDA_CG 160 FAN_2022 NIV.jpg",
+                "chassi": "9C2KC2200NR211541",
+                "marca": "HONDA",
+                "modelo": "CG 160 FAN",
+                "ano": "2022",
+                "natureza": [
+                        "NIV"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786876911.8320801
         },
         {
                 "arquivo": "9C2KC2200NR211541_HONDA_CG 160 FAN_2022.jpg",
@@ -4332,6 +3743,18 @@
                 "timestamp": 1786590242.174162
         },
         {
+                "arquivo": "9C2KC2500RR122798_HONDA_CG 160 START_2024 NIV.jpg",
+                "chassi": "9C2KC2500RR122798",
+                "marca": "HONDA",
+                "modelo": "CG 160 START",
+                "ano": "2024",
+                "natureza": [
+                        "NIV"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877452.8660808
+        },
+        {
                 "arquivo": "9C2KC2500RR122798_HONDA_CG 160 START_2024.jpg",
                 "chassi": "9C2KC2500RR122798",
                 "marca": "HONDA",
@@ -4382,6 +3805,18 @@
                 "timestamp": 1786590242.1881526
         },
         {
+                "arquivo": "9C2KD0550DR117032_HONDA_NXR150 BROS ES_2013 NIV.jpg",
+                "chassi": "9C2KD0550DR117032",
+                "marca": "HONDA",
+                "modelo": "NXR150 BROS ES",
+                "ano": "2013",
+                "natureza": [
+                        "NIV"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877853.233847
+        },
+        {
                 "arquivo": "9C2KD0550ER223553_HONDA_NXR150 BROS ES_2014.jpg",
                 "chassi": "9C2KD0550ER223553",
                 "marca": "HONDA",
@@ -4400,6 +3835,18 @@
                 "natureza": [],
                 "data": "13/08/2026",
                 "timestamp": 1786590242.194148
+        },
+        {
+                "arquivo": "9C2KD0810PR022821_HONDA_NXR160 BROS ESDD_2023 NIV.jpg",
+                "chassi": "9C2KD0810PR022821",
+                "marca": "HONDA",
+                "modelo": "NXR160 BROS ESDD",
+                "ano": "2023",
+                "natureza": [
+                        "NIV"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877062.778761
         },
         {
                 "arquivo": "9C2KD0810PR022821_HONDA_NXR160 BROS ESDD_2023.jpg",
@@ -4465,7 +3912,7 @@
                 "arquivo": "9C2ND07001R011840_HONDA_NX-4 FALCON_2001.jpg",
                 "chassi": "9C2ND07001R011840",
                 "marca": "HONDA",
-                "modelo": "NX-4 FALCON",
+                "modelo": "NX 4 FALCON",
                 "ano": "2001",
                 "natureza": [],
                 "data": "13/08/2026",
@@ -4682,6 +4129,31 @@
                 "timestamp": 1786803837.6307087
         },
         {
+                "arquivo": "9P003288_VW_GOL 1.0, AUTOMOVEL_2009 ETIQUETA PLAQUETA.jpg",
+                "chassi": "9P003288",
+                "marca": "VW",
+                "modelo": "GOL 1.0, AUTOMOVEL",
+                "ano": "2009",
+                "natureza": [
+                        "ETIQUETA",
+                        "PLAQUETA"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877540.0481272
+        },
+        {
+                "arquivo": "9P003288_VW_GOL 1.0_2009 ETIQUETA.jpg",
+                "chassi": "9P003288",
+                "marca": "VW",
+                "modelo": "GOL 1.0",
+                "ano": "2009",
+                "natureza": [
+                        "ETIQUETA"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877940.098895
+        },
+        {
                 "arquivo": "A10A10A2121026B_BMW_S1000 RR_2021.jpg",
                 "chassi": "A10A10A2121026B",
                 "marca": "BMW",
@@ -4722,6 +4194,30 @@
                 "timestamp": 1786590242.3457105
         },
         {
+                "arquivo": "A5519975_FIAT_PALIO FIRE ECONOMY_2010 ETIQUETA.jpg",
+                "chassi": "A5519975",
+                "marca": "FIAT",
+                "modelo": "PALIO FIRE ECONOMY",
+                "ano": "2010",
+                "natureza": [
+                        "ETIQUETA"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877583.059654
+        },
+        {
+                "arquivo": "A5519975_FIAT_PALIO FIRE ECONOMY_2010 VIS.jpg",
+                "chassi": "A5519975",
+                "marca": "FIAT",
+                "modelo": "PALIO FIRE ECONOMY",
+                "ano": "2010",
+                "natureza": [
+                        "VIS"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877955.0791533
+        },
+        {
                 "arquivo": "AG253459 VIS_IGNORADO_X_X.JPG",
                 "chassi": "AG253459 VIS",
                 "marca": "IGNORADO",
@@ -4760,6 +4256,18 @@
                 "natureza": [],
                 "data": "13/08/2026",
                 "timestamp": 1786590242.3548355
+        },
+        {
+                "arquivo": "B2062124_PEUGEOT_BOXER M330M 23S_2011 VIS.jpg",
+                "chassi": "B2062124",
+                "marca": "PEUGEOT",
+                "modelo": "BOXER M330M 23S",
+                "ano": "2011",
+                "natureza": [
+                        "VIS"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786878038.1882563
         },
         {
                 "arquivo": "B2065056_IGNORADO_X_X.jpg",
@@ -5003,7 +4511,7 @@
         },
         {
                 "arquivo": "CG125BR-1227220_IGNORADO_X_X.jpg",
-                "chassi": "CG125BR-1227220",
+                "chassi": "CG125BR 1227220",
                 "marca": "IGNORADO",
                 "modelo": "X",
                 "ano": "X",
@@ -5013,7 +4521,7 @@
         },
         {
                 "arquivo": "CG125BR-1404547_IGNORADO_X_X.jpg",
-                "chassi": "CG125BR-1404547",
+                "chassi": "CG125BR 1404547",
                 "marca": "IGNORADO",
                 "modelo": "X",
                 "ano": "X",
@@ -5032,6 +4540,18 @@
                 "timestamp": 1786590242.408848
         },
         {
+                "arquivo": "CG125BR1101643 MOTOR.jpg",
+                "chassi": "CG125BR1101643",
+                "marca": "",
+                "modelo": "",
+                "ano": "",
+                "natureza": [
+                        "MOTOR"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786876919.2164392
+        },
+        {
                 "arquivo": "CG125BR1101643_IGNORADO_X_X.jpg",
                 "chassi": "CG125BR1101643",
                 "marca": "IGNORADO",
@@ -5040,16 +4560,6 @@
                 "natureza": [],
                 "data": "13/08/2026",
                 "timestamp": 1786590242.408848
-        },
-        {
-                "arquivo": "CG125BR1101643 MOTOR.jpg",
-                "chassi": "CG125BR1101643 MOTOR",
-                "marca": "",
-                "modelo": "",
-                "ano": "",
-                "natureza": [],
-                "data": "16/08/2026",
-                "timestamp": 1786876919.2164392
         },
         {
                 "arquivo": "CG125BR1115583_IGNORADO_X_X.jpg",
@@ -5373,11 +4883,13 @@
         },
         {
                 "arquivo": "CG125BRE1609957 MOTOR.jpg",
-                "chassi": "CG125BRE1609957 MOTOR",
+                "chassi": "CG125BRE1609957",
                 "marca": "",
                 "modelo": "",
                 "ano": "",
-                "natureza": [],
+                "natureza": [
+                        "MOTOR"
+                ],
                 "data": "16/08/2026",
                 "timestamp": 1786877896.3699403
         },
@@ -5430,6 +4942,19 @@
                 "natureza": [],
                 "data": "13/08/2026",
                 "timestamp": 1786590242.4918935
+        },
+        {
+                "arquivo": "DP038074_HYUNDAI_HB20 1.0M_2013 ETIQUETA PLAQUETA.jpg",
+                "chassi": "DP038074",
+                "marca": "HYUNDAI",
+                "modelo": "HB20 1.0M",
+                "ano": "2013",
+                "natureza": [
+                        "ETIQUETA",
+                        "PLAQUETA"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877891.243645
         },
         {
                 "arquivo": "E330E026333_IGNORADO_X_X.jpg",
@@ -5502,6 +5027,18 @@
                 "timestamp": 1786590242.5079932
         },
         {
+                "arquivo": "E3C9E026641_YAMAHA_FACTOR YBR125 E_2009 MOTOR.jpg",
+                "chassi": "E3C9E026641",
+                "marca": "YAMAHA",
+                "modelo": "FACTOR YBR125 E",
+                "ano": "2009",
+                "natureza": [
+                        "MOTOR"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877979.51101
+        },
+        {
                 "arquivo": "E3D1E119077_YAMAHA_FACTOR YBR 125 K_2010.jpg",
                 "chassi": "E3D1E119077",
                 "marca": "YAMAHA",
@@ -5562,6 +5099,18 @@
                 "timestamp": 1786590242.5296884
         },
         {
+                "arquivo": "EC106227_CHEVROLET_CLASSIC LS_2014 VIS.jpg",
+                "chassi": "EC106227",
+                "marca": "CHEVROLET",
+                "modelo": "CLASSIC LS",
+                "ano": "2014",
+                "natureza": [
+                        "VIS"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877112.610557
+        },
+        {
                 "arquivo": "EJ741800_IGNORADO_X_X.jpg",
                 "chassi": "EJ741800",
                 "marca": "IGNORADO",
@@ -5570,6 +5119,30 @@
                 "natureza": [],
                 "data": "13/08/2026",
                 "timestamp": 1786590242.5316877
+        },
+        {
+                "arquivo": "F3246728_FIAT_SIENA TETRAFUEL 1.4_2015 ETIQUETA.jpg",
+                "chassi": "F3246728",
+                "marca": "FIAT",
+                "modelo": "SIENA TETRAFUEL 1.4",
+                "ano": "2015",
+                "natureza": [
+                        "ETIQUETA"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877967.0444381
+        },
+        {
+                "arquivo": "F3246728_FIAT_SIENA TETRAFUEL 1.4_2015 VIS.jpg",
+                "chassi": "F3246728",
+                "marca": "FIAT",
+                "modelo": "SIENA TETRAFUEL 1.4",
+                "ano": "2015",
+                "natureza": [
+                        "VIS"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877959.4745204
         },
         {
                 "arquivo": "F466BR118170_JTA SUZUKI_YES EN 125_2006.jpg",
@@ -5602,6 +5175,18 @@
                 "timestamp": 1786590242.5428827
         },
         {
+                "arquivo": "G0038385_TOYOTA_COROLLA GLI18 CVT_2016 VIS.jpg",
+                "chassi": "G0038385",
+                "marca": "TOYOTA",
+                "modelo": "COROLLA GLI18 CVT",
+                "ano": "2016",
+                "natureza": [
+                        "VIS"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877577.4310508
+        },
+        {
                 "arquivo": "G347E093308_YAMAHA_FAZER YS 250_2006.jpg",
                 "chassi": "G347E093308",
                 "marca": "YAMAHA",
@@ -5610,6 +5195,18 @@
                 "natureza": [],
                 "data": "13/08/2026",
                 "timestamp": 1786590242.5448828
+        },
+        {
+                "arquivo": "G3C5E229109_YAMAHA_CROSSER Z ABS_2024 MOTOR.jpg",
+                "chassi": "G3C5E229109",
+                "marca": "YAMAHA",
+                "modelo": "CROSSER Z ABS",
+                "ano": "2024",
+                "natureza": [
+                        "MOTOR"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877199.766259
         },
         {
                 "arquivo": "G3F7E037760_YAMAHA_YS 150 FAZER ESD_2019.jpg",
@@ -5623,7 +5220,7 @@
         },
         {
                 "arquivo": "G3K1E-030043_YAMAHA_FZ25 FAZER_2019.jpg",
-                "chassi": "G3K1E-030043",
+                "chassi": "G3K1E 030043",
                 "marca": "YAMAHA",
                 "modelo": "FZ25 FAZER",
                 "ano": "2019",
@@ -5633,7 +5230,7 @@
         },
         {
                 "arquivo": "G3W5E-028169_YAMAHA_CROSSER Z ABS_2025.jpg",
-                "chassi": "G3W5E-028169",
+                "chassi": "G3W5E 028169",
                 "marca": "YAMAHA",
                 "modelo": "CROSSER Z ABS",
                 "ano": "2025",
@@ -5673,7 +5270,7 @@
         },
         {
                 "arquivo": "H403E-032543_YAMAHA_MT03 ABS_2020.jpg",
-                "chassi": "H403E-032543",
+                "chassi": "H403E 032543",
                 "marca": "YAMAHA",
                 "modelo": "MT03 ABS",
                 "ano": "2020",
@@ -5683,7 +5280,7 @@
         },
         {
                 "arquivo": "H409E-000703_YAMAHA_MT 03 ABS_2026.jpg",
-                "chassi": "H409E-000703",
+                "chassi": "H409E 000703",
                 "marca": "YAMAHA",
                 "modelo": "MT 03 ABS",
                 "ano": "2026",
@@ -5693,7 +5290,7 @@
         },
         {
                 "arquivo": "H409E-000703 MOTOR_YAMAHA_MT03 ABS_2026.jpg",
-                "chassi": "H409E-000703 MOTOR",
+                "chassi": "H409E 000703 MOTOR",
                 "marca": "YAMAHA",
                 "modelo": "MT03 ABS",
                 "ano": "2026",
@@ -5702,8 +5299,32 @@
                 "timestamp": 1786590242.5684016
         },
         {
+                "arquivo": "H409E000703_YAMAHA_MT03 ABS_2026 ETIQUETA.jpg",
+                "chassi": "H409E000703",
+                "marca": "YAMAHA",
+                "modelo": "MT03 ABS",
+                "ano": "2026",
+                "natureza": [
+                        "ETIQUETA"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877055.2723966
+        },
+        {
+                "arquivo": "H409E000703_YAMAHA_MT03 ABS_2026 MOTOR.jpg",
+                "chassi": "H409E000703",
+                "marca": "YAMAHA",
+                "modelo": "MT03 ABS",
+                "ano": "2026",
+                "natureza": [
+                        "MOTOR"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877050.7183945
+        },
+        {
                 "arquivo": "HA07E-3009511_HONDA_C 100 BIZ_2003.jpg",
-                "chassi": "HA07E-3009511",
+                "chassi": "HA07E 3009511",
                 "marca": "HONDA",
                 "modelo": "C 100 BIZ",
                 "ano": "2003",
@@ -5802,6 +5423,18 @@
                 "timestamp": 1786590242.589817
         },
         {
+                "arquivo": "HJ513848_RENAULT_LOGAN DYNA 16 M_2017 VIS.jpg",
+                "chassi": "HJ513848",
+                "marca": "RENAULT",
+                "modelo": "LOGAN DYNA 16 M",
+                "ano": "2017",
+                "natureza": [
+                        "VIS"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786878047.8611574
+        },
+        {
                 "arquivo": "HR16182519N_NISSAN_KICKS ADVANCE CVT_2024.jpg",
                 "chassi": "HR16182519N",
                 "marca": "NISSAN",
@@ -5812,12 +5445,50 @@
                 "timestamp": 1786590242.589817
         },
         {
+                "arquivo": "HR16258386T_NISSAN_VERSA 16 SL_2019 MOTOR.jpg",
+                "chassi": "HR16258386T",
+                "marca": "NISSAN",
+                "modelo": "VERSA 16 SL",
+                "ano": "2019",
+                "natureza": [
+                        "MOTOR"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877919.796753
+        },
+        {
+                "arquivo": "HZ231361_HONDA_HR-V TOURING_2017 ETIQUETA.jpg",
+                "chassi": "HZ231361",
+                "marca": "HONDA",
+                "modelo": "HR V TOURING",
+                "ano": "2017",
+                "natureza": [
+                        "ETIQUETA"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877312.3589003
+        },
+        {
+                "arquivo": "HZ231361_HONDA_HR-V TOURING_2017 VIS.jpg",
+                "chassi": "HZ231361",
+                "marca": "HONDA",
+                "modelo": "HR V TOURING",
+                "ano": "2017",
+                "natureza": [
+                        "VIS"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877305.436892
+        },
+        {
                 "arquivo": "HZ231361 2 ETIQUETA.jpg",
-                "chassi": "HZ231361 2 ETIQUETA",
+                "chassi": "HZ231361 2",
                 "marca": "",
                 "modelo": "",
                 "ano": "",
-                "natureza": [],
+                "natureza": [
+                        "ETIQUETA"
+                ],
                 "data": "16/08/2026",
                 "timestamp": 1786877319.6568253
         },
@@ -5922,6 +5593,18 @@
                 "timestamp": 1786590242.6094909
         },
         {
+                "arquivo": "JB01E0P008330_HONDA_POP 110I_2023 MOTOR.jpg",
+                "chassi": "JB01E0P008330",
+                "marca": "HONDA",
+                "modelo": "POP 110I",
+                "ano": "2023",
+                "natureza": [
+                        "MOTOR"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877412.7380903
+        },
+        {
                 "arquivo": "JB01E0P095371_HONDA_POP 110I_2023.jpg",
                 "chassi": "JB01E0P095371",
                 "marca": "HONDA",
@@ -5952,12 +5635,38 @@
                 "timestamp": 1786590242.6216354
         },
         {
+                "arquivo": "JB01E0R209803_HONDA_POP 110I_2024 MOTOR.jpg",
+                "chassi": "JB01E0R209803",
+                "marca": "HONDA",
+                "modelo": "POP 110I",
+                "ano": "2024",
+                "natureza": [
+                        "MOTOR"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877459.761885
+        },
+        {
+                "arquivo": "JB01E0S227378_HONDA_POP 110I ES_2025 MOTOR.jpg",
+                "chassi": "JB01E0S227378",
+                "marca": "HONDA",
+                "modelo": "POP 110I ES",
+                "ano": "2025",
+                "natureza": [
+                        "MOTOR"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877879.7649248
+        },
+        {
                 "arquivo": "JB01E0S231353 MOTOR.jpg",
-                "chassi": "JB01E0S231353 MOTOR",
+                "chassi": "JB01E0S231353",
                 "marca": "",
                 "modelo": "",
                 "ano": "",
-                "natureza": [],
+                "natureza": [
+                        "MOTOR"
+                ],
                 "data": "16/08/2026",
                 "timestamp": 1786877995.550034
         },
@@ -5983,7 +5692,7 @@
         },
         {
                 "arquivo": "JC18E-2032633_IGNORADO_X_X.jpg",
-                "chassi": "JC18E-2032633",
+                "chassi": "JC18E 2032633",
                 "marca": "IGNORADO",
                 "modelo": "X",
                 "ano": "X",
@@ -5993,7 +5702,7 @@
         },
         {
                 "arquivo": "JC18E-2061771_HONDA_CG 125 TODAY_1990.jpg",
-                "chassi": "JC18E-2061771",
+                "chassi": "JC18E 2061771",
                 "marca": "HONDA",
                 "modelo": "CG 125 TODAY",
                 "ano": "1990",
@@ -6133,7 +5842,7 @@
         },
         {
                 "arquivo": "JC25E-RS24377_HONDA_CG 125 TITAN_1995.jpg",
-                "chassi": "JC25E-RS24377",
+                "chassi": "JC25E RS24377",
                 "marca": "HONDA",
                 "modelo": "CG 125 TITAN",
                 "ano": "1995",
@@ -6142,8 +5851,20 @@
                 "timestamp": 1786590242.6568182
         },
         {
+                "arquivo": "JC25E-T060033 MOTOR.jpg",
+                "chassi": "JC25E T060033",
+                "marca": "",
+                "modelo": "",
+                "ano": "",
+                "natureza": [
+                        "MOTOR"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786876928.5094807
+        },
+        {
                 "arquivo": "JC25E-T060033_HONDA_CG 125 TITAN_1996.jpg",
-                "chassi": "JC25E-T060033",
+                "chassi": "JC25E T060033",
                 "marca": "HONDA",
                 "modelo": "CG 125 TITAN",
                 "ano": "1996",
@@ -6152,34 +5873,26 @@
                 "timestamp": 1786590242.6609268
         },
         {
-                "arquivo": "JC25E-T060033 MOTOR.jpg",
-                "chassi": "JC25E-T060033 MOTOR",
+                "arquivo": "JC25E-W153557 MOTOR.jpg",
+                "chassi": "JC25E W153557",
                 "marca": "",
                 "modelo": "",
                 "ano": "",
-                "natureza": [],
+                "natureza": [
+                        "MOTOR"
+                ],
                 "data": "16/08/2026",
-                "timestamp": 1786876928.5094807
+                "timestamp": 1786877039.5075755
         },
         {
                 "arquivo": "JC25E-W153557_HONDA_CG 125 TITAN_1998.jpg",
-                "chassi": "JC25E-W153557",
+                "chassi": "JC25E W153557",
                 "marca": "HONDA",
                 "modelo": "CG 125 TITAN",
                 "ano": "1998",
                 "natureza": [],
                 "data": "13/08/2026",
                 "timestamp": 1786590242.6639261
-        },
-        {
-                "arquivo": "JC25E-W153557 MOTOR.jpg",
-                "chassi": "JC25E-W153557 MOTOR",
-                "marca": "",
-                "modelo": "",
-                "ano": "",
-                "natureza": [],
-                "data": "16/08/2026",
-                "timestamp": 1786877039.5075755
         },
         {
                 "arquivo": "JC25ESS66016_HONDA_CG 125 TITAN_1995.jpg",
@@ -6442,6 +6155,18 @@
                 "timestamp": 1786590242.7263606
         },
         {
+                "arquivo": "JC30E76942306_HONDA_CG 125 FAN_2006 MOTOR.jpg",
+                "chassi": "JC30E76942306",
+                "marca": "HONDA",
+                "modelo": "CG 125 FAN",
+                "ano": "2006",
+                "natureza": [
+                        "MOTOR"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786876863.7181795
+        },
+        {
                 "arquivo": "JC30E76942306_HONDA_CG 125 FAN_2006.jpg",
                 "chassi": "JC30E76942306",
                 "marca": "HONDA",
@@ -6552,6 +6277,18 @@
                 "timestamp": 1786590242.7515936
         },
         {
+                "arquivo": "JC41E1C441899_HONDA_CG 125 FAN KS_2012 MOTOR.jpg",
+                "chassi": "JC41E1C441899",
+                "marca": "HONDA",
+                "modelo": "CG 125 FAN KS",
+                "ano": "2012",
+                "natureza": [
+                        "MOTOR"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786878025.7413461
+        },
+        {
                 "arquivo": "JC41E1D123527_HONDA_CG 125 FAN KS_2013.jpg",
                 "chassi": "JC41E1D123527",
                 "marca": "HONDA",
@@ -6560,6 +6297,18 @@
                 "natureza": [],
                 "data": "13/08/2026",
                 "timestamp": 1786590242.7545924
+        },
+        {
+                "arquivo": "JC41E1D714589_HONDA_CG 125 FAN KS_2013 MOTOR.jpg",
+                "chassi": "JC41E1D714589",
+                "marca": "HONDA",
+                "modelo": "CG 125 FAN KS",
+                "ano": "2013",
+                "natureza": [
+                        "MOTOR"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877885.672587
         },
         {
                 "arquivo": "JC41E1D718014_HONDA_CG 125 FAN KS_2013.jpg",
@@ -6600,6 +6349,18 @@
                 "natureza": [],
                 "data": "13/08/2026",
                 "timestamp": 1786590242.7617488
+        },
+        {
+                "arquivo": "JC41E1F810101_HONDA_CG 125 FAN KS_2015 MOTOR.jpg",
+                "chassi": "JC41E1F810101",
+                "marca": "HONDA",
+                "modelo": "CG 125 FAN KS",
+                "ano": "2015",
+                "natureza": [
+                        "MOTOR"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786876851.2633455
         },
         {
                 "arquivo": "JC41E1F810101_HONDA_CG 125 FAN KS_2015.jpg",
@@ -6660,6 +6421,18 @@
                 "natureza": [],
                 "data": "13/08/2026",
                 "timestamp": 1786590242.7747426
+        },
+        {
+                "arquivo": "JC48E3H509613_HONDA_BIZ 125_2017 MOTOR.jpg",
+                "chassi": "JC48E3H509613",
+                "marca": "HONDA",
+                "modelo": "BIZ 125",
+                "ano": "2017",
+                "natureza": [
+                        "MOTOR"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877193.3987803
         },
         {
                 "arquivo": "JCJ8094270_SUNDOWN_MAX 125 SE_2008.jpg",
@@ -6762,10 +6535,22 @@
                 "timestamp": 1786590242.7949417
         },
         {
+                "arquivo": "JMY0RV450WJ800372_MITSUBISHI_PAJERO GLS B_1999 NIV.jpg",
+                "chassi": "JMY0RV450WJ800372",
+                "marca": "MITSUBISHI",
+                "modelo": "PAJERO GLS B",
+                "ano": "1999",
+                "natureza": [
+                        "NIV"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877102.6171267
+        },
+        {
                 "arquivo": "JMY0RV450WJ800372_MITSUBISHI_PAJERO GLS-B_1999.jpg",
                 "chassi": "JMY0RV450WJ800372",
                 "marca": "MITSUBISHI",
-                "modelo": "PAJERO GLS-B",
+                "modelo": "PAJERO GLS B",
                 "ano": "1999",
                 "natureza": [],
                 "data": "13/08/2026",
@@ -6793,13 +6578,27 @@
         },
         {
                 "arquivo": "KB113676 VIS.jpg",
-                "chassi": "KB113676 VIS",
+                "chassi": "KB113676",
                 "marca": "",
                 "modelo": "",
                 "ano": "",
-                "natureza": [],
+                "natureza": [
+                        "VIS"
+                ],
                 "data": "16/08/2026",
                 "timestamp": 1786877924.5357993
+        },
+        {
+                "arquivo": "KB254661_CHEVROLET_ONIX 10MT JOYE_2019 VIS.jpg",
+                "chassi": "KB254661",
+                "marca": "CHEVROLET",
+                "modelo": "ONIX 10MT JOYE",
+                "ano": "2019",
+                "natureza": [
+                        "VIS"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877560.0152304
         },
         {
                 "arquivo": "KC08E14077165_HONDA_CG 150 TITAN KS_2004.jpg",
@@ -6810,6 +6609,18 @@
                 "natureza": [],
                 "data": "13/08/2026",
                 "timestamp": 1786590242.8080592
+        },
+        {
+                "arquivo": "KC08E15001477_HONDA_CG 150 TITAN KS_2005 MOTOR.jpg",
+                "chassi": "KC08E15001477",
+                "marca": "HONDA",
+                "modelo": "CG 150 TITAN KS",
+                "ano": "2005",
+                "natureza": [
+                        "MOTOR"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786878009.3887458
         },
         {
                 "arquivo": "KC08E15002506_HONDA_CG 150 TITAN KS_2005.jpg",
@@ -6830,6 +6641,18 @@
                 "natureza": [],
                 "data": "13/08/2026",
                 "timestamp": 1786590242.816096
+        },
+        {
+                "arquivo": "KC08E16939022_HONDA_CG 150 TITAN KS_2006 MOTOR.jpg",
+                "chassi": "KC08E16939022",
+                "marca": "HONDA",
+                "modelo": "CG 150 TITAN KS",
+                "ano": "2006",
+                "natureza": [
+                        "MOTOR"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877222.9000728
         },
         {
                 "arquivo": "KC08E16939022_HONDA_CG 150 TITAN KS_2006.JPG",
@@ -6882,6 +6705,18 @@
                 "timestamp": 1786590242.8361819
         },
         {
+                "arquivo": "KC08E17113279 MOTOR.jpg",
+                "chassi": "KC08E17113279",
+                "marca": "",
+                "modelo": "",
+                "ano": "",
+                "natureza": [
+                        "MOTOR"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786876874.8035522
+        },
+        {
                 "arquivo": "KC08E17113279_IGNORADO_X_X.jpg",
                 "chassi": "KC08E17113279",
                 "marca": "IGNORADO",
@@ -6890,16 +6725,6 @@
                 "natureza": [],
                 "data": "13/08/2026",
                 "timestamp": 1786590242.8361819
-        },
-        {
-                "arquivo": "KC08E17113279 MOTOR.jpg",
-                "chassi": "KC08E17113279 MOTOR",
-                "marca": "",
-                "modelo": "",
-                "ano": "",
-                "natureza": [],
-                "data": "16/08/2026",
-                "timestamp": 1786876874.8035522
         },
         {
                 "arquivo": "KC08E17192777_HONDA_CG 150 TITAN KS_2007.jpg",
@@ -7042,6 +6867,18 @@
                 "timestamp": 1786590242.8766658
         },
         {
+                "arquivo": "KC16E5F019117_HONDA_CG 150 TITAN ESD_2015 MOTOR.jpg",
+                "chassi": "KC16E5F019117",
+                "marca": "HONDA",
+                "modelo": "CG 150 TITAN ESD",
+                "ano": "2015",
+                "natureza": [
+                        "MOTOR"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877209.003963
+        },
+        {
                 "arquivo": "KC16E6B529460_HONDA_CG 150 TITAN EX_2011.jpg",
                 "chassi": "KC16E6B529460",
                 "marca": "HONDA",
@@ -7102,6 +6939,18 @@
                 "timestamp": 1786590242.891628
         },
         {
+                "arquivo": "KC22E0N212086_HONDA_CG 160 FAN_2022 MOTOR.jpg",
+                "chassi": "KC22E0N212086",
+                "marca": "HONDA",
+                "modelo": "CG 160 FAN",
+                "ano": "2022",
+                "natureza": [
+                        "MOTOR"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786876902.0529494
+        },
+        {
                 "arquivo": "KC22E0N212086_HONDA_CG 160 FAN_2022.jpg",
                 "chassi": "KC22E0N212086",
                 "marca": "HONDA",
@@ -7160,6 +7009,18 @@
                 "natureza": [],
                 "data": "13/08/2026",
                 "timestamp": 1786590242.9098213
+        },
+        {
+                "arquivo": "KC22E1P073877_HONDA_CG 160 TITAN_2023 MOTOR.jpg",
+                "chassi": "KC22E1P073877",
+                "marca": "HONDA",
+                "modelo": "CG 160 TITAN",
+                "ano": "2023",
+                "natureza": [
+                        "MOTOR"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786878004.0109277
         },
         {
                 "arquivo": "KC25E0G021771_HONDA_CG 160 START_2016.jpg",
@@ -7282,6 +7143,18 @@
                 "timestamp": 1786590242.9402306
         },
         {
+                "arquivo": "KC25E0R122980_HONDA_CG 160 START_2024 MOTOR.jpg",
+                "chassi": "KC25E0R122980",
+                "marca": "HONDA",
+                "modelo": "CG 160 START",
+                "ano": "2024",
+                "natureza": [
+                        "MOTOR"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877905.5628273
+        },
+        {
                 "arquivo": "KC25E0R122980_HONDA_CG 160 START_2024.jpg",
                 "chassi": "KC25E0R122980",
                 "marca": "HONDA",
@@ -7362,6 +7235,30 @@
                 "timestamp": 1786590242.956219
         },
         {
+                "arquivo": "KD08E1K232146_HONDA_NXR160 BROS ESDD_2019 MOTOR.jpg",
+                "chassi": "KD08E1K232146",
+                "marca": "HONDA",
+                "modelo": "NXR160 BROS ESDD",
+                "ano": "2019",
+                "natureza": [
+                        "MOTOR"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877860.0525672
+        },
+        {
+                "arquivo": "KD08E1P022622_HONDA_NXR160 BROS ESDD_2023 MOTOR.jpg",
+                "chassi": "KD08E1P022622",
+                "marca": "HONDA",
+                "modelo": "NXR160 BROS ESDD",
+                "ano": "2023",
+                "natureza": [
+                        "MOTOR"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877068.934436
+        },
+        {
                 "arquivo": "KD08E1P022622_HONDA_NXR160 BROS ESDD_2023.jpg",
                 "chassi": "KD08E1P022622",
                 "marca": "HONDA",
@@ -7392,6 +7289,30 @@
                 "timestamp": 1786590242.9727745
         },
         {
+                "arquivo": "L8460866_FORD_KA SE PLUS 1.0 HA C_2020 ETIQUETA.jpg",
+                "chassi": "L8460866",
+                "marca": "FORD",
+                "modelo": "KA SE PLUS 1.0 HA C",
+                "ano": "2020",
+                "natureza": [
+                        "ETIQUETA"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877984.786224
+        },
+        {
+                "arquivo": "L8460866_FORD_KA SE PLUS 1.0 HA C_2020 VIS.jpg",
+                "chassi": "L8460866",
+                "marca": "FORD",
+                "modelo": "KA SE PLUS 1.0 HA C",
+                "ano": "2020",
+                "natureza": [
+                        "VIS"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877989.775813
+        },
+        {
                 "arquivo": "LAAAXKBB190010149_IGNORADO_X_X.jpg",
                 "chassi": "LAAAXKBB190010149",
                 "marca": "IGNORADO",
@@ -7410,6 +7331,18 @@
                 "natureza": [],
                 "data": "13/08/2026",
                 "timestamp": 1786590242.9945617
+        },
+        {
+                "arquivo": "LC409272_CHEV_TRAILBLAZER PRE D4A_2020 VIS.jpg",
+                "chassi": "LC409272",
+                "marca": "CHEV",
+                "modelo": "TRAILBLAZER PRE D4A",
+                "ano": "2020",
+                "natureza": [
+                        "VIS"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877495.6444113
         },
         {
                 "arquivo": "LHJXCBLA0EB403221_BASHAN_MEET 50_2014.jpg",
@@ -7433,7 +7366,7 @@
         },
         {
                 "arquivo": "LIJ-223085092-_CHEVROLET_ONIX MT LT2_2023.JPG",
-                "chassi": "LIJ-223085092-",
+                "chassi": "LIJ 223085092",
                 "marca": "CHEVROLET",
                 "modelo": "ONIX MT LT2",
                 "ano": "2023",
@@ -7442,24 +7375,28 @@
                 "timestamp": 1786590243.0015595
         },
         {
-                "arquivo": "LIJ223085092 2 MOTOR.jpg",
-                "chassi": "LIJ223085092 2 MOTOR",
-                "marca": "",
-                "modelo": "",
-                "ano": "",
-                "natureza": [],
-                "data": "16/08/2026",
-                "timestamp": 1786877244.7770913
-        },
-        {
                 "arquivo": "LIJ223085092 ETIQUETA.jpg",
-                "chassi": "LIJ223085092 ETIQUETA",
+                "chassi": "LIJ223085092",
                 "marca": "",
                 "modelo": "",
                 "ano": "",
-                "natureza": [],
+                "natureza": [
+                        "ETIQUETA"
+                ],
                 "data": "16/08/2026",
                 "timestamp": 1786877230.347806
+        },
+        {
+                "arquivo": "LIJ223085092 2 MOTOR.jpg",
+                "chassi": "LIJ223085092 2",
+                "marca": "",
+                "modelo": "",
+                "ano": "",
+                "natureza": [
+                        "MOTOR"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877244.7770913
         },
         {
                 "arquivo": "LP6XCBL07T0008315_HAOJIAN_AVELLOZ AZ1_2026.jpg",
@@ -7503,11 +7440,13 @@
         },
         {
                 "arquivo": "LWN191611104 ETIQUETA.jpg",
-                "chassi": "LWN191611104 ETIQUETA",
+                "chassi": "LWN191611104",
                 "marca": "",
                 "modelo": "",
                 "ano": "",
-                "natureza": [],
+                "natureza": [
+                        "ETIQUETA"
+                ],
                 "data": "16/08/2026",
                 "timestamp": 1786877934.949588
         },
@@ -7525,7 +7464,7 @@
                 "arquivo": "LWYMCA201F6A01402_WUYANG_WY48Q-2_2015.jpg",
                 "chassi": "LWYMCA201F6A01402",
                 "marca": "WUYANG",
-                "modelo": "WY48Q-2",
+                "modelo": "WY48Q 2",
                 "ano": "2015",
                 "natureza": [],
                 "data": "13/08/2026",
@@ -7535,7 +7474,7 @@
                 "arquivo": "LWYMCA203D6002030_WUYANG_WY48Q-2_2013.jpg",
                 "chassi": "LWYMCA203D6002030",
                 "marca": "WUYANG",
-                "modelo": "WY48Q-2",
+                "modelo": "WY48Q 2",
                 "ano": "2013",
                 "natureza": [],
                 "data": "13/08/2026",
@@ -7545,7 +7484,7 @@
                 "arquivo": "LWYMCA203E6014258_WUYANG_WY48Q-2_2014.jpg",
                 "chassi": "LWYMCA203E6014258",
                 "marca": "WUYANG",
-                "modelo": "WY48Q-2",
+                "modelo": "WY48Q 2",
                 "ano": "2014",
                 "natureza": [],
                 "data": "13/08/2026",
@@ -7555,7 +7494,7 @@
                 "arquivo": "LWYMCA204D6050765_WUYANG_WY48Q-2_2013.jpg",
                 "chassi": "LWYMCA204D6050765",
                 "marca": "WUYANG",
-                "modelo": "WY48Q-2",
+                "modelo": "WY48Q 2",
                 "ano": "2013",
                 "natureza": [],
                 "data": "13/08/2026",
@@ -7565,7 +7504,7 @@
                 "arquivo": "LWYMCA206C6A2050_WUYANG_WY48Q-2_2012.jpg",
                 "chassi": "LWYMCA206C6A2050",
                 "marca": "WUYANG",
-                "modelo": "WY48Q-2",
+                "modelo": "WY48Q 2",
                 "ano": "2012",
                 "natureza": [],
                 "data": "13/08/2026",
@@ -7575,7 +7514,7 @@
                 "arquivo": "LWYMCA207E6002078_WUYANG_WY48Q-2_2014.jpg",
                 "chassi": "LWYMCA207E6002078",
                 "marca": "WUYANG",
-                "modelo": "WY48Q-2",
+                "modelo": "WY48Q 2",
                 "ano": "2014",
                 "natureza": [],
                 "data": "13/08/2026",
@@ -7595,7 +7534,7 @@
                 "arquivo": "LWYMCA208G6005722_WUYANG_WY48Q-2_2016.jpg",
                 "chassi": "LWYMCA208G6005722",
                 "marca": "WUYANG",
-                "modelo": "WY48Q-2",
+                "modelo": "WY48Q 2",
                 "ano": "2016",
                 "natureza": [],
                 "data": "13/08/2026",
@@ -7763,7 +7702,7 @@
         },
         {
                 "arquivo": "M432E-002769_YAMAHA_XTZ 690 TENERE_2026.jpg",
-                "chassi": "M432E-002769",
+                "chassi": "M432E 002769",
                 "marca": "YAMAHA",
                 "modelo": "XTZ 690 TENERE",
                 "ano": "2026",
@@ -7810,6 +7749,18 @@
                 "natureza": [],
                 "data": "13/08/2026",
                 "timestamp": 1786590243.175875
+        },
+        {
+                "arquivo": "MKD46754_FIAT_TORO ENDURANCE AT6_2021 ETIQUETA.jpg",
+                "chassi": "MKD46754",
+                "marca": "FIAT",
+                "modelo": "TORO ENDURANCE AT6",
+                "ano": "2021",
+                "natureza": [
+                        "ETIQUETA"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877468.2334585
         },
         {
                 "arquivo": "NAA147511_CHEVROLET_CLASSIC LS_2012.jpg",
@@ -7905,7 +7856,7 @@
                 "arquivo": "ND07E1011840_HONDA_NX-4 FALCON_2001.jpg",
                 "chassi": "ND07E1011840",
                 "marca": "HONDA",
-                "modelo": "NX-4 FALCON",
+                "modelo": "NX 4 FALCON",
                 "ano": "2001",
                 "natureza": [],
                 "data": "13/08/2026",
@@ -8012,6 +7963,18 @@
                 "timestamp": 1786590243.2226915
         },
         {
+                "arquivo": "PG221070_CHEV_ONIX 10MT LT2_2023 VIS.jpg",
+                "chassi": "PG221070",
+                "marca": "CHEV",
+                "modelo": "ONIX 10MT LT2",
+                "ano": "2023",
+                "natureza": [
+                        "VIS"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877738.3277218
+        },
+        {
                 "arquivo": "Q40052924_GM_CELTA 2P LIFE_2009.jpg",
                 "chassi": "Q40052924",
                 "marca": "GM",
@@ -8072,32 +8035,50 @@
                 "timestamp": 1786590243.2359097
         },
         {
-                "arquivo": "RY895483 ETIQUETA.jpg",
-                "chassi": "RY895483 ETIQUETA",
-                "marca": "",
-                "modelo": "",
-                "ano": "",
-                "natureza": [],
+                "arquivo": "RG550472_PEUGEOT_208 ROADTRIP A_2024 ETIQUETA.jpg",
+                "chassi": "RG550472",
+                "marca": "PEUGEOT",
+                "modelo": "208 ROADTRIP A",
+                "ano": "2024",
+                "natureza": [
+                        "ETIQUETA"
+                ],
                 "data": "16/08/2026",
-                "timestamp": 1786876887.5896885
+                "timestamp": 1786877045.537124
         },
         {
                 "arquivo": "RY895664 VIS.jpg",
-                "chassi": "RY895664 VIS",
+                "chassi": "RY895664",
                 "marca": "",
                 "modelo": "",
                 "ano": "",
-                "natureza": [],
+                "natureza": [
+                        "VIS"
+                ],
                 "data": "16/08/2026",
                 "timestamp": 1786876881.4735653
         },
         {
+                "arquivo": "RYB63433_FIAT_FASTBACK DRIVE_2024 VIS.jpg",
+                "chassi": "RYB63433",
+                "marca": "FIAT",
+                "modelo": "FASTBACK DRIVE",
+                "ano": "2024",
+                "natureza": [
+                        "VIS"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877292.8751245
+        },
+        {
                 "arquivo": "RYB634433 VIS.jpg",
-                "chassi": "RYB634433 VIS",
+                "chassi": "RYB634433",
                 "marca": "",
                 "modelo": "",
                 "ano": "",
-                "natureza": [],
+                "natureza": [
+                        "VIS"
+                ],
                 "data": "16/08/2026",
                 "timestamp": 1786877287.203893
         },
@@ -8132,6 +8113,18 @@
                 "timestamp": 1786590243.2417257
         },
         {
+                "arquivo": "SL0005704_GM_ASTRA SEDAN_2002 MOTOR.jpg",
+                "chassi": "SL0005704",
+                "marca": "GM",
+                "modelo": "ASTRA SEDAN",
+                "ano": "2002",
+                "natureza": [
+                        "MOTOR"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877107.488879
+        },
+        {
                 "arquivo": "SL0005704_GM_ASTRA SEDAN_2002.jpg",
                 "chassi": "SL0005704",
                 "marca": "GM",
@@ -8142,24 +8135,28 @@
                 "timestamp": 1786590243.2437243
         },
         {
-                "arquivo": "SMH487BCM14335622 2 CÂMBIO.jpg",
-                "chassi": "SMH487BCM14335622 2 CÂMBIO",
-                "marca": "",
-                "modelo": "",
-                "ano": "",
-                "natureza": [],
-                "data": "16/08/2026",
-                "timestamp": 1786877165.104984
-        },
-        {
                 "arquivo": "SMH487BCM14335622 CÂMBIO.jpg",
-                "chassi": "SMH487BCM14335622 CÂMBIO",
+                "chassi": "SMH487BCM14335622",
                 "marca": "",
                 "modelo": "",
                 "ano": "",
-                "natureza": [],
+                "natureza": [
+                        "CÂMBIO"
+                ],
                 "data": "16/08/2026",
                 "timestamp": 1786877158.5910068
+        },
+        {
+                "arquivo": "SMH487BCM14335622 2 CÂMBIO.jpg",
+                "chassi": "SMH487BCM14335622 2",
+                "marca": "",
+                "modelo": "",
+                "ano": "",
+                "natureza": [
+                        "CÂMBIO"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877165.104984
         },
         {
                 "arquivo": "SP0345846 REGRAVAÇÃO DETRAN_IGNORADO_X_X.jpg",
@@ -8182,6 +8179,18 @@
                 "timestamp": 1786590243.2477214
         },
         {
+                "arquivo": "SR227367_HONDA_POP 110I ES_2025 ETIQUETA.jpg",
+                "chassi": "SR227367",
+                "marca": "HONDA",
+                "modelo": "POP 110I ES",
+                "ano": "2025",
+                "natureza": [
+                        "ETIQUETA"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877873.3444393
+        },
+        {
                 "arquivo": "TJ648522_IGNORADO_X_X.jpg",
                 "chassi": "TJ648522",
                 "marca": "IGNORADO",
@@ -8190,6 +8199,18 @@
                 "natureza": [],
                 "data": "13/08/2026",
                 "timestamp": 1786590243.2487214
+        },
+        {
+                "arquivo": "TJ648522_RENAULT_KWID ZEN 2_2026 ETIQUETA.jpg",
+                "chassi": "TJ648522",
+                "marca": "RENAULT",
+                "modelo": "KWID ZEN 2",
+                "ano": "2026",
+                "natureza": [
+                        "ETIQUETA"
+                ],
+                "data": "16/08/2026",
+                "timestamp": 1786877006.9514368
         },
         {
                 "arquivo": "TX002799_IGNORADO_X_X.jpg",
@@ -8273,11 +8294,13 @@
         },
         {
                 "arquivo": "WY139FMA12809080 MOTOR.jpg",
-                "chassi": "WY139FMA12809080 MOTOR",
+                "chassi": "WY139FMA12809080",
                 "marca": "",
                 "modelo": "",
                 "ano": "",
-                "natureza": [],
+                "natureza": [
+                        "MOTOR"
+                ],
                 "data": "16/08/2026",
                 "timestamp": 1786878015.6988258
         },
@@ -8285,7 +8308,7 @@
                 "arquivo": "WY139FMA12812133_WUYANG_WY48Q-2_2012.jpg",
                 "chassi": "WY139FMA12812133",
                 "marca": "WUYANG",
-                "modelo": "WY48Q-2",
+                "modelo": "WY48Q 2",
                 "ano": "2012",
                 "natureza": [],
                 "data": "13/08/2026",
@@ -8295,7 +8318,7 @@
                 "arquivo": "WY139FMA12818513_WUYANG_WY48Q-2_2013.jpg",
                 "chassi": "WY139FMA12818513",
                 "marca": "WUYANG",
-                "modelo": "WY48Q-2",
+                "modelo": "WY48Q 2",
                 "ano": "2013",
                 "natureza": [],
                 "data": "13/08/2026",
@@ -8325,7 +8348,7 @@
                 "arquivo": "WY139FMA13336502_WUYANG_WY48Q-2_2013.jpg",
                 "chassi": "WY139FMA13336502",
                 "marca": "WUYANG",
-                "modelo": "WY48Q-2",
+                "modelo": "WY48Q 2",
                 "ano": "2013",
                 "natureza": [],
                 "data": "13/08/2026",
@@ -8335,7 +8358,7 @@
                 "arquivo": "WY139FMA13339518_WUYANG_WY48Q-2_2014.jpg",
                 "chassi": "WY139FMA13339518",
                 "marca": "WUYANG",
-                "modelo": "WY48Q-2",
+                "modelo": "WY48Q 2",
                 "ano": "2014",
                 "natureza": [],
                 "data": "13/08/2026",
@@ -8355,7 +8378,7 @@
                 "arquivo": "WY139FMA13358851_WUYANG_WY50QT-2_2014.jpg",
                 "chassi": "WY139FMA13358851",
                 "marca": "WUYANG",
-                "modelo": "WY50QT-2",
+                "modelo": "WY50QT 2",
                 "ano": "2014",
                 "natureza": [],
                 "data": "13/08/2026",
@@ -8365,7 +8388,7 @@
                 "arquivo": "WY139FMA13360592_WUYANG_WY48Q-2_2014.jpg",
                 "chassi": "WY139FMA13360592",
                 "marca": "WUYANG",
-                "modelo": "WY48Q-2",
+                "modelo": "WY48Q 2",
                 "ano": "2014",
                 "natureza": [],
                 "data": "13/08/2026",
@@ -8375,7 +8398,7 @@
                 "arquivo": "WY139FMA13360629_WUYANG_WY48Q-2_2014.jpg",
                 "chassi": "WY139FMA13360629",
                 "marca": "WUYANG",
-                "modelo": "WY48Q-2",
+                "modelo": "WY48Q 2",
                 "ano": "2014",
                 "natureza": [],
                 "data": "13/08/2026",
@@ -8385,7 +8408,7 @@
                 "arquivo": "WY139FMA13361214_WUYANG_WY48Q-2_2014.jpg",
                 "chassi": "WY139FMA13361214",
                 "marca": "WUYANG",
-                "modelo": "WY48Q-2",
+                "modelo": "WY48Q 2",
                 "ano": "2014",
                 "natureza": [],
                 "data": "13/08/2026",
@@ -8415,7 +8438,7 @@
                 "arquivo": "WY139FMA15255112_WUYANG_WY48Q-2_2015.jpg",
                 "chassi": "WY139FMA15255112",
                 "marca": "WUYANG",
-                "modelo": "WY48Q-2",
+                "modelo": "WY48Q 2",
                 "ano": "2015",
                 "natureza": [],
                 "data": "13/08/2026",
@@ -8425,7 +8448,7 @@
                 "arquivo": "WY139FMA15260652_WUYANG_WY48Q-2_2016.jpg",
                 "chassi": "WY139FMA15260652",
                 "marca": "WUYANG",
-                "modelo": "WY48Q-2",
+                "modelo": "WY48Q 2",
                 "ano": "2016",
                 "natureza": [],
                 "data": "13/08/2026",
@@ -8519,7 +8542,6 @@
         const gpsStatus = document.getElementById('gpsStatus');
         const ledCounter = document.getElementById('ledCounter');
         
-        // Elementos de Autenticação e Áreas
         const btnAcessoRestrito = document.getElementById('btnAcessoRestrito');
         const areaDashboard = document.getElementById('areaDashboard');
         const areaBuscador = document.getElementById('areaBuscador');
@@ -8535,7 +8557,6 @@
             auth = firebase.auth();
             acessosRef = database.ref('acessos');
 
-            // Atualiza o contador de acessos global estilo LED (ignora CAMPINA GRANDE)
             acessosRef.on('value', (snapshot) => {
                 let count = 0;
                 snapshot.forEach((childSnapshot) => {
@@ -8581,8 +8602,14 @@
                 }
             });
 
-            acessosRef.orderByChild('timestamp').limitToLast(20).on('child_added', (snapshot) => {
+            acessosRef.orderByChild('timestamp').limitToLast(50).on('child_added', (snapshot) => {
                 const acesso = snapshot.val();
+                
+                // --- INÍCIO DO FILTRO DE CAMPINA GRANDE ---
+                const cid = acesso.cidade ? acesso.cidade.toUpperCase() : "";
+                if (cid.includes("CAMPINA GRANDE")) return;
+                // --- FIM DO FILTRO ---
+
                 const dataObjeto = new Date(acesso.timestamp || Date.now());
                 const dataFormatada = dataObjeto.toLocaleDateString('pt-BR');
                 const horaFormatada = dataObjeto.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
@@ -8599,88 +8626,41 @@
             terminalLogs.prepend(erroLinha);
         }
 
-        // =========================================================================
-        // ENVIO PARA O TELEGRAM
-        // =========================================================================
-        function abrirFormularioContribuicao() {
-            document.getElementById('modalContribuicao').style.display = 'flex';
-        }
-        
-        function fecharModalContribuicao() {
-            document.getElementById('modalContribuicao').style.display = 'none';
-        }
+        function abrirFormularioContribuicao() { document.getElementById('modalContribuicao').style.display = 'flex'; }
+        function fecharModalContribuicao() { document.getElementById('modalContribuicao').style.display = 'none'; }
 
         async function enviarParaTelegram() {
             const fileInput = document.getElementById('uploadFoto');
             const obs = document.getElementById('uploadObs').value;
             const btn = document.getElementById('btnEnviarTelegram');
 
-            if (!fileInput.files.length) {
-                alert("A foto é obrigatória!");
-                return;
-            }
+            if (!fileInput.files.length) { alert("A foto é obrigatória!"); return; }
 
             const file = fileInput.files[0];
             const caption = `🚨 *NOVO PADRÃO ENVIADO* 🚨\n\n*Obs:* ${obs || 'Nenhuma'}`;
-
             const formData = new FormData();
             formData.append('chat_id', '1945271271');
             formData.append('photo', file);
             formData.append('caption', caption);
             formData.append('parse_mode', 'Markdown');
 
-            btn.innerText = "⏳ Enviando...";
-            btn.disabled = true;
+            btn.innerText = "⏳ Enviando..."; btn.disabled = true;
 
             try {
-                const res = await fetch('https://api.telegram.org/bot8274657364:AAHT3DKU6ysZFf3nP3b1_z5r9jokYO0jc2U/sendPhoto', {
-                    method: 'POST',
-                    body: formData
-                });
+                const res = await fetch('https://api.telegram.org/bot8274657364:AAHT3DKU6ysZFf3nP3b1_z5r9jokYO0jc2U/sendPhoto', { method: 'POST', body: formData });
                 const data = await res.json();
-                
                 if (data.ok) {
                     alert("Padrão enviado com sucesso! Obrigado pela contribuição.");
                     fecharModalContribuicao();
-                    
-                    fileInput.value = '';
-                    document.getElementById('uploadObs').value = '';
-                } else {
-                    alert("Erro ao enviar: " + data.description);
-                }
-            } catch (err) {
-                alert("Erro de conexão ao enviar a foto.");
-            } finally {
-                btn.innerText = "Enviar Padrão";
-                btn.disabled = false;
-            }
+                    fileInput.value = ''; document.getElementById('uploadObs').value = '';
+                } else { alert("Erro ao enviar: " + data.description); }
+            } catch (err) { alert("Erro de conexão ao enviar a foto."); } finally { btn.innerText = "Enviar Padrão"; btn.disabled = false; }
         }
 
-        // =========================================================================
-        // FUNÇÕES DE NAVEGAÇÃO DO DASHBOARD
-        // =========================================================================
-        function abrirBuscador() {
-            areaDashboard.style.display = 'none';
-            areaEliminador.style.display = 'none';
-            areaBuscador.style.display = 'flex';
-        }
+        function abrirBuscador() { areaDashboard.style.display = 'none'; areaEliminador.style.display = 'none'; areaBuscador.style.display = 'flex'; }
+        function abrirEliminador() { areaDashboard.style.display = 'none'; areaBuscador.style.display = 'none'; areaEliminador.style.display = 'flex'; showEliminadorSelection(); }
+        function voltarDashboard() { areaBuscador.style.display = 'none'; areaEliminador.style.display = 'none'; areaDashboard.style.display = 'flex'; }
 
-        function abrirEliminador() {
-            areaDashboard.style.display = 'none';
-            areaBuscador.style.display = 'none';
-            areaEliminador.style.display = 'flex';
-            showEliminadorSelection();
-        }
-
-        function voltarDashboard() {
-            areaBuscador.style.display = 'none';
-            areaEliminador.style.display = 'none';
-            areaDashboard.style.display = 'flex';
-        }
-
-        // =========================================================================
-        // NOVA FERRAMENTA: ELIMINADOR NIV HONDA
-        // =========================================================================
         const digitMap = {
             '0': [0,1,1,1,0, 1,0,0,0,1, 1,0,0,0,1, 1,0,0,0,1, 1,0,0,0,1, 1,0,0,0,1, 0,1,1,1,0],
             '1': [0,0,0,1,1, 0,0,0,0,1, 0,0,0,0,1, 0,0,0,0,1, 0,0,0,0,1, 0,0,0,0,1, 0,0,0,0,1],
@@ -8735,29 +8715,20 @@
             elimCurrentMode = mode;
             elimScreenSelection.style.display = 'none';
             elimScreenMain.style.display = 'flex';
-            if (mode === 'numeric') {
-                elimAppTitleEl.textContent = "Eliminador Numérico (0-9)";
-            } else {
-                elimAppTitleEl.textContent = "Eliminador Alfabético (A-Z)";
-            }
+            if (mode === 'numeric') { elimAppTitleEl.textContent = "Eliminador Numérico (0-9)"; } 
+            else { elimAppTitleEl.textContent = "Eliminador Alfabético (A-Z)"; }
             initEliminadorGrid();
         }
 
-        function showEliminadorSelection() {
-            elimScreenSelection.style.display = 'flex';
-            elimScreenMain.style.display = 'none';
-        }
+        function showEliminadorSelection() { elimScreenSelection.style.display = 'flex'; elimScreenMain.style.display = 'none'; }
 
         function initEliminadorGrid() {
             elimGridEl.innerHTML = '';
             elimSelectedIndices.clear();
             elimDotElements = [];
             
-            if (elimCurrentMode === 'numeric') {
-                elimCandidates = Object.keys(digitMap).sort();
-            } else {
-                elimCandidates = Object.keys(alphaMap).sort();
-            }
+            if (elimCurrentMode === 'numeric') { elimCandidates = Object.keys(digitMap).sort(); } 
+            else { elimCandidates = Object.keys(alphaMap).sort(); }
 
             for (let i = 0; i < 35; i++) {
                 const dot = document.createElement('div');
@@ -8788,8 +8759,7 @@
 
             if (elimSelectedIndices.size === 0) {
                 elimDotElements.forEach(d => d.classList.remove('forbidden'));
-                updateEliminadorResult(fullSet);
-                return;
+                updateEliminadorResult(fullSet); return;
             }
 
             let candidates = [...fullSet];
@@ -8797,84 +8767,48 @@
 
             for (let selectedIndex of elimSelectedIndices) {
                 let pointExists = false;
-                for (let char of fullSet) {
-                    if (targetMap[char][selectedIndex] === 1) {
-                        pointExists = true;
-                        break;
-                    }
-                }
-                if (!pointExists) {
-                    elimDotElements[selectedIndex].classList.add('forbidden');
-                    isValid = false;
-                } else {
-                    elimDotElements[selectedIndex].classList.remove('forbidden');
-                }
+                for (let char of fullSet) { if (targetMap[char][selectedIndex] === 1) { pointExists = true; break; } }
+                if (!pointExists) { elimDotElements[selectedIndex].classList.add('forbidden'); isValid = false; } 
+                else { elimDotElements[selectedIndex].classList.remove('forbidden'); }
             }
 
-            if (!isValid) {
-                updateEliminadorResult([]); 
-                return; 
-            }
-
-            for (let selectedIndex of elimSelectedIndices) {
-                candidates = candidates.filter(char => {
-                    return targetMap[char][selectedIndex] === 1;
-                });
-            }
+            if (!isValid) { updateEliminadorResult([]); return; }
+            for (let selectedIndex of elimSelectedIndices) { candidates = candidates.filter(char => { return targetMap[char][selectedIndex] === 1; }); }
             updateEliminadorResult(candidates);
         }
 
         function updateEliminadorResult(finalCandidates) {
-            if (finalCandidates.length === 0) {
-                elimResultEl.textContent = "NENHUM";
-                elimResultEl.style.color = "#ff4444"; 
-            } else {
-                elimResultEl.textContent = finalCandidates.join(' ');
-                elimResultEl.style.color = "var(--accent)"; 
-            }
+            if (finalCandidates.length === 0) { elimResultEl.textContent = "NENHUM"; elimResultEl.style.color = "#ff4444"; } 
+            else { elimResultEl.textContent = finalCandidates.join(' '); elimResultEl.style.color = "var(--accent)"; }
         }
 
-        function resetEliminadorGrid() {
-            initEliminadorGrid();
-        }
+        function resetEliminadorGrid() { initEliminadorGrid(); }
 
-        // =========================================================================
-        // FUNÇÕES DE AUTENTICAÇÃO E MÁSCARAS
-        // =========================================================================
         function abrirModalAuth() { modalAuth.style.display = 'flex'; }
         function fecharModalAuth() { modalAuth.style.display = 'none'; }
         function fecharModalPendente() { modalPendente.style.display = 'none'; }
 
         function toggleAuthMode() {
-            if (formLogin.style.display === 'none') {
-                formLogin.style.display = 'flex';
-                formCadastro.style.display = 'none';
-            } else {
-                formLogin.style.display = 'none';
-                formCadastro.style.display = 'flex';
-            }
+            if (formLogin.style.display === 'none') { formLogin.style.display = 'flex'; formCadastro.style.display = 'none'; } 
+            else { formLogin.style.display = 'none'; formCadastro.style.display = 'flex'; }
         }
 
         function toggleVisibility(id) {
             const input = document.getElementById(id);
-            if (input.type === "password") input.type = "text";
-            else input.type = "password";
+            if (input.type === "password") input.type = "text"; else input.type = "password";
         }
 
         function mascaraCPF(cpf) {
             let v = cpf.value.replace(/\D/g, "");
             if (v.length > 11) v = v.substring(0, 11);
-            v = v.replace(/(\d{3})(\d)/, "$1.$2");
-            v = v.replace(/(\d{3})(\d)/, "$1.$2");
-            v = v.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+            v = v.replace(/(\d{3})(\d)/, "$1.$2"); v = v.replace(/(\d{3})(\d)/, "$1.$2"); v = v.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
             cpf.value = v;
         }
 
         function mascaraTelefone(tel) {
             let v = tel.value.replace(/\D/g, "");
             if (v.length > 11) v = v.substring(0, 11);
-            v = v.replace(/^(\d{2})(\d)/g, "($1) $2");
-            v = v.replace(/(\d)(\d{4})$/, "$1-$2");
+            v = v.replace(/^(\d{2})(\d)/g, "($1) $2"); v = v.replace(/(\d)(\d{4})$/, "$1-$2");
             tel.value = v;
         }
 
@@ -8887,19 +8821,11 @@
             const senha = document.getElementById('cadSenha').value;
             const senhaConfirma = document.getElementById('cadSenhaConfirma').value;
 
-            if(!nome || !cpf || !telefone || !instituicao || !email || !senha || !senhaConfirma) {
-                alert("Preencha todos os campos!");
-                return;
-            }
-            if(senha !== senhaConfirma) {
-                alert("As senhas digitadas não coincidem. Verifique e tente novamente.");
-                return;
-            }
+            if(!nome || !cpf || !telefone || !instituicao || !email || !senha || !senhaConfirma) { alert("Preencha todos os campos!"); return; }
+            if(senha !== senhaConfirma) { alert("As senhas digitadas não coincidem. Verifique e tente novamente."); return; }
 
             auth.createUserWithEmailAndPassword(email, senha).then(credenciais => {
-                database.ref('usuarios/' + credenciais.user.uid).set({
-                    nome: nome, cpf: cpf, telefone: telefone, instituicao: instituicao, email: email, status: 'pendente'
-                });
+                database.ref('usuarios/' + credenciais.user.uid).set({ nome: nome, cpf: cpf, telefone: telefone, instituicao: instituicao, email: email, status: 'pendente' });
                 alert("Solicitação enviada com sucesso! Aguarde a liberação do Administrador.");
             }).catch(erro => {
                 if (erro.code === 'auth/email-already-in-use') alert("Este e-mail já está cadastrado no sistema.");
@@ -8920,13 +8846,8 @@
             });
         }
 
-        function fazerLogout() {
-            auth.signOut().then(() => { window.location.reload(); });
-        }
+        function fazerLogout() { auth.signOut().then(() => { window.location.reload(); }); }
 
-        // =========================================================================
-        // EXTRAÇÃO SECRETA DO RELATÓRIO PARA EXCEL
-        // =========================================================================
         const tituloTerminal = document.getElementById('tituloTerminal');
         if (tituloTerminal) {
             tituloTerminal.addEventListener('dblclick', async () => {
@@ -8951,17 +8872,13 @@
 
                     const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
                     const url = URL.createObjectURL(blob);
-                    const link = document.createElement("a");
-                    link.setAttribute("href", url);
+                    const link = document.createElement("a"); link.setAttribute("href", url);
                     link.setAttribute("download", `Relatorio_Acessos_${new Date().toLocaleDateString('pt-BR').replace(/\//g, '-')}.csv`);
                     document.body.appendChild(link); link.click(); document.body.removeChild(link);
                 } catch (err) { alert("Erro ao extrair o relatório."); }
             });
         }
 
-        // =========================================================================
-        // GEOLOCALIZAÇÃO
-        // =========================================================================
         async function obterLocalizacaoViaIP() {
             try {
                 const res = await fetch('https://ipwho.is/');
@@ -9009,9 +8926,6 @@
             registrarMeuAcessoGlobal();
         });
 
-        // =========================================================================
-        // LÓGICA DA GALERIA E FILTROS 
-        // =========================================================================
         const gallery = document.getElementById('gallery');
         const searchInput = document.getElementById('searchInput');
         const selectMarca = document.getElementById('selectMarca');
@@ -9021,8 +8935,29 @@
         let currentFilteredList = [];
         let currentImageIndex = -1;
 
-        function normalizar(texto) { return texto.toString().toLowerCase().replace(/[^a-z0-9]/g, ''); }
+        function normalizar(texto) { return texto ? texto.toString().toLowerCase().replace(/[^a-z0-9]/g, '') : ''; }
         function padronizarChave(texto) { return texto ? texto.toString().replace(/\s+/g, '').toUpperCase() : ''; }
+
+        // =========================================================================================
+        // PALETA DE CORES INTELIGENTES PARA AS ETIQUETAS
+        // =========================================================================================
+        function getTagStyle(tagName) {
+            const colors = {
+                'NIV': '#4dabf7',      // Azul Claro
+                'MOTOR': '#ffc078',    // Laranja Pastel
+                'VIS': '#b197fc',      // Lilás
+                'ETIQUETA': '#20c997', // Verde Água
+                'PLAQUETA': '#adb5bd', // Cinza
+                'CÂMBIO': '#ff8787',   // Vermelho Pastel
+                'CAMBIO': '#ff8787',   
+                'CHAPA': '#f783ac',    // Rosa Pastel
+                'PAINEL': '#a9e34b',   // Verde Lima
+                'PORTA': '#4c6ef5',    // Azul Indigo
+                'VIDRO': '#66d9e8'     // Ciano
+            };
+            const c = colors[tagName.toUpperCase()] || '#7CFC00';
+            return `border: 1px dashed ${c}; color: ${c}; background-color: rgba(255, 255, 255, 0.05);`;
+        }
 
         function initFiltros() {
             const marcasMap = new Map();
@@ -9101,19 +9036,18 @@
             currentFilteredList.forEach(img => {
                 const div = document.createElement('div'); div.className = 'thumbnail'; div.onclick = () => openModal(img);
                 let textoExtras = (img.marca && img.marca !== "") ? `${img.marca.toUpperCase()} / ${img.modelo.toUpperCase()} / ${img.ano.toUpperCase()}` : "Informação não cadastrada";
-                div.innerHTML = `<img src="${img.arquivo}" loading="lazy"><div class="thumb-text-container"><div class="thumb-chassi">${img.chassi}</div><div class="thumb-info">${textoExtras}</div></div>`;
+                
+                div.innerHTML = `<img src="${encodeURI(img.arquivo)}" loading="lazy"><div class="thumb-text-container"><div class="thumb-chassi">${img.chassi}</div><div class="thumb-info">${textoExtras}</div></div>`;
                 gallery.appendChild(div);
             });
         }
         searchInput.addEventListener('input', () => renderGallery());
 
-        // =========================================================================
-        // MODAIS GERAIS E BOTÕES
-        // =========================================================================
         const modal = document.getElementById('modal');
         const modalImg = document.getElementById('modalImg');
         const imageContainer = document.getElementById('imageContainer');
         const modalChassiDestaque = document.getElementById('modalChassiDestaque');
+        const modalTagsContainer = document.getElementById('modalTagsContainer');
         const modalInfoExtra = document.getElementById('modalInfoExtra');
         const shareBtn = document.getElementById('shareBtn');
         const canvas = document.getElementById('conversionCanvas');
@@ -9121,7 +9055,17 @@
 
         function openModal(imgObj) {
             currentImageIndex = currentFilteredList.findIndex(i => i.arquivo === imgObj.arquivo);
-            modalImg.src = imgObj.arquivo; modalChassiDestaque.innerText = imgObj.chassi;
+            modalImg.src = encodeURI(imgObj.arquivo); 
+            modalChassiDestaque.innerText = imgObj.chassi;
+            
+            let tagsHtml = '';
+            if (imgObj.natureza && imgObj.natureza.length > 0) {
+                imgObj.natureza.forEach(nat => {
+                    tagsHtml += `<span class="natureza-tag" style="${getTagStyle(nat)}">${nat}</span>`;
+                });
+            }
+            modalTagsContainer.innerHTML = tagsHtml;
+            
             modalInfoExtra.innerText = (imgObj.marca && imgObj.marca !== "") ? `${imgObj.marca} | ${imgObj.modelo} | ${imgObj.ano}` : "Informação não cadastrada";
             scale = 1; panningX = 0; panningY = 0; updateTransform(); modal.style.display = 'flex';
         }
@@ -9129,10 +9073,7 @@
         function navigateModal(direction) {
             if (currentFilteredList.length <= 1) return;
             currentImageIndex = (currentImageIndex + direction + currentFilteredList.length) % currentFilteredList.length;
-            const imgObj = currentFilteredList[currentImageIndex];
-            modalImg.src = imgObj.arquivo; modalChassiDestaque.innerText = imgObj.chassi;
-            modalInfoExtra.innerText = (imgObj.marca && imgObj.marca !== "") ? `${imgObj.marca} | ${imgObj.modelo} | ${imgObj.ano}` : "Informação não cadastrada";
-            scale = 1; panningX = 0; panningY = 0; updateTransform();
+            openModal(currentFilteredList[currentImageIndex]);
         }
 
         async function shareImage() {
@@ -9146,6 +9087,7 @@
             } catch (err) { alert("Erro na imagem."); }
         }
         function downloadImage() { const link = document.createElement('a'); link.href = modalImg.src; link.download = modalChassiDestaque.innerText + ".jpg"; document.body.appendChild(link); link.click(); document.body.removeChild(link); }
+        
         async function copyNumber() { try { await navigator.clipboard.writeText(modalChassiDestaque.innerText); document.getElementById('copyNumberBtn').innerText = "Copiado!"; setTimeout(() => document.getElementById('copyNumberBtn').innerText = "Copiar Numeração", 2000); } catch (e) { alert("Erro"); } }
         function reportarInconsistencia() { window.open("https://docs.google.com/forms/d/e/1FAIpQLSdOZECyTHgc15p5pcQF386JzcPwqn7PiEc2NLtnX6d_H-tcJQ/viewform?usp=pp_url&entry.202619458=" + encodeURIComponent(modalChassiDestaque.innerText.trim()), '_blank'); }
 
@@ -9159,13 +9101,8 @@
                 return;
             }
 
-            // Ordena as imagens da mais nova para a mais antiga
             const imagensOrdenadas = [...imagens].sort((a, b) => b.timestamp - a.timestamp);
-            
-            // Pega a data da imagem mais recente (a primeira da lista ordenada)
             const dataMaisRecente = imagensOrdenadas[0].data;
-
-            // Filtra as fotos para pegar apenas as que foram inseridas nesta última data
             const fotosDaUltimaAtualizacao = imagensOrdenadas.filter(img => img.data === dataMaisRecente);
 
             const divDia = document.createElement('div'); 
@@ -9176,38 +9113,40 @@
             fotosDaUltimaAtualizacao.forEach(foto => {
                 let txt = (foto.marca && foto.marca !== "") ? `${foto.marca.toUpperCase()} / ${foto.modelo.toUpperCase()} / ${foto.ano.toUpperCase()}` : "Informação não cadastrada";
                 
-                // Trata as "naturezas" que o script Python vai inserir
                 let tagsNatureza = '';
                 if (foto.natureza && foto.natureza.length > 0) {
-                    foto.natureza.forEach(nat => {
-                        tagsNatureza += `<span class="natureza-tag">${nat}</span>`;
+                    foto.natureza.forEach(nat => { 
+                        tagsNatureza += `<span class="natureza-tag" style="${getTagStyle(nat)}">${nat}</span>`; 
                     });
                 }
 
                 ul.innerHTML += `<li style="display: flex; justify-content: space-between; align-items: center;">
-                    <div>
-                        <span class="chassi-tag">${foto.chassi} ${tagsNatureza}</span>
+                    <div style="flex-grow: 1; overflow: hidden; padding-right: 10px;">
+                        <span class="chassi-tag">${foto.chassi}</span>
                         <span class="info-tag">${txt}</span>
                     </div>
-                    <button onclick="abrirFotoAtualizacao('${foto.arquivo}')" style="background: var(--accent); color: var(--primary); border: none; padding: 6px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 0.8rem; margin-left: 10px;">Ver</button>
+                    
+                    <div style="display: flex; gap: 8px; align-items: center; height: 28px; flex-shrink: 0;">
+                        ${tagsNatureza}
+                        <button data-arquivo="${foto.arquivo}" onclick="abrirFotoAtualizacao(this.getAttribute('data-arquivo'))" style="background: var(--accent); color: var(--primary); border: none; padding: 0 15px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 0.8rem; height: 100%; box-sizing: border-box; display: flex; align-items: center; justify-content: center;">Ver</button>
+                    </div>
                 </li>`;
             });
             
-            divDia.appendChild(ul); 
-            container.appendChild(divDia);
-            
+            divDia.appendChild(ul); container.appendChild(divDia);
             document.getElementById('modalAtualizacoes').style.display = 'flex';
         }
         
         function fecharModalAtualizacoes() { document.getElementById('modalAtualizacoes').style.display = 'none'; }
 
-        // Função auxiliar para abrir foto diretamente das atualizações
         window.abrirFotoAtualizacao = function(arquivo) {
             const imgObj = imagens.find(i => i.arquivo === arquivo);
             if(imgObj) {
-                currentFilteredList = imagens; // Reseta o filtro para a navegação do modal funcionar
+                currentFilteredList = imagens; 
                 fecharModalAtualizacoes();
                 openModal(imgObj);
+            } else {
+                alert("Erro ao abrir a imagem. Arquivo não localizado no banco de dados.");
             }
         };
 
