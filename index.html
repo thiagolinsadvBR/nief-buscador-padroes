@@ -477,7 +477,8 @@
                 <p class="tool-guide-text" style="text-align: justify; margin-bottom: 15px; font-size: 0.85rem;">
                     O envio de fotos nítidas garante que elas irão compor o banco de dados! Juntos somos mais fortes!!
                 </p>
-                <input type="file" id="uploadFoto" accept="image/*" class="select-filtro" style="padding: 10px; background: #333; cursor: pointer; margin-bottom: 10px;">
+                <!-- O input agora permite a seleção de múltiplos arquivos -->
+                <input type="file" id="uploadFoto" accept="image/*" class="select-filtro" style="padding: 10px; background: #333; cursor: pointer; margin-bottom: 10px;" multiple>
                 <textarea id="uploadObs" class="select-filtro" placeholder="Observações (Opcional)" rows="3" style="resize: none; font-family: inherit; width: 100%; box-sizing: border-box;"></textarea>
                 
                 <div id="uploadProgressContainer" style="display: none; width: 100%; height: 8px; background: #333; border-radius: 4px; margin-top: 15px; overflow: hidden;">
@@ -8634,66 +8635,88 @@
         function abrirFormularioContribuicao() { document.getElementById('modalContribuicao').style.display = 'flex'; }
         function fecharModalContribuicao() { document.getElementById('modalContribuicao').style.display = 'none'; }
 
-        function enviarParaTelegram() {
+        async function enviarParaTelegram() {
             const fileInput = document.getElementById('uploadFoto');
             const obs = document.getElementById('uploadObs').value;
             const btn = document.getElementById('btnEnviarTelegram');
             const progressContainer = document.getElementById('uploadProgressContainer');
             const progressBar = document.getElementById('uploadProgressBar');
 
-            if (!fileInput.files.length) { alert("A foto é obrigatória!"); return; }
-
-            const file = fileInput.files[0];
-            const caption = `🚨 *NOVO PADRÃO ENVIADO* 🚨\n\n*Obs:* ${obs || 'Nenhuma'}`;
-            const formData = new FormData();
-            formData.append('chat_id', '1945271271');
-            formData.append('photo', file);
-            formData.append('caption', caption);
-            formData.append('parse_mode', 'Markdown');
+            if (!fileInput.files.length) { alert("Selecione pelo menos uma foto!"); return; }
 
             btn.innerText = "⏳ Enviando..."; 
             btn.disabled = true;
             progressContainer.style.display = 'block';
             progressBar.style.width = '0%';
 
-            const xhr = new XMLHttpRequest();
-            xhr.open('POST', 'https://api.telegram.org/bot8274657364:AAHT3DKU6ysZFf3nP3b1_z5r9jokYO0jc2U/sendPhoto', true);
+            const totalFiles = fileInput.files.length;
+            let filesUploaded = 0;
+            let hasError = false;
 
-            xhr.upload.onprogress = function(e) {
-                if (e.lengthComputable) {
-                    const percentComplete = (e.loaded / e.total) * 100;
-                    progressBar.style.width = percentComplete + '%';
+            for (let i = 0; i < totalFiles; i++) {
+                const file = fileInput.files[i];
+                let caption = `🚨 *NOVO PADRÃO ENVIADO* 🚨\n\n*Obs:* ${obs || 'Nenhuma'}`;
+                
+                if (totalFiles > 1) {
+                    caption = `🚨 *NOVO PADRÃO ENVIADO* (${i + 1}/${totalFiles}) 🚨\n\n*Obs:* ${obs || 'Nenhuma'}`;
                 }
-            };
 
-            xhr.onload = function() {
-                if (xhr.status >= 200 && xhr.status < 300) {
-                    const data = JSON.parse(xhr.responseText);
-                    if (data.ok) {
-                        alert("Padrão enviado com sucesso! Obrigado pela contribuição.");
-                        fecharModalContribuicao();
-                        fileInput.value = ''; document.getElementById('uploadObs').value = '';
-                    } else { 
-                        alert("Erro ao enviar: " + data.description); 
-                    }
-                } else {
-                    alert("Erro de conexão ao enviar a foto.");
+                const formData = new FormData();
+                formData.append('chat_id', '1945271271');
+                formData.append('photo', file);
+                formData.append('caption', caption);
+                formData.append('parse_mode', 'Markdown');
+
+                try {
+                    await new Promise((resolve, reject) => {
+                        const xhr = new XMLHttpRequest();
+                        xhr.open('POST', 'https://api.telegram.org/bot8274657364:AAHT3DKU6ysZFf3nP3b1_z5r9jokYO0jc2U/sendPhoto', true);
+
+                        xhr.upload.onprogress = function(e) {
+                            if (e.lengthComputable) {
+                                const fileProgress = e.loaded / e.total;
+                                const overallProgress = ((filesUploaded + fileProgress) / totalFiles) * 100;
+                                progressBar.style.width = overallProgress + '%';
+                            }
+                        };
+
+                        xhr.onload = function() {
+                            if (xhr.status >= 200 && xhr.status < 300) {
+                                const data = JSON.parse(xhr.responseText);
+                                if (data.ok) {
+                                    resolve();
+                                } else {
+                                    reject(data.description);
+                                }
+                            } else {
+                                reject("Erro de conexão ao enviar a foto.");
+                            }
+                        };
+
+                        xhr.onerror = function() {
+                            reject("Erro de conexão ao enviar a foto.");
+                        };
+
+                        xhr.send(formData);
+                    });
+                    filesUploaded++;
+                } catch (error) {
+                    alert(`Erro ao enviar a imagem ${i + 1}: ${error}`);
+                    hasError = true;
+                    break;
                 }
-                resetBtn();
-            };
-
-            xhr.onerror = function() {
-                alert("Erro de conexão ao enviar a foto.");
-                resetBtn();
-            };
-
-            function resetBtn() {
-                btn.innerText = "Enviar Padrão"; 
-                btn.disabled = false;
-                setTimeout(() => { progressContainer.style.display = 'none'; progressBar.style.width = '0%'; }, 1000);
             }
 
-            xhr.send(formData);
+            if (!hasError) {
+                alert("Padrões enviados com sucesso! Obrigado pela contribuição.");
+                fecharModalContribuicao();
+                fileInput.value = ''; 
+                document.getElementById('uploadObs').value = '';
+            }
+
+            btn.innerText = "Enviar Padrão"; 
+            btn.disabled = false;
+            setTimeout(() => { progressContainer.style.display = 'none'; progressBar.style.width = '0%'; }, 1000);
         }
 
         function abrirBuscador() { areaDashboard.style.display = 'none'; areaEliminador.style.display = 'none'; areaBuscador.style.display = 'flex'; }
