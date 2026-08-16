@@ -23,12 +23,23 @@ def atualizar_base_nief():
         # Divide o nome usando o underline "_"
         partes = nome_sem_ext.split('_')
         
+        naturezas = []
+        
         # Se tiver as 4 partes (Chassi, Marca, Modelo, Ano)
         if len(partes) >= 4:
             chassi = partes[0]
             marca = partes[1]
             modelo = partes[2]
-            ano = partes[3]
+            
+            # O último bloco pode ter espaços, ex: "2024 NIV VIS"
+            ano_bruto = partes[3]
+            pedacos_ano = ano_bruto.split(' ')
+            ano = pedacos_ano[0] # O primeiro item é sempre o ano
+            
+            # O que vier depois do ano são as naturezas (se o classificador foi usado)
+            if len(pedacos_ano) > 1:
+                naturezas = pedacos_ano[1:] # Pega do segundo item em diante
+                
         else:
             # Arquivo antigo (sem underline)
             chassi = partes[0]
@@ -36,13 +47,14 @@ def atualizar_base_nief():
             modelo = ""
             ano = ""
             
-        # Adiciona os metadados no nosso dicionário
+        # Adiciona os metadados no nosso dicionário (AGORA COM NATUREZA)
         dados_imagens.append({
             "arquivo": f,
             "chassi": chassi,
             "marca": marca,
             "modelo": modelo,
             "ano": ano,
+            "natureza": naturezas,
             "data": data_formatada,
             "timestamp": mtime # Guardamos o timestamp real para ordenar no JavaScript
         })
@@ -59,7 +71,7 @@ def atualizar_base_nief():
     with open(nome_html, 'r', encoding='utf-8') as f:
         conteudo = f.read()
 
-    # 4. Localizar e substituir a lista de imagens no JavaScript adaptado ao NOVO HTML
+    # 4. Localizar e substituir a lista de imagens
     marcador_inicio = "const imagens ="
     marcador_fim = "];"
 
