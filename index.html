@@ -85,16 +85,11 @@
             transition: transform 0.2s, background 0.2s;
             display: flex;
             align-items: center;
-            gap: 5px;
         }
         .btn-topbar:hover { transform: translateY(-2px); }
 
         #btnContribuir { background: #252525; color: var(--accent); border: 1px solid var(--accent); }
         #btnContribuir:hover { background: var(--accent); color: var(--primary); }
-        
-        #btnColaboradores { background: #252525; color: var(--accent); border: 1px solid var(--accent); }
-        #btnColaboradores:hover { background: var(--accent); color: var(--primary); }
-
         #btnAtualizacoes { background: var(--accent); color: var(--primary); }
 
         /* TÍTULOS GERAIS */
@@ -339,7 +334,6 @@
     <div class="top-bar">
         <div class="topbar-left">
             <button class="btn-topbar" id="btnContribuir" onclick="abrirFormularioContribuicao()">📤 Enviar Novo Padrão</button>
-            <button class="btn-topbar" id="btnColaboradores" onclick="abrirModalColaboradores()">👥 Colaboradores</button>
         </div>
         <div class="topbar-right">
             <div class="led-counter" id="ledCounter" title="Acessos Verificados">000000</div>
@@ -473,26 +467,12 @@
                     O envio de fotos nítidas garante que elas irão compor o banco de dados! Juntos somos mais fortes!!
                 </p>
                 
-                <div id="colaboradorLogado" style="display:none; color: var(--accent); font-size: 0.85rem; margin-bottom: 10px; font-weight: bold; text-align: left;"></div>
-                <input type="text" id="uploadNome" class="select-filtro" placeholder="Seu Nome (para os Créditos)" style="margin-bottom: 10px;">
-
-                <input type="file" id="uploadFoto" accept="image/*" multiple class="select-filtro" style="padding: 10px; background: #333; cursor: pointer; margin-bottom: 10px;">
+                <input type="file" id="uploadFoto" accept="image/*" class="select-filtro" style="padding: 10px; background: #333; cursor: pointer; margin-bottom: 10px;">
                 
                 <textarea id="uploadObs" class="select-filtro" placeholder="Observações (Opcional)" rows="3" style="resize: none; font-family: inherit; width: 100%; box-sizing: border-box;"></textarea>
                 
                 <button class="btn-action" id="btnEnviarTelegram" onclick="enviarParaTelegram()" style="margin-top: 15px;">Enviar Padrão</button>
             </div>
-        </div>
-    </div>
-
-    <!-- Modal Colaboradores -->
-    <div id="modalColaboradores" class="modal-overlay">
-        <div class="modal-box">
-            <div class="modal-header">
-                <h3>👥 Hall de Colaboradores</h3>
-                <button class="fechar-modal-btn" onclick="fecharModalColaboradores()">×</button>
-            </div>
-            <div class="lista-scroll" id="containerListaColaboradores"></div>
         </div>
     </div>
 
@@ -622,7 +602,7 @@
             appId: "1:62938610049:web:653ea195c4d3afd576d080"
         };
 
-        let database, acessosRef, colaboradoresRef, auth;
+        let database, acessosRef, auth;
         const terminalLogs = document.getElementById('terminalLogs');
         const gpsStatus = document.getElementById('gpsStatus');
         const ledCounter = document.getElementById('ledCounter');
@@ -642,7 +622,6 @@
             database = firebase.database();
             auth = firebase.auth();
             acessosRef = database.ref('acessos');
-            colaboradoresRef = database.ref('colaboradores');
 
             // Atualiza o contador de acessos global estilo LED (ignora CAMPINA GRANDE)
             acessosRef.on('value', (snapshot) => {
@@ -709,137 +688,14 @@
         }
 
         // =========================================================================
-        // ENVIO PARA O TELEGRAM E COLABORADORES
+        // ENVIO PARA O TELEGRAM
         // =========================================================================
-        function formatarNome(nome) {
-            const preposicoes = ["de", "da", "do", "das", "dos"];
-            return nome.toLowerCase().split(' ').map(palavra => {
-                if (preposicoes.includes(palavra)) return palavra;
-                return palavra.charAt(0).toUpperCase() + palavra.slice(1);
-            }).join(' ');
-        }
-
-        function validarNome(nome) {
-            const regexInvalidos = /[0-9!@#\$%\^\&*\)\(+=._-]/; 
-            if(regexInvalidos.test(nome)) return false;
-            
-            const absurdos = ['teste', 'carro', 'moto', 'veiculo', 'chassi', 'motor', 'merda', 'porra', 'caralho', 'puta', 'buceta', 'cu', 'foda', 'admin', 'anonimo', 'policia', 'agente', 'policial', 'prf', 'pm', 'pc', 'padrao'];
-            const palavras = nome.toLowerCase().split(' ');
-            for(let p of palavras) {
-                if(absurdos.includes(p)) return false;
-            }
-            
-            if(nome.trim().length < 3) return false;
-            return true;
-        }
-
-        // Deleta todo o banco de colaboradores (Zera o Hall)
-        async function zerarColaboradores() {
-            try {
-                await colaboradoresRef.remove();
-                console.log("Banco de colaboradores limpo.");
-            } catch (err) {
-                console.error("Erro ao limpar colaboradores:", err);
-            }
-        }
-
-        // Chama a limpeza 1 vez se ainda não foi limpo neste dispositivo
-        if (!localStorage.getItem('hallZerado')) {
-            zerarColaboradores();
-            localStorage.setItem('hallZerado', 'true');
-        }
-
         function abrirFormularioContribuicao() {
-            const nomeSalvo = localStorage.getItem('colaboradorNome');
-            const inputNome = document.getElementById('uploadNome');
-            const labelLogado = document.getElementById('colaboradorLogado');
-            
-            if(nomeSalvo && nomeSalvo !== 'Usuário Anônimo') {
-                inputNome.style.display = 'none';
-                labelLogado.style.display = 'block';
-                labelLogado.innerText = `🏅 Colaborador: ${nomeSalvo}`;
-            } else {
-                inputNome.style.display = 'block';
-                labelLogado.style.display = 'none';
-                inputNome.value = '';
-            }
             document.getElementById('modalContribuicao').style.display = 'flex';
         }
         
         function fecharModalContribuicao() {
             document.getElementById('modalContribuicao').style.display = 'none';
-        }
-
-        async function abrirModalColaboradores() {
-            const container = document.getElementById('containerListaColaboradores');
-            container.innerHTML = '<div style="text-align:center; color:#ccc;">Carregando...</div>';
-            document.getElementById('modalColaboradores').style.display = 'flex';
-            
-            try {
-                const snapshot = await colaboradoresRef.once('value');
-                const data = snapshot.val();
-                if (!data) {
-                    container.innerHTML = '<div style="text-align:center; color:#ccc;">Nenhum colaborador registrado ainda. Seja o primeiro!</div>';
-                    return;
-                }
-                
-                // Agrupa as fotos pelo nome do colaborador
-                const contagemEnvios = {};
-                Object.values(data).forEach(reg => {
-                    const nome = reg.nome || 'Usuário Anônimo';
-                    if (!contagemEnvios[nome]) {
-                        contagemEnvios[nome] = 0;
-                    }
-                    contagemEnvios[nome] += (reg.quantidadeFotos || 1); // Soma a quantidade de fotos enviadas
-                });
-                
-                // Converte em array e ordena por quantidade (Ranking)
-                const ranking = Object.entries(contagemEnvios).sort((a, b) => b[1] - a[1]);
-                
-                container.innerHTML = '';
-                const ul = document.createElement('ul');
-                ul.style.listStyle = 'none';
-                ul.style.padding = '0';
-                ul.style.margin = '0';
-                
-                ranking.forEach(([nome, qtdeFotos], index) => {
-                    let icone = '🏅';
-                    if (index === 0) icone = '🏆'; // 1º lugar
-                    else if (index === 1) icone = '🥈'; // 2º lugar
-                    else if (index === 2) icone = '🥉'; // 3º lugar
-
-                    const li = document.createElement('li');
-                    li.style.background = '#252525';
-                    li.style.padding = '10px 15px';
-                    li.style.marginBottom = '6px';
-                    li.style.borderRadius = '6px';
-                    li.style.fontWeight = 'bold';
-                    li.style.color = 'var(--accent)';
-                    li.style.display = 'flex';
-                    li.style.alignItems = 'center';
-                    li.style.justifyContent = 'space-between'; // Separa o nome do contador
-                    li.style.gap = '10px';
-                    
-                    li.innerHTML = `
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <span>${icone}</span> 
-                            <span>${nome}</span>
-                        </div>
-                        <div style="font-size: 0.85rem; color: #aaa;">
-                            ${qtdeFotos} foto(s)
-                        </div>
-                    `;
-                    ul.appendChild(li);
-                });
-                container.appendChild(ul);
-                
-            } catch(e) {
-                container.innerHTML = '<div style="text-align:center; color:#ff4444;">Erro ao carregar colaboradores.</div>';
-            }
-        }
-
-        function fecharModalColaboradores() {
-            document.getElementById('modalColaboradores').style.display = 'none';
         }
 
         async function enviarParaTelegram() {
@@ -848,96 +704,40 @@
             const btn = document.getElementById('btnEnviarTelegram');
 
             if (!fileInput.files.length) {
-                alert("Pelo menos uma foto é obrigatória!");
+                alert("A foto é obrigatória!");
                 return;
             }
 
-            let nomeFinal = localStorage.getItem('colaboradorNome');
-            let nomeDisplay = "Usuário Anônimo";
+            const file = fileInput.files[0];
+            const caption = `🚨 *NOVO PADRÃO ENVIADO* 🚨\n\n*Obs:* ${obs || 'Nenhuma'}`;
 
-            // Se o usuário está autenticado, pega o nome dele
-            const currentUser = auth.currentUser;
+            const formData = new FormData();
+            formData.append('chat_id', '1945271271');
+            formData.append('photo', file);
+            formData.append('caption', caption);
+            formData.append('parse_mode', 'Markdown');
 
-            if (currentUser) {
-                try {
-                    const userSnap = await database.ref('usuarios/' + currentUser.uid).once('value');
-                    const userData = userSnap.val();
-                    if (userData && userData.nome) {
-                        nomeFinal = formatarNome(userData.nome);
-                        nomeDisplay = nomeFinal;
-                        localStorage.setItem('colaboradorNome', nomeFinal);
-                    }
-                } catch (e) {
-                    console.error("Erro ao buscar nome do usuário logado:", e);
-                }
-            } 
-            
-            // Se não pegou do auth, tenta o LocalStorage ou o Input
-            if (!nomeFinal || nomeFinal === 'Usuário Anônimo') {
-                const inputNomeEl = document.getElementById('uploadNome');
-                if(inputNomeEl && inputNomeEl.style.display !== 'none') {
-                    const nomeBruto = inputNomeEl.value.trim();
-                    if (nomeBruto !== '') {
-                        if (!validarNome(nomeBruto)) {
-                            alert("Por favor, insira um nome válido e real para os créditos.");
-                            return;
-                        }
-                        nomeFinal = formatarNome(nomeBruto);
-                        nomeDisplay = nomeFinal;
-                        localStorage.setItem('colaboradorNome', nomeFinal);
-                    }
-                } else if(nomeFinal && nomeFinal !== 'Usuário Anônimo'){
-                    nomeDisplay = nomeFinal;
-                }
-            }
-
-            const files = fileInput.files;
-            const total = files.length;
-            const caption = `🚨 *NOVO PADRÃO ENVIADO* 🚨\n\n*Colaborador:* ${nomeDisplay}\n*Obs:* ${obs || 'Nenhuma'}`;
-
+            btn.innerText = "⏳ Enviando...";
             btn.disabled = true;
 
             try {
-                for (let i = 0; i < total; i++) {
-                    btn.innerText = `⏳ Enviando (${i + 1}/${total})...`;
-                    
-                    const formData = new FormData();
-                    formData.append('chat_id', '1945271271');
-                    formData.append('document', files[i]);
-                    
-                    if (i === 0) {
-                        formData.append('caption', caption);
-                        formData.append('parse_mode', 'Markdown');
-                    }
-
-                    const res = await fetch('https://api.telegram.org/bot8274657364:AAHT3DKU6ysZFf3nP3b1_z5r9jokYO0jc2U/sendDocument', {
-                        method: 'POST',
-                        body: formData
-                    });
-                    
-                    const data = await res.json();
-                    
-                    if (!data.ok) {
-                        alert(`Erro na foto ${i + 1}: ` + data.description);
-                        break; 
-                    }
-                }
-                
-                // Grava o colaborador e a quantidade de fotos enviadas nesta sessão
-                colaboradoresRef.push({
-                    nome: nomeDisplay,
-                    quantidadeFotos: total,
-                    timestamp: firebase.database.ServerValue.TIMESTAMP
+                const res = await fetch('https://api.telegram.org/bot8274657364:AAHT3DKU6ysZFf3nP3b1_z5r9jokYO0jc2U/sendPhoto', {
+                    method: 'POST',
+                    body: formData
                 });
-
-                alert("Padrões enviados com sucesso! Obrigado pela contribuição.");
-                fecharModalContribuicao();
+                const data = await res.json();
                 
-                fileInput.value = '';
-                document.getElementById('uploadObs').value = '';
-                
+                if (data.ok) {
+                    alert("Padrão enviado com sucesso! Obrigado pela contribuição.");
+                    fecharModalContribuicao();
+                    
+                    fileInput.value = '';
+                    document.getElementById('uploadObs').value = '';
+                } else {
+                    alert("Erro ao enviar: " + data.description);
+                }
             } catch (err) {
-                alert("Erro de conexão ao enviar as fotos.");
+                alert("Erro de conexão ao enviar a foto.");
             } finally {
                 btn.innerText = "Enviar Padrão";
                 btn.disabled = false;
@@ -1440,22 +1240,7 @@
         function abrirModalAtualizacoes() {
             const container = document.getElementById('containerListaAtualizacoes'); container.innerHTML = '';
             const agrupadoPorData = {};
-            
-            // Limite fixado em 06/05/2026
-            const dataLimite = new Date(2026, 4, 6).getTime();
-
-            const imagensFiltradas = imagens.filter(img => {
-                if (!img.data) return false;
-                const partes = img.data.split('/');
-                const dataImg = new Date(partes[2], partes[1] - 1, partes[0]).getTime();
-                return dataImg >= dataLimite;
-            });
-
-            [...imagensFiltradas].sort((a, b) => b.timestamp - a.timestamp).forEach(img => { 
-                if (!agrupadoPorData[img.data]) agrupadoPorData[img.data] = []; 
-                agrupadoPorData[img.data].push(img); 
-            });
-
+            [...imagens].sort((a, b) => b.timestamp - a.timestamp).forEach(img => { if (!agrupadoPorData[img.data]) agrupadoPorData[img.data] = []; agrupadoPorData[img.data].push(img); });
             for (const [data, fotos] of Object.entries(agrupadoPorData)) {
                 const divDia = document.createElement('div'); divDia.className = 'dia-atualizacao';
                 divDia.innerHTML = `<h4>📅 ${data}</h4>`;
@@ -1495,7 +1280,6 @@
             if (document.getElementById('modalDoacao').style.display === 'flex' && e.key === 'Escape') fecharModalDoacao();
             if (modalAuth.style.display === 'flex' && e.key === 'Escape') fecharModalAuth();
             if (document.getElementById('modalContribuicao').style.display === 'flex' && e.key === 'Escape') fecharModalContribuicao();
-            if (document.getElementById('modalColaboradores').style.display === 'flex' && e.key === 'Escape') fecharModalColaboradores();
         });
 
         function updateTransform() { modalImg.style.transform = `translate(${panningX}px, ${panningY}px) scale(${scale})`; }
