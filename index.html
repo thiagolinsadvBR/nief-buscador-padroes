@@ -129,7 +129,7 @@
 
         .btn-ferramenta {
             background: #111; border: 2px solid var(--accent); border-radius: 12px;
-            width: 100%; max-width: 280px; min-height: 70px; display: flex;
+            width: 280px; max-width: 100%; min-height: 85px; display: flex;
             justify-content: center; align-items: center; cursor: pointer;
             transition: all 0.3s ease; text-decoration: none; color: var(--accent);
             font-weight: bold; font-size: 1.15rem; text-align: center;
@@ -266,7 +266,7 @@
             align-items: center;
             justify-items: center;
             user-select: none;
-            touch-action: none; /* Previne scroll acidental na área da grade para permitir o desenho com dedo */
+            touch-action: none; 
         }
 
         .qr-num-row { display: flex; gap: 1px; grid-column: 2; }
@@ -294,7 +294,7 @@
             grid-row: 2;
             display: grid;
             gap: 1px; 
-            background-color: #333; /* Cor da linha da grade */
+            background-color: #333; 
             border: 1px solid #333;
         }
 
@@ -327,7 +327,6 @@
         #imageContainer:active { cursor: grabbing; }
         #modalImg { max-width: 95%; max-height: 95%; transform-origin: center center; transition: transform 0.1s ease-out, filter 0.2s ease; user-select: none; pointer-events: none; }
         
-        /* INSTRUÇÃO DE ZOOM E ARRASTE NO MODAL DA FOTO */
         #modalInstruction {
             position: absolute;
             top: calc(var(--topbar-height) + 15px);
@@ -381,7 +380,6 @@
         .dia-atualizacao h4 { color: var(--accent); margin: 0 0 8px 0; font-size: 1rem; border-bottom: 1px dashed #333; padding-bottom: 4px; }
         .dia-atualizacao ul { list-style: none; padding: 0; margin: 0; }
         
-        /* AJUSTES DE LAYOUT FLEXÍVEL PARA AS LISTAS */
         .dia-atualizacao li { 
             background: #252525; padding: 10px 12px; margin-bottom: 8px; border-radius: 6px; font-size: 0.8rem;
             display: flex; justify-content: space-between; align-items: center; gap: 10px;
@@ -441,13 +439,15 @@
             
             #modalChassiDestaque { font-size: 1rem; }
             #terminalBox { font-size: 0.75rem; height: 160px; }
-            .btn-ferramenta { max-width: 100%; min-height: 60px; font-size: 1rem; }
+            
+            /* DEVOLVENDO A LARGURA TOTAL AOS BOTÕES DO MENU NO CELULAR */
+            .btn-ferramenta { width: 100%; min-height: 60px; font-size: 1rem; }
+            
             .eliminador-possibilities { font-size: 1.4rem; letter-spacing: 2px; word-spacing: 6px; }
 
             .dia-atualizacao li { flex-direction: column; align-items: flex-start; gap: 10px; }
             .atualizacao-right { width: 100%; justify-content: flex-end; margin-top: 4px; }
             
-            /* ALINHAMENTO INTELIGENTE DA INSTRUÇÃO PARA NÃO CORTAR O BOTÃO FECHAR */
             #modalInstruction { 
                 font-size: 0.7rem; 
                 width: calc(100% - 90px); 
@@ -459,7 +459,6 @@
                 padding: 8px 12px; 
             }
 
-            /* AJUSTE PARA O RECRIADOR CABER BEM NO MOBILE */
             .qr-num { width: 14px; height: 14px; font-size: 8px; }
             .qr-cell { width: 14px; height: 14px; }
             .recreador-wrapper { justify-content: flex-start; }
@@ -708,6 +707,23 @@
                 Aguarde a liberação do Administrador.
             </p>
             <button class="btn-action" style="margin-top: 20px; border-color: #ff4444; color: #ff4444;" onclick="fazerLogout()">Sair da Conta</button>
+        </div>
+    </div>
+
+    <!-- MODAL DE ADVERTÊNCIA CELULAR -->
+    <div id="modalRestricaoMobile" class="modal-overlay">
+        <div class="modal-box" style="max-width: 400px; text-align: center;">
+            <div class="modal-header" style="justify-content: center; position: relative; border-color: #ffaa00;">
+                <h3 style="color: #ffaa00;">⚠️ Uso em Computador</h3>
+                <button class="fechar-modal-btn" onclick="fecharModalRestricaoMobile()" style="position: absolute; right: 0;">×</button>
+            </div>
+            <p style="color: #ccc; font-size: 0.95rem; line-height: 1.5; text-align: justify; text-indent: 1.5rem;">
+                O <strong>Recriador Tático de QR Code</strong> exige alta precisão de cliques e um espaço de tela amplo para a reconstrução correta da matriz. Devido a isso, esta ferramenta é <strong>exclusiva para computadores</strong> (Desktop/Notebook).
+            </p>
+            <p style="color: #ccc; font-size: 0.95rem; line-height: 1.5; text-align: justify; text-indent: 1.5rem;">
+                Recomendamos fortemente o uso da plataforma em computadores para aproveitar todo o potencial e a ergonomia de todas as nossas ferramentas investigativas.
+            </p>
+            <button class="btn-action" style="margin-top: 15px;" onclick="fecharModalRestricaoMobile()">Entendi</button>
         </div>
     </div>
 
@@ -8895,9 +8911,21 @@
         }
 
         // --- NAVEGAÇÃO ENTRE FERRAMENTAS ---
+        function abrirModalRestricaoMobile() { document.getElementById('modalRestricaoMobile').style.display = 'flex'; }
+        function fecharModalRestricaoMobile() { document.getElementById('modalRestricaoMobile').style.display = 'none'; }
+
         function abrirBuscador() { areaDashboard.style.display = 'none'; areaEliminador.style.display = 'none'; areaRecreador.style.display = 'none'; areaBuscador.style.display = 'flex'; }
         function abrirEliminador() { areaDashboard.style.display = 'none'; areaBuscador.style.display = 'none'; areaRecreador.style.display = 'none'; areaEliminador.style.display = 'flex'; showEliminadorSelection(); }
-        function abrirRecreador() { areaDashboard.style.display = 'none'; areaBuscador.style.display = 'none'; areaEliminador.style.display = 'none'; areaRecreador.style.display = 'flex'; }
+        
+        function abrirRecreador() { 
+            const isMobile = window.innerWidth <= 900 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            if (isMobile) {
+                abrirModalRestricaoMobile();
+                return;
+            }
+            areaDashboard.style.display = 'none'; areaBuscador.style.display = 'none'; areaEliminador.style.display = 'none'; areaRecreador.style.display = 'flex'; 
+        }
+
         function voltarDashboard() { areaBuscador.style.display = 'none'; areaEliminador.style.display = 'none'; areaRecreador.style.display = 'none'; areaDashboard.style.display = 'flex'; }
 
         // =========================================================================================
@@ -9115,7 +9143,6 @@
             } catch (e) { console.error("Erro ao carregar progresso do QR.", e); }
         }
 
-        // Lógica de Pintura com Mouse
         qrGridContainer.addEventListener('mousedown', function(e) {
             if (e.target.classList.contains('qr-cell')) {
                 isDrawingQr = true;
@@ -9132,32 +9159,8 @@
             if(isDrawingQr) { isDrawingQr = false; saveQrState(); }
         });
 
-        // Lógica de Pintura com Toque (Touch/Celular)
-        qrGridContainer.addEventListener('touchstart', function(e) {
-            if (e.target.classList.contains('qr-cell')) {
-                isDrawingQr = true;
-                drawModeQr = !e.target.classList.contains('active');
-                e.target.classList.toggle('active', drawModeQr);
-            }
-        }, {passive: false});
-
-        qrGridContainer.addEventListener('touchmove', function(e) {
-            if (isDrawingQr) {
-                e.preventDefault(); // Previne rolar a tela enquanto pinta a matriz
-                const touch = e.touches[0];
-                const element = document.elementFromPoint(touch.clientX, touch.clientY);
-                if (element && element.classList.contains('qr-cell')) {
-                    element.classList.toggle('active', drawModeQr);
-                }
-            }
-        }, {passive: false});
-
-        window.addEventListener('touchend', function() {
-            if(isDrawingQr) { isDrawingQr = false; saveQrState(); }
-        });
         qrGridContainer.addEventListener('dragstart', function(e) { e.preventDefault(); });
 
-        // Padrões Fixos
         function drawFinder(startX, startY) {
             for(let y = 0; y < 7; y++) {
                 for(let x = 0; x < 7; x++) {
@@ -9202,7 +9205,6 @@
             saveQrState();
         });
 
-        // Exportação
         btnExportQr.addEventListener('click', function() {
             const canvas = document.createElement('canvas');
             const scale = 10; 
@@ -9240,7 +9242,6 @@
                 localStorage.removeItem(getQrStorageKey());
             }
         });
-
 
         // =========================================================================================
         // FUNÇÕES GERAIS E AUTENTICAÇÃO
@@ -9639,11 +9640,24 @@
         function fecharModalDoacao() { document.getElementById('modalDoacao').style.display = 'none'; }
 
         document.addEventListener('keydown', (e) => {
-            if (modal.style.display === 'flex') { if (e.key === 'ArrowRight') navigateModal(1); if (e.key === 'ArrowLeft') navigateModal(-1); if (e.key === 'Escape') closeModal(); }
-            if (document.getElementById('modalAtualizacoes').style.display === 'flex' && e.key === 'Escape') fecharModalAtualizacoes();
-            if (document.getElementById('modalDoacao').style.display === 'flex' && e.key === 'Escape') fecharModalDoacao();
-            if (modalAuth.style.display === 'flex' && e.key === 'Escape') fecharModalAuth();
-            if (document.getElementById('modalContribuicao').style.display === 'flex' && e.key === 'Escape') fecharModalContribuicao();
+            if (modal.style.display === 'flex' && e.key === 'Escape') {
+                if (document.getElementById('modalRestricaoMobile').style.display === 'flex') {
+                    fecharModalRestricaoMobile();
+                } else if (document.getElementById('modalAtualizacoes').style.display === 'flex') {
+                    fecharModalAtualizacoes();
+                } else if (document.getElementById('modalDoacao').style.display === 'flex') {
+                    fecharModalDoacao();
+                } else if (modalAuth.style.display === 'flex') {
+                    fecharModalAuth();
+                } else if (document.getElementById('modalContribuicao').style.display === 'flex') {
+                    fecharModalContribuicao();
+                } else {
+                    closeModal();
+                }
+            } else if (modal.style.display === 'flex') { 
+                if (e.key === 'ArrowRight') navigateModal(1); 
+                if (e.key === 'ArrowLeft') navigateModal(-1); 
+            }
         });
 
         function updateTransform() { modalImg.style.transform = `translate(${panningX}px, ${panningY}px) scale(${scale})`; }
