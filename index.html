@@ -252,7 +252,7 @@
         #modal { background: rgba(0,0,0,0.95); z-index: 1000; overflow: hidden; }
         #imageContainer { width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; cursor: grab; position: relative; }
         #imageContainer:active { cursor: grabbing; }
-        #modalImg { max-width: 95%; max-height: 95%; transform-origin: center center; transition: transform 0.1s ease-out; user-select: none; pointer-events: none; }
+        #modalImg { max-width: 95%; max-height: 95%; transform-origin: center center; transition: transform 0.1s ease-out, filter 0.2s ease; user-select: none; pointer-events: none; }
         
         /* INSTRUÇÃO DE ZOOM E ARRASTE NO MODAL DA FOTO */
         #modalInstruction {
@@ -374,7 +374,6 @@
             .dia-atualizacao li { flex-direction: column; align-items: flex-start; gap: 10px; }
             .atualizacao-right { width: 100%; justify-content: flex-end; margin-top: 4px; }
             
-            /* ALINHAMENTO INTELIGENTE DA INSTRUÇÃO PARA NÃO CORTAR O BOTÃO FECHAR */
             #modalInstruction { 
                 font-size: 0.7rem; 
                 width: calc(100% - 90px); 
@@ -604,6 +603,9 @@
             <div id="modalInfoExtra"></div>
         </div>
         <div class="action-buttons">
+            <!-- NOVO BOTÃO DE INVERTER CORES ADICIONADO AQUI -->
+            <button class="btn-action" id="invertBtn" onclick="toggleInvertColors()">🌗 Inverter Cores</button>
+            
             <button class="btn-action" id="downloadBtn" onclick="downloadImage()">Baixar Foto</button>
             <button class="btn-action" id="shareBtn" onclick="shareImage()">Copiar para WhatsApp</button>
             <button class="btn-action" id="copyNumberBtn" onclick="copyNumber()">Copiar Numeração</button>
@@ -9159,6 +9161,17 @@
         const shareBtn = document.getElementById('shareBtn');
         const canvas = document.getElementById('conversionCanvas');
         let scale = 1, panningX = 0, panningY = 0, startX = 0, startY = 0, isDragging = false;
+        
+        let isInverted = false;
+
+        function toggleInvertColors() {
+            isInverted = !isInverted;
+            if (isInverted) {
+                modalImg.style.filter = "invert(1)";
+            } else {
+                modalImg.style.filter = "none";
+            }
+        }
 
         function openModal(imgObj) {
             currentImageIndex = currentFilteredList.findIndex(i => i.arquivo === imgObj.arquivo);
@@ -9174,7 +9187,13 @@
             modalTagsContainer.innerHTML = tagsHtml;
             
             modalInfoExtra.innerText = (imgObj.marca && imgObj.marca !== "") ? `${imgObj.marca} | ${imgObj.modelo} | ${imgObj.ano}` : "Informação não cadastrada";
-            scale = 1; panningX = 0; panningY = 0; updateTransform(); modal.style.display = 'flex';
+            scale = 1; panningX = 0; panningY = 0; 
+            
+            // Garante que a foto abra normal, sem herdar a inversão da foto anterior
+            isInverted = false;
+            modalImg.style.filter = 'none';
+            
+            updateTransform(); modal.style.display = 'flex';
         }
         function closeModal() { modal.style.display = 'none'; }
         function navigateModal(direction) {
@@ -9186,7 +9205,18 @@
         async function shareImage() {
             const originalText = shareBtn.innerText;
             try {
-                const ctx = canvas.getContext('2d'); canvas.width = modalImg.naturalWidth; canvas.height = modalImg.naturalHeight; ctx.drawImage(modalImg, 0, 0);
+                const ctx = canvas.getContext('2d'); canvas.width = modalImg.naturalWidth; canvas.height = modalImg.naturalHeight; 
+                
+                // Se a foto estiver invertida, aplica o filtro no canvas para copiar a versão invertida
+                if (isInverted) {
+                    ctx.filter = 'invert(1)';
+                } else {
+                    ctx.filter = 'none';
+                }
+                
+                ctx.drawImage(modalImg, 0, 0);
+                ctx.filter = 'none'; // reset
+                
                 canvas.toBlob(async (blob) => {
                     try { await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]); shareBtn.innerText = "Copiado!"; setTimeout(() => shareBtn.innerText = originalText, 2000);
                     } catch (e) { alert("Erro de Segurança: O navegador só permite copiar se o site usar HTTPS."); }
