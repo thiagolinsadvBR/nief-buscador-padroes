@@ -9511,6 +9511,65 @@
         }
         searchInput.addEventListener('input', () => renderGallery());
 
+        function abrirModalAtualizacoes() {
+            const container = document.getElementById('containerListaAtualizacoes'); 
+            container.innerHTML = '';
+            
+            if (imagens.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #ccc;">Nenhuma atualização registrada ainda.</p>';
+                document.getElementById('modalAtualizacoes').style.display = 'flex';
+                return;
+            }
+
+            const imagensOrdenadas = [...imagens].sort((a, b) => b.timestamp - a.timestamp);
+            const ultimas50Fotos = imagensOrdenadas.slice(0, 50);
+
+            const divDia = document.createElement('div'); 
+            divDia.className = 'dia-atualizacao';
+            divDia.innerHTML = `<h4>📅 Últimos 50 Padrões Adicionados</h4>`;
+            
+            const ul = document.createElement('ul');
+            ultimas50Fotos.forEach(foto => {
+                let txt = (foto.marca && foto.marca !== "") ? `${foto.marca.toUpperCase()} / ${foto.modelo.toUpperCase()} / ${foto.ano.toUpperCase()}` : "Informação não cadastrada";
+                txt = `Data: ${foto.data} | ` + txt;
+                
+                let tagsNatureza = '';
+                if (foto.natureza && foto.natureza.length > 0) {
+                    foto.natureza.forEach(nat => { 
+                        tagsNatureza += `<span class="natureza-tag" style="${getTagStyle(nat)}">${nat}</span>`; 
+                    });
+                }
+
+                ul.innerHTML += `<li>
+                    <div class="atualizacao-left">
+                        <span class="chassi-tag">${foto.chassi}</span>
+                        <span class="info-tag">${txt}</span>
+                    </div>
+                    
+                    <div class="atualizacao-right">
+                        ${tagsNatureza}
+                        <button data-arquivo="${foto.arquivo}" onclick="abrirFotoAtualizacao(this.getAttribute('data-arquivo'))" style="background: var(--accent); color: var(--primary); border: none; padding: 0 15px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 0.8rem; height: 28px; box-sizing: border-box; display: flex; align-items: center; justify-content: center;">Ver</button>
+                    </div>
+                </li>`;
+            });
+            
+            divDia.appendChild(ul); container.appendChild(divDia);
+            document.getElementById('modalAtualizacoes').style.display = 'flex';
+        }
+        
+        function fecharModalAtualizacoes() { document.getElementById('modalAtualizacoes').style.display = 'none'; }
+
+        window.abrirFotoAtualizacao = function(arquivo) {
+            const imgObj = imagens.find(i => i.arquivo === arquivo);
+            if(imgObj) {
+                currentFilteredList = imagens; 
+                fecharModalAtualizacoes();
+                openModal(imgObj);
+            } else {
+                alert("Erro ao abrir a imagem. Arquivo não localizado no banco de dados.");
+            }
+        };
+
         const modal = document.getElementById('modal');
         const modalImg = document.getElementById('modalImg');
         const imageContainer = document.getElementById('imageContainer');
@@ -9584,65 +9643,6 @@
         
         async function copyNumber() { try { await navigator.clipboard.writeText(modalChassiDestaque.innerText); document.getElementById('copyNumberBtn').innerText = "Copiado!"; setTimeout(() => document.getElementById('copyNumberBtn').innerText = "Copiar Numeração", 2000); } catch (e) { alert("Erro"); } }
         function reportarInconsistencia() { window.open("https://docs.google.com/forms/d/e/1FAIpQLSdOZECyTHgc15p5pcQF386JzcPwqn7PiEc2NLtnX6d_H-tcJQ/viewform?usp=pp_url&entry.202619458=" + encodeURIComponent(modalChassiDestaque.innerText.trim()), '_blank'); }
-
-        function abrirModalAtualizacoes() {
-            const container = document.getElementById('containerListaAtualizacoes'); 
-            container.innerHTML = '';
-            
-            if (imagens.length === 0) {
-                container.innerHTML = '<p style="text-align: center; color: #ccc;">Nenhuma atualização registrada ainda.</p>';
-                document.getElementById('modalAtualizacoes').style.display = 'flex';
-                return;
-            }
-
-            const imagensOrdenadas = [...imagens].sort((a, b) => b.timestamp - a.timestamp);
-            const dataMaisRecente = imagensOrdenadas[0].data;
-            const fotosDaUltimaAtualizacao = imagensOrdenadas.filter(img => img.data === dataMaisRecente);
-
-            const divDia = document.createElement('div'); 
-            divDia.className = 'dia-atualizacao';
-            divDia.innerHTML = `<h4>📅 Última Atualização: ${dataMaisRecente}</h4>`;
-            
-            const ul = document.createElement('ul');
-            fotosDaUltimaAtualizacao.forEach(foto => {
-                let txt = (foto.marca && foto.marca !== "") ? `${foto.marca.toUpperCase()} / ${foto.modelo.toUpperCase()} / ${foto.ano.toUpperCase()}` : "Informação não cadastrada";
-                
-                let tagsNatureza = '';
-                if (foto.natureza && foto.natureza.length > 0) {
-                    foto.natureza.forEach(nat => { 
-                        tagsNatureza += `<span class="natureza-tag" style="${getTagStyle(nat)}">${nat}</span>`; 
-                    });
-                }
-
-                ul.innerHTML += `<li>
-                    <div class="atualizacao-left">
-                        <span class="chassi-tag">${foto.chassi}</span>
-                        <span class="info-tag">${txt}</span>
-                    </div>
-                    
-                    <div class="atualizacao-right">
-                        ${tagsNatureza}
-                        <button data-arquivo="${foto.arquivo}" onclick="abrirFotoAtualizacao(this.getAttribute('data-arquivo'))" style="background: var(--accent); color: var(--primary); border: none; padding: 0 15px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 0.8rem; height: 28px; box-sizing: border-box; display: flex; align-items: center; justify-content: center;">Ver</button>
-                    </div>
-                </li>`;
-            });
-            
-            divDia.appendChild(ul); container.appendChild(divDia);
-            document.getElementById('modalAtualizacoes').style.display = 'flex';
-        }
-        
-        function fecharModalAtualizacoes() { document.getElementById('modalAtualizacoes').style.display = 'none'; }
-
-        window.abrirFotoAtualizacao = function(arquivo) {
-            const imgObj = imagens.find(i => i.arquivo === arquivo);
-            if(imgObj) {
-                currentFilteredList = imagens; 
-                fecharModalAtualizacoes();
-                openModal(imgObj);
-            } else {
-                alert("Erro ao abrir a imagem. Arquivo não localizado no banco de dados.");
-            }
-        };
 
         function abrirModalDoacao() { document.getElementById('modalDoacao').style.display = 'flex'; }
         function fecharModalDoacao() { document.getElementById('modalDoacao').style.display = 'none'; }
