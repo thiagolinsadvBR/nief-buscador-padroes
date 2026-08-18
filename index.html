@@ -245,6 +245,79 @@
         .eliminador-label { font-size: 0.9rem; margin-bottom: 5px; color:#aaa; font-weight: bold; }
         .eliminador-possibilities { font-size: 1.8rem; font-weight: bold; color: var(--accent); word-spacing: 12px; line-height: 1.4; min-height: 35px; word-wrap: break-word; }
 
+        /* RECRIADOR DE QR CODE */
+        .recreador-wrapper {
+            width: 100%;
+            max-width: 100vw;
+            overflow-x: auto;
+            display: flex;
+            justify-content: center;
+            padding-bottom: 15px;
+        }
+        .recreador-wrapper::-webkit-scrollbar { height: 8px; }
+        .recreador-wrapper::-webkit-scrollbar-track { background: #111; border-radius: 4px; }
+        .recreador-wrapper::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 4px; }
+
+        .qr-matrix-layout {
+            display: grid;
+            grid-template-columns: 25px max-content 25px;
+            grid-template-rows: 25px max-content 25px;
+            gap: 4px;
+            align-items: center;
+            justify-items: center;
+            user-select: none;
+            touch-action: none; /* Previne scroll acidental na área da grade para permitir o desenho com dedo */
+        }
+
+        .qr-num-row { display: flex; gap: 1px; grid-column: 2; }
+        .qr-num-top { grid-row: 1; align-items: flex-end; }
+        .qr-num-bottom { grid-row: 3; align-items: flex-start; }
+        
+        .qr-num-col { display: flex; flex-direction: column; gap: 1px; grid-row: 2; }
+        .qr-num-left { grid-column: 1; align-items: flex-end; padding-right: 4px; }
+        .qr-num-right { grid-column: 3; align-items: flex-start; padding-left: 4px; }
+
+        .qr-num {
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: bold;
+            color: var(--accent);
+            opacity: 0.9;
+        }
+
+        #qr-grid-container {
+            grid-column: 2;
+            grid-row: 2;
+            display: grid;
+            gap: 1px; 
+            background-color: #333; /* Cor da linha da grade */
+            border: 1px solid #333;
+        }
+
+        .qr-cell {
+            background-color: var(--primary);
+            width: 18px;
+            height: 18px;
+            cursor: crosshair;
+        }
+
+        .qr-cell:hover {
+            background-color: rgba(124, 252, 0, 0.3);
+        }
+
+        .qr-cell.active {
+            background-color: var(--accent);
+            box-shadow: inset 0 0 2px rgba(0,0,0,0.5);
+        }
+
+        .recreador-controls {
+            display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 20px; width: 100%;
+        }
+
         /* MODAIS GERAIS (Fundo) */
         .modal-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); justify-content: center; align-items: center; z-index: 2000;
@@ -374,6 +447,7 @@
             .dia-atualizacao li { flex-direction: column; align-items: flex-start; gap: 10px; }
             .atualizacao-right { width: 100%; justify-content: flex-end; margin-top: 4px; }
             
+            /* ALINHAMENTO INTELIGENTE DA INSTRUÇÃO PARA NÃO CORTAR O BOTÃO FECHAR */
             #modalInstruction { 
                 font-size: 0.7rem; 
                 width: calc(100% - 90px); 
@@ -384,6 +458,12 @@
                 top: calc(var(--topbar-height) + 15px); 
                 padding: 8px 12px; 
             }
+
+            /* AJUSTE PARA O RECRIADOR CABER BEM NO MOBILE */
+            .qr-num { width: 14px; height: 14px; font-size: 8px; }
+            .qr-cell { width: 14px; height: 14px; }
+            .recreador-wrapper { justify-content: flex-start; }
+            .recreador-controls .btn-action { flex: 1 1 40%; max-width: none !important; }
         }
     </style>
 </head>
@@ -422,6 +502,9 @@
             </button>
             <button class="btn-ferramenta" onclick="abrirEliminador()">
                 <span>Eliminador de Possibilidades<br>de Caracteres NIV (Honda)</span>
+            </button>
+            <button class="btn-ferramenta" onclick="abrirRecreador()">
+                <span>Recriador QR Code<br>Placas Mercosul</span>
             </button>
         </div>
         <button class="btn-sair" onclick="fazerLogout()">Sair da Ferramenta Restrita</button>
@@ -488,6 +571,46 @@
             <div style="display: flex; gap: 15px; margin-top: 20px; width: 100%; justify-content: center; flex-wrap: wrap;">
                 <button class="btn-action" style="max-width: 200px; border-color: #888; color: #888;" onclick="showEliminadorSelection()">⬅ Voltar à Seleção</button>
                 <button class="btn-action" style="max-width: 200px;" onclick="resetEliminadorGrid()">Limpar Matriz</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FERRAMENTA 3: RECRIADOR QR CODE -->
+    <div id="areaRecreador" style="display: none; width: 100%; flex-direction: column; align-items: center; max-width: 800px;">
+        <button class="btn-voltar-menu" onclick="voltarDashboard()">⬅ Voltar ao Painel</button>
+
+        <div id="qr-setup-screen" style="display: flex; flex-direction: column; align-items: center; width: 100%;">
+            <div class="tool-title">Recriador Tático de QR Code</div>
+            <div>
+                <div class="tool-guide-title">Instruções de Uso:</div>
+                <p class="tool-guide-text">
+                    Escolha o padrão da matriz correspondente ao QR Code danificado (25x25 ou 37x37). Utilize a grade virtual para reconstruir os módulos (quadradinhos pretos) visíveis na placa física. O progresso é salvo automaticamente em seu dispositivo.
+                </p>
+            </div>
+            <button class="btn-mode" id="btn-size-25">Padrão 25x25 (625 módulos)</button>
+            <button class="btn-mode" id="btn-size-37">Padrão 37x37 (1369 módulos)</button>
+        </div>
+
+        <div id="qr-app-screen" style="display: none; width: 100%; flex-direction: column; align-items: center;">
+            <h3 style="color: var(--accent); margin-bottom: 15px; text-align:center;">Matriz de Reconstrução</h3>
+            
+            <div class="recreador-controls">
+                <button class="btn-action" style="max-width: 160px; border-color: #888; color: #888;" id="btn-back-qr">⬅ Trocar Padrão</button>
+                <button class="btn-action" style="max-width: 160px;" id="btn-patterns">Gerar Fixos</button>
+                <button class="btn-action" style="max-width: 160px;" id="btn-export-qr">Exportar QR</button>
+                <button class="btn-action" style="max-width: 160px; border-color: #ff4444; color: #ff4444;" id="btn-clear-qr">Limpar</button>
+            </div>
+
+            <div class="recreador-wrapper">
+                <div class="qr-matrix-layout">
+                    <div class="qr-num-row qr-num-top" id="qr-num-top"></div>
+                    <div class="qr-num-col qr-num-left" id="qr-num-left"></div>
+                    
+                    <div id="qr-grid-container"></div>
+                    
+                    <div class="qr-num-col qr-num-right" id="qr-num-right"></div>
+                    <div class="qr-num-row qr-num-bottom" id="qr-num-bottom"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -603,9 +726,7 @@
             <div id="modalInfoExtra"></div>
         </div>
         <div class="action-buttons">
-            <!-- NOVO BOTÃO DE INVERTER CORES ADICIONADO AQUI -->
             <button class="btn-action" id="invertBtn" onclick="toggleInvertColors()">🌗 Inverter Cores</button>
-            
             <button class="btn-action" id="downloadBtn" onclick="downloadImage()">Baixar Foto</button>
             <button class="btn-action" id="shareBtn" onclick="shareImage()">Copiar para WhatsApp</button>
             <button class="btn-action" id="copyNumberBtn" onclick="copyNumber()">Copiar Numeração</button>
@@ -8600,6 +8721,7 @@
         const areaDashboard = document.getElementById('areaDashboard');
         const areaBuscador = document.getElementById('areaBuscador');
         const areaEliminador = document.getElementById('areaEliminador');
+        const areaRecreador = document.getElementById('areaRecreador');
         const modalAuth = document.getElementById('modalAuth');
         const formLogin = document.getElementById('formLogin');
         const formCadastro = document.getElementById('formCadastro');
@@ -8632,6 +8754,7 @@
                             areaDashboard.style.display = 'flex';
                             areaBuscador.style.display = 'none';
                             areaEliminador.style.display = 'none';
+                            areaRecreador.style.display = 'none';
                             modalAuth.style.display = 'none';
                             modalPendente.style.display = 'none';
                             
@@ -8642,6 +8765,7 @@
                             areaDashboard.style.display = 'none';
                             areaBuscador.style.display = 'none';
                             areaEliminador.style.display = 'none';
+                            areaRecreador.style.display = 'none';
                             modalAuth.style.display = 'none';
                             modalPendente.style.display = 'flex';
                         }
@@ -8651,6 +8775,7 @@
                     areaDashboard.style.display = 'none';
                     areaBuscador.style.display = 'none';
                     areaEliminador.style.display = 'none';
+                    areaRecreador.style.display = 'none';
                     modalAuth.style.display = 'none';
                     modalPendente.style.display = 'none';
                 }
@@ -8769,10 +8894,15 @@
             uploadFiles();
         }
 
-        function abrirBuscador() { areaDashboard.style.display = 'none'; areaEliminador.style.display = 'none'; areaBuscador.style.display = 'flex'; }
-        function abrirEliminador() { areaDashboard.style.display = 'none'; areaBuscador.style.display = 'none'; areaEliminador.style.display = 'flex'; showEliminadorSelection(); }
-        function voltarDashboard() { areaBuscador.style.display = 'none'; areaEliminador.style.display = 'none'; areaDashboard.style.display = 'flex'; }
+        // --- NAVEGAÇÃO ENTRE FERRAMENTAS ---
+        function abrirBuscador() { areaDashboard.style.display = 'none'; areaEliminador.style.display = 'none'; areaRecreador.style.display = 'none'; areaBuscador.style.display = 'flex'; }
+        function abrirEliminador() { areaDashboard.style.display = 'none'; areaBuscador.style.display = 'none'; areaRecreador.style.display = 'none'; areaEliminador.style.display = 'flex'; showEliminadorSelection(); }
+        function abrirRecreador() { areaDashboard.style.display = 'none'; areaBuscador.style.display = 'none'; areaEliminador.style.display = 'none'; areaRecreador.style.display = 'flex'; }
+        function voltarDashboard() { areaBuscador.style.display = 'none'; areaEliminador.style.display = 'none'; areaRecreador.style.display = 'none'; areaDashboard.style.display = 'flex'; }
 
+        // =========================================================================================
+        // FERRAMENTA: ELIMINADOR DE POSSIBILIDADES (HONDA)
+        // =========================================================================================
         const digitMap = {
             '0': [0,1,1,1,0, 1,0,0,0,1, 1,0,0,0,1, 1,0,0,0,1, 1,0,0,0,1, 1,0,0,0,1, 0,1,1,1,0],
             '1': [0,0,0,1,1, 0,0,0,0,1, 0,0,0,0,1, 0,0,0,0,1, 0,0,0,0,1, 0,0,0,0,1, 0,0,0,0,1],
@@ -8895,6 +9025,226 @@
         }
 
         function resetEliminadorGrid() { initEliminadorGrid(); }
+
+        // =========================================================================================
+        // FERRAMENTA 3: RECRIADOR DE QR CODE
+        // =========================================================================================
+        const qrSetupScreen = document.getElementById('qr-setup-screen');
+        const qrAppScreen = document.getElementById('qr-app-screen');
+        const qrGridContainer = document.getElementById('qr-grid-container');
+        const qrNumTop = document.getElementById('qr-num-top');
+        const qrNumBottom = document.getElementById('qr-num-bottom');
+        const qrNumLeft = document.getElementById('qr-num-left');
+        const qrNumRight = document.getElementById('qr-num-right');
+        
+        const btnExportQr = document.getElementById('btn-export-qr');
+        const btnClearQr = document.getElementById('btn-clear-qr');
+        const btnPatternsQr = document.getElementById('btn-patterns');
+        const btnBackQr = document.getElementById('btn-back-qr');
+        const btnSize25 = document.getElementById('btn-size-25');
+        const btnSize37 = document.getElementById('btn-size-37');
+        
+        let GRID_SIZE = 37;
+        let isDrawingQr = false;
+        let drawModeQr = true;
+
+        btnSize25.addEventListener('click', function() { startQrApp(25); });
+        btnSize37.addEventListener('click', function() { startQrApp(37); });
+
+        btnBackQr.addEventListener('click', function() {
+            qrAppScreen.style.display = 'none';
+            qrSetupScreen.style.display = 'flex';
+            qrGridContainer.innerHTML = '';
+        });
+
+        function startQrApp(size) {
+            GRID_SIZE = size;
+            qrSetupScreen.style.display = 'none';
+            qrAppScreen.style.display = 'flex';
+            initializeQrGrid();
+        }
+
+        function initializeQrGrid() {
+            qrGridContainer.innerHTML = '';
+            qrNumTop.innerHTML = ''; qrNumBottom.innerHTML = '';
+            qrNumLeft.innerHTML = ''; qrNumRight.innerHTML = '';
+
+            qrGridContainer.style.gridTemplateColumns = `repeat(${GRID_SIZE}, var(--cell-size, 18px))`;
+            qrGridContainer.style.gridTemplateRows = `repeat(${GRID_SIZE}, var(--cell-size, 18px))`;
+
+            for (let i = 1; i <= GRID_SIZE; i++) {
+                const createEl = () => {
+                    const el = document.createElement('div');
+                    el.className = 'qr-num'; el.textContent = i; return el;
+                };
+                qrNumTop.appendChild(createEl()); qrNumBottom.appendChild(createEl());
+                qrNumLeft.appendChild(createEl()); qrNumRight.appendChild(createEl());
+            }
+
+            for (let i = 0; i < GRID_SIZE * GRID_SIZE; i++) {
+                const cell = document.createElement('div');
+                cell.classList.add('qr-cell');
+                cell.dataset.index = i;
+                qrGridContainer.appendChild(cell);
+            }
+            
+            loadQrState(); 
+        }
+
+        function getQrStorageKey() {
+            return `qrRecreatorState_v6_${GRID_SIZE}`;
+        }
+
+        function saveQrState() {
+            try {
+                const activeCells = [...document.querySelectorAll('.qr-cell.active')].map(c => c.dataset.index);
+                localStorage.setItem(getQrStorageKey(), JSON.stringify(activeCells));
+            } catch (e) { console.error("Erro ao salvar progresso do QR", e); }
+        }
+
+        function loadQrState() {
+            try {
+                const savedData = localStorage.getItem(getQrStorageKey());
+                if(savedData) {
+                    const saved = JSON.parse(savedData);
+                    saved.forEach(idx => {
+                        const cell = document.querySelector(`.qr-cell[data-index="${idx}"]`);
+                        if(cell) cell.classList.add('active');
+                    });
+                }
+            } catch (e) { console.error("Erro ao carregar progresso do QR.", e); }
+        }
+
+        // Lógica de Pintura com Mouse
+        qrGridContainer.addEventListener('mousedown', function(e) {
+            if (e.target.classList.contains('qr-cell')) {
+                isDrawingQr = true;
+                drawModeQr = !e.target.classList.contains('active');
+                e.target.classList.toggle('active', drawModeQr);
+            }
+        });
+        qrGridContainer.addEventListener('mouseover', function(e) {
+            if (isDrawingQr && e.target.classList.contains('qr-cell')) {
+                e.target.classList.toggle('active', drawModeQr);
+            }
+        });
+        window.addEventListener('mouseup', function() {
+            if(isDrawingQr) { isDrawingQr = false; saveQrState(); }
+        });
+
+        // Lógica de Pintura com Toque (Touch/Celular)
+        qrGridContainer.addEventListener('touchstart', function(e) {
+            if (e.target.classList.contains('qr-cell')) {
+                isDrawingQr = true;
+                drawModeQr = !e.target.classList.contains('active');
+                e.target.classList.toggle('active', drawModeQr);
+            }
+        }, {passive: false});
+
+        qrGridContainer.addEventListener('touchmove', function(e) {
+            if (isDrawingQr) {
+                e.preventDefault(); // Previne rolar a tela enquanto pinta a matriz
+                const touch = e.touches[0];
+                const element = document.elementFromPoint(touch.clientX, touch.clientY);
+                if (element && element.classList.contains('qr-cell')) {
+                    element.classList.toggle('active', drawModeQr);
+                }
+            }
+        }, {passive: false});
+
+        window.addEventListener('touchend', function() {
+            if(isDrawingQr) { isDrawingQr = false; saveQrState(); }
+        });
+        qrGridContainer.addEventListener('dragstart', function(e) { e.preventDefault(); });
+
+        // Padrões Fixos
+        function drawFinder(startX, startY) {
+            for(let y = 0; y < 7; y++) {
+                for(let x = 0; x < 7; x++) {
+                    let isBlack = false;
+                    if (y === 0 || y === 6 || x === 0 || x === 6) isBlack = true; 
+                    else if (y >= 2 && y <= 4 && x >= 2 && x <= 4) isBlack = true; 
+
+                    const cellIndex = (startY + y) * GRID_SIZE + (startX + x);
+                    const cell = document.querySelector(`.qr-cell[data-index="${cellIndex}"]`);
+                    if(cell) {
+                        if(isBlack) cell.classList.add('active');
+                        else cell.classList.remove('active');
+                    }
+                }
+            }
+        }
+        function drawTimingPatterns() {
+            const limite = GRID_SIZE - 9;
+            for(let x = 8; x <= limite; x++) {
+                const cellIndex = 6 * GRID_SIZE + x;
+                const cell = document.querySelector(`.qr-cell[data-index="${cellIndex}"]`);
+                if(cell) {
+                    if (x % 2 === 0) cell.classList.add('active');
+                    else cell.classList.remove('active');
+                }
+            }
+            for(let y = 8; y <= limite; y++) {
+                const cellIndex = y * GRID_SIZE + 6;
+                const cell = document.querySelector(`.qr-cell[data-index="${cellIndex}"]`);
+                if(cell) {
+                    if (y % 2 === 0) cell.classList.add('active');
+                    else cell.classList.remove('active');
+                }
+            }
+        }
+
+        btnPatternsQr.addEventListener('click', function() {
+            drawFinder(0, 0);                           // Topo-Esquerda
+            drawFinder(GRID_SIZE - 7, 0);               // Topo-Direita
+            drawFinder(0, GRID_SIZE - 7);               // Baixo-Esquerda
+            drawTimingPatterns();                       // Linhas de sincronização
+            saveQrState();
+        });
+
+        // Exportação
+        btnExportQr.addEventListener('click', function() {
+            const canvas = document.createElement('canvas');
+            const scale = 10; 
+            const paddingModules = 4;
+            const padding = paddingModules * scale; 
+            
+            canvas.width = (GRID_SIZE * scale) + (padding * 2);
+            canvas.height = (GRID_SIZE * scale) + (padding * 2);
+            const ctx = canvas.getContext('2d');
+
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#000000';
+            const cells = document.querySelectorAll('.qr-cell');
+            cells.forEach(cell => {
+                if (cell.classList.contains('active')) {
+                    const index = parseInt(cell.dataset.index);
+                    const col = index % GRID_SIZE;
+                    const row = Math.floor(index / GRID_SIZE);
+                    ctx.fillRect(padding + (col * scale), padding + (row * scale), scale, scale);
+                }
+            });
+
+            const link = document.createElement('a');
+            link.download = `qrcode_placa_${GRID_SIZE}x${GRID_SIZE}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        });
+        
+        btnClearQr.addEventListener('click', function() {
+            if (confirm("ATENÇÃO: Deseja realmente limpar toda a matriz? Isso apagará o progresso salvo deste padrão.")) {
+                const cells = document.querySelectorAll('.qr-cell');
+                cells.forEach(cell => cell.classList.remove('active'));
+                localStorage.removeItem(getQrStorageKey());
+            }
+        });
+
+
+        // =========================================================================================
+        // FUNÇÕES GERAIS E AUTENTICAÇÃO
+        // =========================================================================================
 
         function abrirModalAuth() { modalAuth.style.display = 'flex'; }
         function fecharModalAuth() { modalAuth.style.display = 'none'; }
@@ -9052,17 +9402,17 @@
 
         function getTagStyle(tagName) {
             const colors = {
-                'NIV': '#4dabf7',      // Azul Claro
-                'MOTOR': '#ffc078',    // Laranja Pastel
-                'VIS': '#b197fc',      // Lilás
-                'ETIQUETA': '#20c997', // Verde Água
-                'PLAQUETA': '#adb5bd', // Cinza
-                'CÂMBIO': '#ff8787',   // Vermelho Pastel
+                'NIV': '#4dabf7',      
+                'MOTOR': '#ffc078',    
+                'VIS': '#b197fc',      
+                'ETIQUETA': '#20c997', 
+                'PLAQUETA': '#adb5bd', 
+                'CÂMBIO': '#ff8787',   
                 'CAMBIO': '#ff8787',   
-                'CHAPA': '#f783ac',    // Rosa Pastel
-                'PAINEL': '#a9e34b',   // Verde Lima
-                'PORTA': '#4c6ef5',    // Azul Indigo
-                'VIDRO': '#66d9e8'     // Ciano
+                'CHAPA': '#f783ac',    
+                'PAINEL': '#a9e34b',   
+                'PORTA': '#4c6ef5',    
+                'VIDRO': '#66d9e8'     
             };
             const c = colors[tagName.toUpperCase()] || '#7CFC00';
             return `border: 1px dashed ${c}; color: ${c}; background-color: rgba(255, 255, 255, 0.05);`;
@@ -9189,7 +9539,6 @@
             modalInfoExtra.innerText = (imgObj.marca && imgObj.marca !== "") ? `${imgObj.marca} | ${imgObj.modelo} | ${imgObj.ano}` : "Informação não cadastrada";
             scale = 1; panningX = 0; panningY = 0; 
             
-            // Garante que a foto abra normal, sem herdar a inversão da foto anterior
             isInverted = false;
             modalImg.style.filter = 'none';
             
@@ -9207,7 +9556,6 @@
             try {
                 const ctx = canvas.getContext('2d'); canvas.width = modalImg.naturalWidth; canvas.height = modalImg.naturalHeight; 
                 
-                // Se a foto estiver invertida, aplica o filtro no canvas para copiar a versão invertida
                 if (isInverted) {
                     ctx.filter = 'invert(1)';
                 } else {
@@ -9215,7 +9563,7 @@
                 }
                 
                 ctx.drawImage(modalImg, 0, 0);
-                ctx.filter = 'none'; // reset
+                ctx.filter = 'none'; 
                 
                 canvas.toBlob(async (blob) => {
                     try { await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]); shareBtn.innerText = "Copiado!"; setTimeout(() => shareBtn.innerText = originalText, 2000);
