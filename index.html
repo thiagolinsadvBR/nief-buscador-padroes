@@ -257,20 +257,20 @@
         /* INSTRUÇÃO DE ZOOM E ARRASTE NO MODAL DA FOTO */
         #modalInstruction {
             position: absolute;
-            top: calc(var(--topbar-height) + 20px);
+            top: calc(var(--topbar-height) + 15px);
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.7);
-            color: #ccc;
+            background: rgba(0, 0, 0, 0.75);
+            color: #ddd;
             padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 0.8rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
             pointer-events: none;
             z-index: 1002;
             border: 1px dashed #555;
             text-align: center;
-            width: 80%;
-            max-width: 400px;
+            width: auto;
+            max-width: 60%;
             box-sizing: border-box;
         }
 
@@ -374,7 +374,17 @@
             .dia-atualizacao li { flex-direction: column; align-items: flex-start; gap: 10px; }
             .atualizacao-right { width: 100%; justify-content: flex-end; margin-top: 4px; }
             
-            #modalInstruction { font-size: 0.7rem; width: 90%; top: calc(var(--topbar-height) + 15px); padding: 6px 10px; }
+            /* ALINHAMENTO INTELIGENTE DA INSTRUÇÃO PARA NÃO CORTAR O BOTÃO FECHAR */
+            #modalInstruction { 
+                font-size: 0.7rem; 
+                width: calc(100% - 90px); 
+                max-width: none;
+                left: 15px; 
+                transform: none; 
+                text-align: left; 
+                top: calc(var(--topbar-height) + 15px); 
+                padding: 8px 12px; 
+            }
         }
     </style>
 </head>
