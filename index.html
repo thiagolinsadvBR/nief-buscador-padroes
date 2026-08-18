@@ -307,7 +307,7 @@
             align-items: center;
             justify-content: center;
             padding: 0 10px;
-            height: 28px; /* Altura exata travada */
+            height: 28px; 
             box-sizing: border-box;
             letter-spacing: 0.5px;
         }
@@ -340,9 +340,12 @@
             .select-filtro, #btnLimparFiltros { padding: 10px; font-size: 0.85rem; flex: 1 1 45%; min-width: 130px; }
             .valores-grid { grid-template-columns: 1fr 1fr; }
             #gallery { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
-            .action-buttons { bottom: 80px; right: 0; width: 100%; flex-direction: row; flex-wrap: wrap; justify-content: center; padding: 0 10px; box-sizing: border-box; }
+            
+            /* CORREÇÃO DO ALINHAMENTO DOS BOTÕES E TEXTO DO MODAL NA VERSÃO MOBILE */
+            .action-buttons { bottom: 115px; right: 0; width: 100%; flex-direction: row; flex-wrap: wrap; justify-content: center; padding: 0 10px; box-sizing: border-box; }
             .btn-action { flex: 1 1 45%; font-size: 0.75rem; padding: 10px 5px; }
-            #modalTitleBot { bottom: 25px; width: 85%; white-space: normal; padding: 8px 15px; }
+            #modalTitleBot { bottom: 15px; width: 90%; white-space: normal; padding: 8px 15px; }
+            
             #modalChassiDestaque { font-size: 1rem; }
             #terminalBox { font-size: 0.75rem; height: 160px; }
             .btn-ferramenta { max-width: 100%; min-height: 60px; font-size: 1rem; }
