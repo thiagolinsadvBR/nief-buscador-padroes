@@ -253,6 +253,27 @@
         #imageContainer { width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; cursor: grab; position: relative; }
         #imageContainer:active { cursor: grabbing; }
         #modalImg { max-width: 95%; max-height: 95%; transform-origin: center center; transition: transform 0.1s ease-out; user-select: none; pointer-events: none; }
+        
+        /* INSTRUÇÃO DE ZOOM E ARRASTE NO MODAL DA FOTO */
+        #modalInstruction {
+            position: absolute;
+            top: calc(var(--topbar-height) + 20px);
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            color: #ccc;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            pointer-events: none;
+            z-index: 1002;
+            border: 1px dashed #555;
+            text-align: center;
+            width: 80%;
+            max-width: 400px;
+            box-sizing: border-box;
+        }
+
         #closeBtn { position: absolute; top: var(--topbar-height); right: 20px; background: var(--accent); color: var(--primary); border: none; font-size: 2rem; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; z-index: 1001; display: flex; justify-content: center; align-items: center; margin-top: 10px;}
         
         #modalTitleBot { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.85); padding: 10px 20px; border-radius: 12px; font-size: 0.85rem; pointer-events: none; border: 1px solid var(--accent); white-space: nowrap; z-index: 1002; text-align: center; }
@@ -287,7 +308,7 @@
         .dia-atualizacao h4 { color: var(--accent); margin: 0 0 8px 0; font-size: 1rem; border-bottom: 1px dashed #333; padding-bottom: 4px; }
         .dia-atualizacao ul { list-style: none; padding: 0; margin: 0; }
         
-        /* AJUSTES DE LAYOUT FLEXÍVEL PARA AS LISTAS (NOVA LÓGICA) */
+        /* AJUSTES DE LAYOUT FLEXÍVEL PARA AS LISTAS */
         .dia-atualizacao li { 
             background: #252525; padding: 10px 12px; margin-bottom: 8px; border-radius: 6px; font-size: 0.8rem;
             display: flex; justify-content: space-between; align-items: center; gap: 10px;
@@ -341,7 +362,6 @@
             .valores-grid { grid-template-columns: 1fr 1fr; }
             #gallery { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
             
-            /* CORREÇÃO DO ALINHAMENTO DOS BOTÕES E TEXTO DO MODAL NA VERSÃO MOBILE */
             .action-buttons { bottom: 115px; right: 0; width: 100%; flex-direction: row; flex-wrap: wrap; justify-content: center; padding: 0 10px; box-sizing: border-box; }
             .btn-action { flex: 1 1 45%; font-size: 0.75rem; padding: 10px 5px; }
             #modalTitleBot { bottom: 15px; width: 90%; white-space: normal; padding: 8px 15px; }
@@ -351,9 +371,10 @@
             .btn-ferramenta { max-width: 100%; min-height: 60px; font-size: 1rem; }
             .eliminador-possibilities { font-size: 1.4rem; letter-spacing: 2px; word-spacing: 6px; }
 
-            /* MEDIA QUERY DA RESPONSIVIDADE DAS LISTAS */
             .dia-atualizacao li { flex-direction: column; align-items: flex-start; gap: 10px; }
             .atualizacao-right { width: 100%; justify-content: flex-end; margin-top: 4px; }
+            
+            #modalInstruction { font-size: 0.7rem; width: 90%; top: calc(var(--topbar-height) + 15px); padding: 6px 10px; }
         }
     </style>
 </head>
@@ -561,6 +582,7 @@
     <!-- MODAL DE VISUALIZAÇÃO DA IMAGEM -->
     <div id="modal" class="modal-overlay">
         <button id="closeBtn" onclick="closeModal()">×</button>
+        <div id="modalInstruction">🔍 Dica: Use o movimento de pinça para dar zoom. Arraste para mover a foto.</div>
         <div id="imageContainer">
             <img id="modalImg" src="">
         </div>
@@ -8625,10 +8647,8 @@
             acessosRef.orderByChild('timestamp').limitToLast(50).on('child_added', (snapshot) => {
                 const acesso = snapshot.val();
                 
-                // --- INÍCIO DO FILTRO DE CAMPINA GRANDE ---
                 const cid = acesso.cidade ? acesso.cidade.toUpperCase() : "";
                 if (cid.includes("CAMPINA GRANDE")) return;
-                // --- FIM DO FILTRO ---
 
                 const dataObjeto = new Date(acesso.timestamp || Date.now());
                 const dataFormatada = dataObjeto.toLocaleDateString('pt-BR');
