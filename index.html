@@ -766,7 +766,7 @@
                 Companheiro de missão, este sistema nasceu nas ruas e para as ruas. Ele é mantido de forma 100% independente, e com muitas madrugadas de trabalho, sempre com o objetivo de dar mais segurança e agilidade às nossas abordagens.
             </p>
             <p class="doacao-desc">
-                Se esta ferramenta já te ajudou em campo, considere contribuir! Qualquer contribuição nos motiva a continuar criando novas funcionalidades para todos nós. Tamo junto! 👊🚓
+                Se esta ferramenta já te ajudou em campo, considere contribuir! Qualquer contribuição nos motiva a continue criando novas funcionalidades para todos nós. Tamo junto! 👊🚓
             </p>
             <div class="valores-grid">
                 <button class="btn-valor" onclick="window.open('https://nubank.com.br/cobrar/vxfnx/6a6b548b-5dfa-41f6-bc15-7fb60bb15fcb', '_blank')">R$ 1,00</button>
@@ -9120,7 +9120,7 @@
         function abrirFormularioContribuicao() { document.getElementById('modalContribuicao').style.display = 'flex'; }
         function fecharModalContribuicao() { document.getElementById('modalContribuicao').style.display = 'none'; }
 
-        function enviarParaTelegram() {
+        async function enviarParaTelegram() {
             const fileInput = document.getElementById('uploadFoto');
             const obs = document.getElementById('uploadObs').value;
             const btn = document.getElementById('btnEnviarTelegram');
@@ -9129,8 +9129,29 @@
 
             if (!fileInput.files.length) { alert("Selecione pelo menos uma foto!"); return; }
 
-            btn.innerText = "⏳ Enviando..."; 
+            btn.innerText = "⏳ Preparando envio..."; 
             btn.disabled = true;
+
+            let nomeUsuario = "Usuário anônimo";
+            if (auth && auth.currentUser) {
+                try {
+                    const snap = await database.ref('usuarios/' + auth.currentUser.uid).once('value');
+                    if (snap.val() && snap.val().nome) {
+                        nomeUsuario = snap.val().nome;
+                    }
+                } catch(e) {}
+            }
+
+            let local = { cidade: "Desconhecida", estado: "Desconhecido" };
+            try {
+                local = await obterLocalizacaoViaGPS();
+            } catch (e) {
+                try {
+                    local = await obterLocalizacaoViaIP();
+                } catch (err) {}
+            }
+
+            btn.innerText = "⏳ Enviando..."; 
             progressContainer.style.display = 'block';
             progressBar.style.width = '0%';
 
@@ -9141,11 +9162,8 @@
             async function uploadFiles() {
                 for (let i = 0; i < totalFiles; i++) {
                     const file = fileInput.files[i];
-                    let caption = `🚨 *NOVO PADRÃO ENVIADO* 🚨\n\n*Obs:* ${obs || 'Nenhuma'}`;
-                    
-                    if (totalFiles > 1) {
-                        caption = `🚨 *NOVO PADRÃO ENVIADO* (${i + 1}/${totalFiles}) 🚨\n\n*Obs:* ${obs || 'Nenhuma'}`;
-                    }
+                    let header = totalFiles > 1 ? `🚨 *NOVO PADRÃO ENVIADO* (${i + 1}/${totalFiles}) 🚨` : `🚨 *NOVO PADRÃO ENVIADO* 🚨`;
+                    let caption = `${header}\n\n👤 *Enviado por:* ${nomeUsuario}\n📍 *Localização:* ${local.cidade} / ${local.estado}\n📝 *Obs:* ${obs || 'Nenhuma'}`;
 
                     const formData = new FormData();
                     formData.append('chat_id', '1945271271');
