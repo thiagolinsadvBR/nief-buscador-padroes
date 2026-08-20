@@ -246,7 +246,18 @@
         
         .eliminador-results-box { width: 100%; text-align: center; margin-top: 10px; background: #111; padding: 12px; border-radius: 12px; border: 1px solid var(--accent); box-sizing: border-box; }
         .eliminador-label { font-size: 0.9rem; margin-bottom: 5px; color:#aaa; font-weight: bold; }
-        .eliminador-possibilities { font-size: 1.8rem; font-weight: bold; color: var(--accent); word-spacing: 12px; line-height: 1.4; min-height: 35px; word-wrap: break-word; }
+        
+        .eliminador-possibilities { 
+            font-size: 1.8rem; font-weight: bold; color: var(--accent); 
+            display: flex; flex-wrap: wrap; justify-content: center; gap: 12px;
+            line-height: 1.4; min-height: 35px;
+        }
+        .eliminador-char {
+            cursor: pointer; padding: 2px 10px; border-radius: 6px; transition: all 0.2s;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .eliminador-char:hover { background-color: rgba(124, 252, 0, 0.2); }
+        .eliminador-char.selected { background-color: #0044cc; color: #ffffff; box-shadow: 0 0 10px rgba(0, 68, 204, 0.6); }
 
         /* RECRIADOR DE QR CODE */
         .recreador-wrapper {
@@ -476,7 +487,7 @@
             
             .btn-ferramenta { width: 100%; height: auto; min-height: 60px; font-size: 1rem; }
             
-            .eliminador-possibilities { font-size: 1.4rem; letter-spacing: 2px; word-spacing: 6px; }
+            .eliminador-possibilities { font-size: 1.4rem; gap: 8px; }
 
             .dia-atualizacao li { flex-direction: column; align-items: flex-start; gap: 10px; }
             .atualizacao-right { width: 100%; justify-content: flex-end; margin-top: 4px; }
@@ -500,7 +511,6 @@
             #dynamicContentEta { transform: none; height: 200px; }
             .eta-wrapper { padding: 15px 10px; }
             
-            /* AJUSTE PARA O TEXTO "DIGITE O NIV" CABER SEM CORTAR */
             #vinInputEta { font-size: 0.85rem !important; letter-spacing: 0px !important; }
             #vinInputEta::placeholder { font-size: 0.85rem; letter-spacing: 0px; }
         }
@@ -545,7 +555,6 @@
             <button class="btn-ferramenta" onclick="abrirRecreador()">
                 <span>Recriador QR Code<br>Placas Mercosul</span>
             </button>
-            <!-- NOVO BOTÃO DA FERRAMENTA ETA -->
             <button class="btn-ferramenta" onclick="abrirVerificador()">
                 <span>Verificador ETAs<br>Honda Motos</span>
             </button>
@@ -608,6 +617,7 @@
 
             <div class="eliminador-results-box">
                 <div class="eliminador-label">Caracteres Originais Possíveis:</div>
+                <div style="font-size: 0.85rem; color: #888; margin-bottom: 10px;">Dica: Clique em um caractere abaixo para preencher a matriz com o seu padrão original.</div>
                 <div class="eliminador-possibilities" id="eliminador-result">---</div>
             </div>
             
@@ -670,7 +680,6 @@
             </p>
         </div>
 
-        <!-- NOVO TEXTO DE APOIO IMEDIATO -->
         <div class="warning-box" style="text-align: center; text-indent: 0; margin-bottom: 15px;">
             Caracteres ilegíveis ou código de barras parcialmente destruído? Solicite apoio imediato da inteligência <a href="https://wa.me/5583982203949" target="_blank" style="color: var(--accent); font-weight: bold; text-decoration: underline;">CLICANDO AQUI</a>.
         </div>
@@ -680,7 +689,6 @@
             <button class="btn-action" onclick="_0xC()" style="flex: 0 0 60px !important; max-width: 60px !important; min-width: 60px !important; width: 60px !important; font-size: 1.2rem; padding: 0; background-color: #333; border-color: #555; color: white;">X</button>
         </div>
 
-        <!-- Warning Dinâmico se houver divergência -->
         <div id="instructionBoxEta" class="warning-box" style="display: none;">
             Se o padrão gerado não for idêntico ao da etiqueta na motocicleta, solicite apoio para análise completa da etiqueta <a href="https://wa.me/5583982203949" target="_blank" style="color: var(--accent); font-weight: bold; text-decoration: underline;">CLICANDO AQUI</a>.
         </div>
@@ -10179,7 +10187,7 @@
             'K': [1,0,0,0,1, 1,0,0,1,0, 1,0,1,0,0, 1,1,0,0,0, 1,0,1,0,0, 1,0,0,1,0, 1,0,0,0,1],
             'L': [1,0,0,0,0, 1,0,0,0,0, 1,0,0,0,0, 1,0,0,0,0, 1,0,0,0,0, 1,0,0,0,0, 1,1,1,1,1],
             'M': [1,0,0,0,1, 1,1,0,1,1, 1,0,1,0,1, 1,0,0,0,1, 1,0,0,0,1, 1,0,0,0,1, 1,0,0,0,1],
-            'N': [1,0,0,0,1, 1,1,0,0,1, 1,0,1,0,1, 1,0,0,1,1, 1,0,0,0,1, 1,0,0,0,1, 1,0,0,0,1],
+            'N': [1,0,0,0,1, 1,0,0,0,1, 1,1,0,0,1, 1,0,1,0,1, 1,0,0,1,1, 1,0,0,0,1, 1,0,0,0,1],
             'P': [1,1,1,1,0, 1,0,0,0,1, 1,0,0,0,1, 1,1,1,1,0, 1,0,0,0,0, 1,0,0,0,0, 1,0,0,0,0],
             'R': [1,1,1,1,0, 1,0,0,0,1, 1,0,0,0,1, 1,1,1,1,0, 1,0,1,0,0, 1,0,0,1,0, 1,0,0,0,1],
             'S': [0,1,1,1,0, 1,0,0,0,1, 1,0,0,0,0, 0,1,1,1,0, 0,0,0,0,1, 1,0,0,0,1, 0,1,1,1,0],
@@ -10196,6 +10204,7 @@
         let elimCandidates = [];
         let elimSelectedIndices = new Set();
         let elimDotElements = [];
+        let elimSelectedChar = null;
 
         const elimScreenSelection = document.getElementById('eliminador-selection');
         const elimScreenMain = document.getElementById('eliminador-main');
@@ -10218,6 +10227,7 @@
             elimGridEl.innerHTML = '';
             elimSelectedIndices.clear();
             elimDotElements = [];
+            elimSelectedChar = null;
             
             if (elimCurrentMode === 'numeric') { elimCandidates = Object.keys(digitMap).sort(); } 
             else { elimCandidates = Object.keys(alphaMap).sort(); }
@@ -10234,6 +10244,7 @@
         }
 
         function toggleEliminadorDot(index, element) {
+            elimSelectedChar = null;
             if (elimSelectedIndices.has(index)) {
                 elimSelectedIndices.delete(index);
                 element.classList.remove('active');
@@ -10242,6 +10253,28 @@
                 elimSelectedIndices.add(index);
                 element.classList.add('active');
             }
+            calculateEliminadorPossibilities();
+        }
+        
+        function fillPattern(char) {
+            elimSelectedChar = char;
+            const targetMap = (elimCurrentMode === 'numeric') ? digitMap : alphaMap;
+            const pattern = targetMap[char];
+            
+            elimSelectedIndices.clear();
+            pattern.forEach((val, idx) => {
+                if (val === 1) elimSelectedIndices.add(idx);
+            });
+
+            elimDotElements.forEach((dot, idx) => {
+                dot.classList.remove('forbidden');
+                if (elimSelectedIndices.has(idx)) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+
             calculateEliminadorPossibilities();
         }
 
@@ -10270,8 +10303,21 @@
         }
 
         function updateEliminadorResult(finalCandidates) {
-            if (finalCandidates.length === 0) { elimResultEl.textContent = "NENHUM"; elimResultEl.style.color = "#ff4444"; } 
-            else { elimResultEl.textContent = finalCandidates.join(' '); elimResultEl.style.color = "var(--accent)"; }
+            elimResultEl.innerHTML = '';
+            if (finalCandidates.length === 0) { 
+                elimResultEl.textContent = "NENHUM"; 
+                elimResultEl.style.color = "#ff4444"; 
+            } else { 
+                elimResultEl.style.color = "var(--accent)";
+                finalCandidates.forEach(char => {
+                    const span = document.createElement('span');
+                    span.textContent = char;
+                    span.className = 'eliminador-char';
+                    if (char === elimSelectedChar) span.classList.add('selected');
+                    span.onclick = () => fillPattern(char);
+                    elimResultEl.appendChild(span);
+                });
+            }
         }
 
         function resetEliminadorGrid() { initEliminadorGrid(); }
@@ -10507,7 +10553,7 @@
             const senhaConfirma = document.getElementById('cadSenhaConfirma').value;
 
             if(!nome || !cpf || !telefone || !instituicao || !email || !senha || !senhaConfirma) { alert("Preencha todos os campos!"); return; }
-            if(senha !== senhaConfirma) { alert("As senhas digitadas não coincidem. Verifique e tente novamente."); return; }
+            if(senha !== confima) { alert("As senhas digitadas não coincidem. Verifique e tente novamente."); return; }
 
             auth.createUserWithEmailAndPassword(email, senha).then(credenciais => {
                 database.ref('usuarios/' + credenciais.user.uid).set({ nome: nome, cpf: cpf, telefone: telefone, instituicao: instituicao, email: email, status: 'pendente' });
