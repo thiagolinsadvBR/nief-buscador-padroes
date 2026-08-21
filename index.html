@@ -476,11 +476,21 @@
         @media (max-width: 600px) {
             body { padding-top: calc(var(--topbar-height) + 10px); } 
             h2 { font-size: 1.1rem; margin-bottom: 10px; }
-            .top-bar { padding: 0 8px; }
+            .top-bar { padding: 0 8px; position: fixed; }
             .topbar-left, .topbar-right { gap: 5px; }
             .btn-topbar { font-size: 0.70rem; padding: 6px 8px; }
             .btn-sugestao { font-size: 0.85rem; padding: 8px 15px; margin-bottom: 10px; }
-            .led-counter { font-size: 1.1rem; padding: 2px 5px; letter-spacing: 2px; }
+            
+            /* Ajuste de centralização do contador para celular */
+            .led-counter { 
+                font-size: 1.1rem; 
+                padding: 2px 5px; 
+                letter-spacing: 2px; 
+                position: absolute; 
+                left: 50%; 
+                transform: translateX(-50%); 
+            }
+            
             #contadorFotos { font-size: 0.9rem; padding: 6px 15px; margin-bottom: 15px; }
             #btnDoacaoCentral { font-size: 0.85rem; padding: 10px 15px; text-align: center; }
             #filterContainer { gap: 8px; margin-bottom: 15px; }
