@@ -376,19 +376,18 @@
         .eta-block-char.control-char { background-color: transparent; box-shadow: none; padding: 0; }
         .eta-dedicatoria { text-align: center; width: 100%; display: block; font-size: 0.75em; color: #999; margin-top: 15px; font-family: Arial, sans-serif; font-style: italic; }
 
-        /* PONTOS DO MAPA */
+        /* PONTOS DO MAPA (ESCOPO GLOBAL PARA FUNCIONAR NO PC) */
         .dot-standard {
             background-color: var(--accent);
-            width: 10px; height: 10px;
+            width: 8px; height: 8px;
             border-radius: 50%;
-            opacity: 0.8;
-            /* Sem brilho para manter a leveza */
+            opacity: 0.6;
         }
         .dot-recent {
             background-color: #ff4444;
-            width: 14px; height: 14px;
+            width: 10px; height: 10px;
             border-radius: 50%;
-            border: 2px solid #ffffff;
+            border: 1px solid #ffffff;
             opacity: 1;
         }
 
@@ -809,7 +808,7 @@
                 <span style="color: #ff4444; font-weight: bold;">● Vermelho:</span> Últimas 10 cidades descobertas &nbsp;|&nbsp; 
                 <span style="color: var(--accent); font-weight: bold;">● Verde:</span> Acessos históricos
             </div>
-            <div id="mapaContainer" style="flex-grow: 1; width: 100%; border-radius: 8px; border: 1px solid #444; background: #000; z-index: 1;"></div>
+            <div id="mapaContainer" style="flex-grow: 1; width: 100%; min-height: 300px; border-radius: 8px; border: 1px solid #444; background: #000; z-index: 1;"></div>
         </div>
     </div>
 
@@ -10183,8 +10182,8 @@
                 // Pega as 10 últimas cidades exclusivas registradas
                 const recentes = listaCidades.slice(-10);
                 
-                const standardIcon = L.divIcon({ className: 'custom-div-icon', html: "<div class='dot-standard'></div>", iconSize: [10, 10], iconAnchor: [5, 5] });
-                const recentIcon = L.divIcon({ className: 'custom-div-icon', html: "<div class='dot-recent'></div>", iconSize: [14, 14], iconAnchor: [7, 7] });
+                const standardIcon = L.divIcon({ className: 'custom-div-icon', html: "<div class='dot-standard'></div>", iconSize: [8, 8], iconAnchor: [4, 4] });
+                const recentIcon = L.divIcon({ className: 'custom-div-icon', html: "<div class='dot-recent'></div>", iconSize: [10, 10], iconAnchor: [5, 5] });
 
                 for (let idx = 0; idx < listaCidades.length; idx++) {
                     let c = listaCidades[idx];
@@ -10201,7 +10200,7 @@
                             let geo = JSON.parse(cached);
                             L.marker([geo.lat, geo.lon], {icon: iconToUse}).bindPopup(`<b>${c.cidade}</b><br>${c.estado}`).addTo(mapaAcessos);
                         } else {
-                            // Delay para não estourar limite da API OpenStreetMap (max 1 por segundo)
+                            // Delay seguro para não estourar limite da API OpenStreetMap (max 1 por segundo)
                             setTimeout(async () => {
                                 try {
                                     let res = await fetch(`https://nominatim.openstreetmap.org/search?city=${encodeURIComponent(c.cidade)}&state=${encodeURIComponent(c.estado)}&country=Brazil&format=json`);
@@ -10213,7 +10212,7 @@
                                         L.marker([lat, lon], {icon: iconToUse}).bindPopup(`<b>${c.cidade}</b><br>${c.estado}`).addTo(mapaAcessos);
                                     }
                                 } catch(e) {}
-                            }, idx * 600); 
+                            }, idx * 1000); 
                         }
                     }
                 }
