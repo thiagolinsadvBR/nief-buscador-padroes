@@ -13,6 +13,10 @@
     <!-- Biblioteca HTML2Canvas para exportação do código de barras -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
+    <!-- Biblioteca Leaflet para o Mapa de Acessos -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=DotGothic16&display=swap');
 
@@ -371,6 +375,22 @@
         }
         .eta-block-char.control-char { background-color: transparent; box-shadow: none; padding: 0; }
         .eta-dedicatoria { text-align: center; width: 100%; display: block; font-size: 0.75em; color: #999; margin-top: 15px; font-family: Arial, sans-serif; font-style: italic; }
+
+        /* PONTOS DO MAPA */
+        .dot-standard {
+            background-color: var(--accent);
+            width: 10px; height: 10px;
+            border-radius: 50%;
+            opacity: 0.8;
+            /* Sem brilho para manter a leveza */
+        }
+        .dot-recent {
+            background-color: #ff4444;
+            width: 14px; height: 14px;
+            border-radius: 50%;
+            border: 2px solid #ffffff;
+            opacity: 1;
+        }
 
         /* MODAIS GERAIS (Fundo) */
         .modal-overlay {
@@ -735,6 +755,12 @@
 
     <!-- SEÇÃO DE REGISTRO DE ACESSO -->
     <div style="width: 100%; max-width: 800px; margin-top: 10px; text-align: center; display: flex; flex-direction: column; align-items: center;">
+        
+        <!-- BOTÃO DO MAPA DE ACESSOS -->
+        <button class="btn-action" onclick="abrirMapaAcessos()" style="max-width: 300px; margin-bottom: 15px; display: flex; justify-content: center; align-items: center; gap: 8px;">
+            🗺️ Abrir Mapa de Acessos
+        </button>
+
         <h3 id="tituloTerminal" style="color: var(--accent); margin-bottom: 12px; font-size: 1.1rem; user-select: none; cursor: default;">📡 Terminal de Acessos Globais (Ao Vivo)</h3>
         <div style="width: 100%; max-width: 700px;">
             <div id="terminalBox">
@@ -769,6 +795,21 @@
 
                 <button class="btn-action" id="btnEnviarTelegram" onclick="enviarParaTelegram()" style="margin-top: 15px;">Enviar Padrão</button>
             </div>
+        </div>
+    </div>
+
+    <!-- MODAL DO MAPA DE ACESSOS -->
+    <div id="modalMapa" class="modal-overlay">
+        <div class="modal-box" style="max-width: 900px; width: 95%; height: 80vh; display: flex; flex-direction: column;">
+            <div class="modal-header" style="justify-content: center; position: relative;">
+                <h3 style="color: var(--accent);">🗺️ Mapa de Acessos</h3>
+                <button class="fechar-modal-btn" onclick="fecharModalMapa()" style="position: absolute; right: 0;">×</button>
+            </div>
+            <div style="font-size: 0.8rem; color: #ccc; margin-bottom: 10px; text-align: center;">
+                <span style="color: #ff4444; font-weight: bold;">● Vermelho:</span> Últimas 10 cidades descobertas &nbsp;|&nbsp; 
+                <span style="color: var(--accent); font-weight: bold;">● Verde:</span> Acessos históricos
+            </div>
+            <div id="mapaContainer" style="flex-grow: 1; width: 100%; border-radius: 8px; border: 1px solid #444; background: #000; z-index: 1;"></div>
         </div>
     </div>
 
@@ -10077,6 +10118,111 @@
             uploadFiles();
         }
 
+        // --- MAPA DE ACESSOS ---
+        let mapaAcessos = null;
+        let mapaCarregado = false;
+
+        function fecharModalMapa() { 
+            document.getElementById('modalMapa').style.display = 'none'; 
+        }
+
+        async function abrirMapaAcessos() {
+            document.getElementById('modalMapa').style.display = 'flex';
+            
+            if (!mapaAcessos) {
+                mapaAcessos = L.map('mapaContainer').setView([-14.235, -51.925], 4);
+                L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+                    subdomains: 'abcd',
+                    maxZoom: 20
+                }).addTo(mapaAcessos);
+            }
+            
+            // Recalcula o tamanho do mapa para evitar tela cinza em modals
+            setTimeout(() => { mapaAcessos.invalidateSize(); }, 300);
+
+            if (!mapaCarregado) {
+                carregarDadosMapa();
+            }
+        }
+
+        async function carregarDadosMapa() {
+            try {
+                const snapshot = await acessosRef.once('value');
+                const data = snapshot.val();
+                if (!data) return;
+
+                const registros = Object.values(data);
+                // Ordena do mais antigo para o mais novo
+                registros.sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
+
+                const cidadesVistas = new Map();
+                
+                for (let r of registros) {
+                    let cid = (r.cidade || "").toUpperCase();
+                    let est = (r.estado || "").toUpperCase();
+                    // Ignora acessos ocultos ou locais indesejados
+                    if (!cid || cid === "DESCONHECIDA" || cid.includes("CAMPINA GRANDE") || cid.includes("OCULTA")) continue;
+                    
+                    let key = cid + "-" + est;
+                    if (!cidadesVistas.has(key)) {
+                        cidadesVistas.set(key, { 
+                            cidade: cid, 
+                            estado: est, 
+                            lat: r.lat, 
+                            lon: r.lon, 
+                            first_timestamp: r.timestamp || 0 
+                        });
+                    }
+                }
+
+                const listaCidades = Array.from(cidadesVistas.values());
+                // Ordena por ordem de primeira descoberta
+                listaCidades.sort((a, b) => a.first_timestamp - b.first_timestamp);
+                
+                // Pega as 10 últimas cidades exclusivas registradas
+                const recentes = listaCidades.slice(-10);
+                
+                const standardIcon = L.divIcon({ className: 'custom-div-icon', html: "<div class='dot-standard'></div>", iconSize: [10, 10], iconAnchor: [5, 5] });
+                const recentIcon = L.divIcon({ className: 'custom-div-icon', html: "<div class='dot-recent'></div>", iconSize: [14, 14], iconAnchor: [7, 7] });
+
+                for (let idx = 0; idx < listaCidades.length; idx++) {
+                    let c = listaCidades[idx];
+                    let isRecent = recentes.includes(c);
+                    let iconToUse = isRecent ? recentIcon : standardIcon;
+
+                    if (c.lat && c.lon) {
+                        L.marker([c.lat, c.lon], {icon: iconToUse}).bindPopup(`<b>${c.cidade}</b><br>${c.estado}`).addTo(mapaAcessos);
+                    } else {
+                        // Busca em cache local para não sobrecarregar a API
+                        let cacheKey = "geo_" + c.cidade + "_" + c.estado;
+                        let cached = localStorage.getItem(cacheKey);
+                        if (cached) {
+                            let geo = JSON.parse(cached);
+                            L.marker([geo.lat, geo.lon], {icon: iconToUse}).bindPopup(`<b>${c.cidade}</b><br>${c.estado}`).addTo(mapaAcessos);
+                        } else {
+                            // Delay para não estourar limite da API OpenStreetMap (max 1 por segundo)
+                            setTimeout(async () => {
+                                try {
+                                    let res = await fetch(`https://nominatim.openstreetmap.org/search?city=${encodeURIComponent(c.cidade)}&state=${encodeURIComponent(c.estado)}&country=Brazil&format=json`);
+                                    let geoData = await res.json();
+                                    if (geoData && geoData.length > 0) {
+                                        let lat = geoData[0].lat;
+                                        let lon = geoData[0].lon;
+                                        localStorage.setItem(cacheKey, JSON.stringify({lat: lat, lon: lon}));
+                                        L.marker([lat, lon], {icon: iconToUse}).bindPopup(`<b>${c.cidade}</b><br>${c.estado}`).addTo(mapaAcessos);
+                                    }
+                                } catch(e) {}
+                            }, idx * 600); 
+                        }
+                    }
+                }
+                mapaCarregado = true;
+            } catch(e) {
+                console.error("Erro ao carregar mapa", e);
+            }
+        }
+
         // --- NAVEGAÇÃO ENTRE FERRAMENTAS ---
         function abrirModalRestricaoMobile() { document.getElementById('modalRestricaoMobile').style.display = 'flex'; }
         function fecharModalRestricaoMobile() { document.getElementById('modalRestricaoMobile').style.display = 'none'; }
@@ -10718,8 +10864,15 @@
                 const res = await fetch('https://ipwho.is/');
                 const data = await res.json();
                 if (!data.success) throw new Error();
-                return { cidade: data.city || 'Desconhecida', estado: data.region || 'Desconhecido' };
-            } catch (e) { return { cidade: "Oculta (Firewall)", estado: "Rede Restrita" }; }
+                return { 
+                    cidade: data.city || 'Desconhecida', 
+                    estado: data.region || 'Desconhecido', 
+                    lat: data.latitude, 
+                    lon: data.longitude 
+                };
+            } catch (e) { 
+                return { cidade: "Oculta (Firewall)", estado: "Rede Restrita", lat: null, lon: null }; 
+            }
         }
 
         function obterLocalizacaoViaGPS() {
@@ -10730,7 +10883,12 @@
                         try {
                             const res = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${position.coords.latitude}&longitude=${position.coords.longitude}&localityLanguage=pt`);
                             const data = await res.json();
-                            resolve({ cidade: data.city || data.locality || "N/A", estado: data.principalSubdivision || "N/A" });
+                            resolve({ 
+                                cidade: data.city || data.locality || "N/A", 
+                                estado: data.principalSubdivision || "N/A", 
+                                lat: position.coords.latitude, 
+                                lon: position.coords.longitude 
+                            });
                         } catch (e) { reject("Falha API GPS"); }
                     },
                     (error) => { reject("Bloqueado"); },
@@ -10751,7 +10909,13 @@
                 terminalLogs.prepend(aviso);
                 localizacao = await obterLocalizacaoViaIP();
             }
-            if (acessosRef) acessosRef.push({ cidade: localizacao.cidade, estado: localizacao.estado, timestamp: firebase.database.ServerValue.TIMESTAMP });
+            if (acessosRef) acessosRef.push({ 
+                cidade: localizacao.cidade, 
+                estado: localizacao.estado, 
+                lat: localizacao.lat || null, 
+                lon: localizacao.lon || null, 
+                timestamp: firebase.database.ServerValue.TIMESTAMP 
+            });
         }
 
         document.addEventListener("DOMContentLoaded", () => {
@@ -11012,7 +11176,9 @@
 
         document.addEventListener('keydown', (e) => {
             if (modal.style.display === 'flex' && e.key === 'Escape') {
-                if (document.getElementById('modalRestricaoMobile').style.display === 'flex') {
+                if (document.getElementById('modalMapa').style.display === 'flex') {
+                    fecharModalMapa();
+                } else if (document.getElementById('modalRestricaoMobile').style.display === 'flex') {
                     fecharModalRestricaoMobile();
                 } else if (document.getElementById('modalAtualizacoes').style.display === 'flex') {
                     fecharModalAtualizacoes();
