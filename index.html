@@ -418,6 +418,7 @@
         tr.status-danger { background-color: rgba(255, 68, 68, 0.15); }
         tr.status-danger td:nth-child(2) { color: #ff4444; }
         tr.status-danger .btn-danger { background-color: #ff4444; color: white; border-color: #ff4444; }
+        .highlight-suspect { color: #ff4444; font-weight: 800; text-shadow: 0 0 5px rgba(255,0,0,0.5); }
         
         .gerador-stats { background: #252525; color: var(--accent); padding: 10px 15px; border-radius: 8px; margin-bottom: 10px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; border: 1px solid #333; width: 100%; box-sizing: border-box; flex-wrap: wrap; gap: 10px; }
 
@@ -666,6 +667,7 @@
             <button class="btn-ferramenta" onclick="abrirVerificador()">
                 <span>Verificador ETAs<br>Honda Motos</span>
             </button>
+            <!-- NOVO BOTÃO DA FERRAMENTA DE COMBINAÇÕES -->
             <button class="btn-ferramenta" onclick="abrirGerador()">
                 <span>Gerador de Combinações<br>Numeração de Motores</span>
             </button>
@@ -10545,7 +10547,7 @@
         }
 
         // =========================================================================================
-        // FERRAMENTA 2: ELIMINADOR DE POSSIBILIDADES (HONDA)
+        // FERRAMENTA 2 E 5: ELIMINADOR DE POSSIBILIDADES E GERADOR (Lógica Compartilhada)
         // =========================================================================================
         const digitMap = {
             '0': [0,1,1,1,0, 1,0,0,0,1, 1,0,0,0,1, 1,0,0,0,1, 1,0,0,0,1, 1,0,0,0,1, 0,1,1,1,0],
@@ -10586,6 +10588,7 @@
             'Z': [1,1,1,1,1, 0,0,0,0,1, 0,0,0,1,0, 0,0,1,0,0, 0,1,0,0,0, 1,0,0,0,0, 1,1,1,1,1]
         };
 
+        // --- Lógica Eliminador de Possibilidades ---
         let elimCurrentMode = 'numeric';
         let elimCandidates = [];
         let elimSelectedIndices = new Set();
@@ -10708,191 +10711,7 @@
 
         function resetEliminadorGrid() { initEliminadorGrid(); }
 
-        // =========================================================================================
-        // FERRAMENTA 3: RECRIADOR DE QR CODE
-        // =========================================================================================
-        const qrSetupScreen = document.getElementById('qr-setup-screen');
-        const qrAppScreen = document.getElementById('qr-app-screen');
-        const qrGridContainer = document.getElementById('qr-grid-container');
-        const qrNumTop = document.getElementById('qr-num-top');
-        const qrNumBottom = document.getElementById('qr-num-bottom');
-        const qrNumLeft = document.getElementById('qr-num-left');
-        const qrNumRight = document.getElementById('qr-num-right');
-        
-        let GRID_SIZE = 37;
-        let isDrawingQr = false;
-        let drawModeQr = true;
-
-        document.getElementById('btn-size-25').addEventListener('click', function() { startQrApp(25); });
-        document.getElementById('btn-size-37').addEventListener('click', function() { startQrApp(37); });
-
-        document.getElementById('btn-back-qr').addEventListener('click', function() {
-            qrAppScreen.style.display = 'none';
-            qrSetupScreen.style.display = 'flex';
-            qrGridContainer.innerHTML = '';
-        });
-
-        function startQrApp(size) {
-            GRID_SIZE = size;
-            qrSetupScreen.style.display = 'none';
-            qrAppScreen.style.display = 'flex';
-            initializeQrGrid();
-        }
-
-        function initializeQrGrid() {
-            qrGridContainer.innerHTML = '';
-            qrNumTop.innerHTML = ''; qrNumBottom.innerHTML = '';
-            qrNumLeft.innerHTML = ''; qrNumRight.innerHTML = '';
-
-            qrGridContainer.style.gridTemplateColumns = `repeat(${GRID_SIZE}, var(--cell-size, 18px))`;
-            qrGridContainer.style.gridTemplateRows = `repeat(${GRID_SIZE}, var(--cell-size, 18px))`;
-
-            for (let i = 1; i <= GRID_SIZE; i++) {
-                const createEl = () => {
-                    const el = document.createElement('div');
-                    el.className = 'qr-num'; el.textContent = i; return el;
-                };
-                qrNumTop.appendChild(createEl()); qrNumBottom.appendChild(createEl());
-                qrNumLeft.appendChild(createEl()); qrNumRight.appendChild(createEl());
-            }
-
-            for (let i = 0; i < GRID_SIZE * GRID_SIZE; i++) {
-                const cell = document.createElement('div');
-                cell.classList.add('qr-cell');
-                cell.dataset.index = i;
-                qrGridContainer.appendChild(cell);
-            }
-            
-            loadQrState(); 
-        }
-
-        function getQrStorageKey() {
-            return `qrRecreatorState_v6_${GRID_SIZE}`;
-        }
-
-        function saveQrState() {
-            try {
-                const activeCells = [...document.querySelectorAll('.qr-cell.active')].map(c => c.dataset.index);
-                localStorage.setItem(getQrStorageKey(), JSON.stringify(activeCells));
-            } catch (e) { console.error("Erro ao salvar progresso do QR", e); }
-        }
-
-        function loadQrState() {
-            try {
-                const savedData = localStorage.getItem(getQrStorageKey());
-                if(savedData) {
-                    const saved = JSON.parse(savedData);
-                    saved.forEach(idx => {
-                        const cell = document.querySelector(`.qr-cell[data-index="${idx}"]`);
-                        if(cell) cell.classList.add('active');
-                    });
-                }
-            } catch (e) { console.error("Erro ao carregar progresso do QR.", e); }
-        }
-
-        qrGridContainer.addEventListener('mousedown', function(e) {
-            if (e.target.classList.contains('qr-cell')) {
-                isDrawingQr = true;
-                drawModeQr = !e.target.classList.contains('active');
-                e.target.classList.toggle('active', drawModeQr);
-            }
-        });
-        qrGridContainer.addEventListener('mouseover', function(e) {
-            if (isDrawingQr && e.target.classList.contains('qr-cell')) {
-                e.target.classList.toggle('active', drawModeQr);
-            }
-        });
-        window.addEventListener('mouseup', function() {
-            if(isDrawingQr) { isDrawingQr = false; saveQrState(); }
-        });
-
-        qrGridContainer.addEventListener('dragstart', function(e) { e.preventDefault(); });
-
-        function drawFinder(startX, startY) {
-            for(let y = 0; y < 7; y++) {
-                for(let x = 0; x < 7; x++) {
-                    let isBlack = false;
-                    if (y === 0 || y === 6 || x === 0 || x === 6) isBlack = true; 
-                    else if (y >= 2 && y <= 4 && x >= 2 && x <= 4) isBlack = true; 
-
-                    const cellIndex = (startY + y) * GRID_SIZE + (startX + x);
-                    const cell = document.querySelector(`.qr-cell[data-index="${cellIndex}"]`);
-                    if(cell) {
-                        if(isBlack) cell.classList.add('active');
-                        else cell.classList.remove('active');
-                    }
-                }
-            }
-        }
-        function drawTimingPatterns() {
-            const limite = GRID_SIZE - 9;
-            for(let x = 8; x <= limite; x++) {
-                const cellIndex = 6 * GRID_SIZE + x;
-                const cell = document.querySelector(`.qr-cell[data-index="${cellIndex}"]`);
-                if(cell) {
-                    if (x % 2 === 0) cell.classList.add('active');
-                    else cell.classList.remove('active');
-                }
-            }
-            for(let y = 8; y <= limite; y++) {
-                const cellIndex = y * GRID_SIZE + 6;
-                const cell = document.querySelector(`.qr-cell[data-index="${cellIndex}"]`);
-                if(cell) {
-                    if (y % 2 === 0) cell.classList.add('active');
-                    else cell.classList.remove('active');
-                }
-            }
-        }
-
-        document.getElementById('btn-patterns').addEventListener('click', function() {
-            drawFinder(0, 0);                           
-            drawFinder(GRID_SIZE - 7, 0);               
-            drawFinder(0, GRID_SIZE - 7);               
-            drawTimingPatterns();                       
-            saveQrState();
-        });
-
-        document.getElementById('btn-export-qr').addEventListener('click', function() {
-            const canvas = document.createElement('canvas');
-            const scale = 10; 
-            const paddingModules = 4;
-            const padding = paddingModules * scale; 
-            
-            canvas.width = (GRID_SIZE * scale) + (padding * 2);
-            canvas.height = (GRID_SIZE * scale) + (padding * 2);
-            const ctx = canvas.getContext('2d');
-
-            ctx.fillStyle = '#FFFFFF';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            ctx.fillStyle = '#000000';
-            const cells = document.querySelectorAll('.qr-cell');
-            cells.forEach(cell => {
-                if (cell.classList.contains('active')) {
-                    const index = parseInt(cell.dataset.index);
-                    const col = index % GRID_SIZE;
-                    const row = Math.floor(index / GRID_SIZE);
-                    ctx.fillRect(padding + (col * scale), padding + (row * scale), scale, scale);
-                }
-            });
-
-            const link = document.createElement('a');
-            link.download = `qrcode_placa_${GRID_SIZE}x${GRID_SIZE}.png`;
-            link.href = canvas.toDataURL('image/png');
-            link.click();
-        });
-        
-        document.getElementById('btn-clear-qr').addEventListener('click', function() {
-            if (confirm("ATENÇÃO: Deseja realmente limpar toda a matriz? Isso apagará o progresso salvo deste padrão.")) {
-                const cells = document.querySelectorAll('.qr-cell');
-                cells.forEach(cell => cell.classList.remove('active'));
-                localStorage.removeItem(getQrStorageKey());
-            }
-        });
-
-        // =========================================================================================
-        // FERRAMENTA 5: GERADOR DE COMBINAÇÕES DE MOTORES
-        // =========================================================================================
+        // --- Lógica Gerador de Combinações ---
         const geradorNumericSet = ['0','1','2','3','4','5','6','7','8','9'];
         const geradorAlphaSet = ['0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
 
@@ -11179,7 +10998,6 @@
                 alert("Suspeitas copiadas para colar no WhatsApp!");
             });
         }
-
     </script>
 </body>
 </html>
