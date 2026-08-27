@@ -376,6 +376,61 @@
         .eta-block-char.control-char { background-color: transparent; box-shadow: none; padding: 0; }
         .eta-dedicatoria { text-align: center; width: 100%; display: block; font-size: 0.75em; color: #999; margin-top: 15px; font-family: Arial, sans-serif; font-style: italic; }
 
+        /* GERADOR DE COMBINAÇÕES DE MOTORES */
+        .gerador-char-selector { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 20px 0; min-height: 60px; width: 100%;}
+        .gerador-char-column { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+        .gerador-char-box {
+            width: 45px; height: 55px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: #252525; border: 1px solid #444; color: #aaa;
+            border-radius: 4px; cursor: pointer; transition: all 0.2s; user-select: none; font-family: monospace;
+        }
+        .gerador-char-box:hover { border-color: var(--accent); color: var(--accent); }
+        .gerador-char-box span { font-size: 1.4rem; font-weight: bold; }
+        .gerador-char-box small { font-size: 0.55rem; margin-top: 2px; text-transform: uppercase; }
+        .gerador-char-box.suspicious {
+            background-color: rgba(255, 68, 68, 0.15); 
+            border-color: #ff4444; color: #ff4444;
+            box-shadow: 0 0 10px rgba(255, 68, 68, 0.2);
+        }
+        .gerador-specific-input {
+            width: 45px; padding: 4px 2px; font-size: 1rem; text-align: center; text-transform: uppercase;
+            background-color: #111; color: var(--accent); border: 1px dashed #ff4444; border-radius: 4px;
+            font-family: monospace; display: none; box-sizing: border-box;
+        }
+        .gerador-specific-input:focus { outline: none; border: 1px solid var(--accent); background-color: #222; }
+        
+        .gerador-table-wrapper { width: 100%; max-height: 400px; overflow-y: auto; overflow-x: auto; border: 1px solid #444; border-radius: 8px; margin-top: 15px; }
+        .gerador-table { width: 100%; border-collapse: collapse; min-width: 500px; }
+        .gerador-table th { background-color: #111; color: var(--accent); padding: 12px; text-align: left; position: sticky; top: 0; border-bottom: 1px solid var(--accent); font-family: monospace; text-transform: uppercase; font-size: 0.95rem; z-index: 2; }
+        .gerador-table td { padding: 10px 12px; border-bottom: 1px solid #333; font-family: monospace; font-size: 1.1rem; color: var(--text); vertical-align: middle; }
+        
+        .gerador-action-group { display: inline-flex; gap: 6px; justify-content: flex-end; width: 100%; }
+        .gerador-check-btn { border: 1px solid #444; background: #222; color: #aaa; padding: 6px 10px; font-size: 0.8rem; font-weight: bold; cursor: pointer; border-radius: 4px; text-align: center; min-width: 45px; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+        .gerador-btn-copy { background-color: #333; min-width: 80px; }
+        .gerador-btn-copy:hover { background-color: #444; color: white; }
+        .gerador-btn-copy.copied { background-color: var(--accent); color: #000; border-color: var(--accent); }
+        
+        tr.status-safe { background-color: rgba(124, 252, 0, 0.1); }
+        tr.status-safe td:nth-child(2) { color: var(--accent); text-decoration: line-through; opacity: 0.7; }
+        tr.status-safe .btn-ok { background-color: var(--accent); color: #000; border-color: var(--accent); }
+        
+        tr.status-danger { background-color: rgba(255, 68, 68, 0.15); }
+        tr.status-danger td:nth-child(2) { color: #ff4444; }
+        tr.status-danger .btn-danger { background-color: #ff4444; color: white; border-color: #ff4444; }
+        .highlight-suspect { color: #ff4444; font-weight: 800; text-shadow: 0 0 5px rgba(255,0,0,0.5); }
+        
+        .gerador-stats { background: #252525; color: var(--accent); padding: 10px 15px; border-radius: 8px; margin-bottom: 10px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; border: 1px solid #333; width: 100%; box-sizing: border-box; flex-wrap: wrap; gap: 10px; }
+
+        #geradorActionFooter {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background-color: rgba(26, 26, 26, 0.95); padding: 12px 25px; border-radius: 50px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.8); border: 1px solid var(--accent);
+            display: none; z-index: 1000; align-items: center; gap: 15px;
+            width: 90%; max-width: 450px; justify-content: space-between;
+            backdrop-filter: blur(5px);
+        }
+
         /* PONTOS DO MAPA (ESCOPO GLOBAL PARA FUNCIONAR NO PC) */
         .dot-standard {
             background-color: var(--accent);
@@ -552,6 +607,17 @@
             
             #vinInputEta { font-size: 0.85rem !important; letter-spacing: 0px !important; }
             #vinInputEta::placeholder { font-size: 0.85rem; letter-spacing: 0px; }
+
+            /* Ajustes Mobile Gerador de Combinações */
+            .gerador-char-box { width: 35px; height: 45px; }
+            .gerador-char-box span { font-size: 1.1rem; }
+            .gerador-char-box small { font-size: 0.5rem; }
+            .gerador-specific-input { width: 35px; padding: 2px; font-size: 0.85rem; }
+            #inputSequenceGerador { font-size: 1rem !important; letter-spacing: 1px !important; }
+            .gerador-table td { font-size: 0.9rem; padding: 8px 5px; }
+            .gerador-action-group { gap: 4px; }
+            .gerador-check-btn { padding: 5px 6px; font-size: 0.7rem; min-width: 35px; }
+            .gerador-btn-copy { min-width: 60px; }
         }
     </style>
 </head>
@@ -600,6 +666,9 @@
             </button>
             <button class="btn-ferramenta" onclick="abrirVerificador()">
                 <span>Verificador ETAs<br>Honda Motos</span>
+            </button>
+            <button class="btn-ferramenta" onclick="abrirGerador()">
+                <span>Gerador de Combinações<br>Numeração de Motores</span>
             </button>
         </div>
         <button class="btn-sair" onclick="fazerLogout()">Sair da Ferramenta Restrita</button>
@@ -747,6 +816,68 @@
         <div style="display: flex; gap: 10px; width: 100%; max-width: 600px; justify-content: center; flex-wrap: wrap;">
             <button class="btn-action" id="btnDownloadEta" onclick="_0xB()" style="display: none; max-width: 320px; justify-content: center; align-items: center;">📥 Baixar Padrão do Validador</button>
         </div>
+    </div>
+
+    <!-- FERRAMENTA 5: GERADOR DE COMBINAÇÕES DE MOTORES -->
+    <div id="areaGerador" style="display: none; width: 100%; flex-direction: column; align-items: center; max-width: 900px;">
+        <button class="btn-voltar-menu" onclick="voltarDashboard()">⬅ Voltar ao Painel</button>
+        
+        <div class="tool-title">Gerador de Combinações de Numeração de Motores</div>
+        
+        <div>
+            <div class="tool-guide-title">Instruções de Uso:</div>
+            <p class="tool-guide-text">
+                Se a suspeita na <strong style="color:var(--accent);">SÉRIE SEQUENCIAL</strong> for apenas nos números, selecione <strong>NUMÉRICO</strong>.<br>
+                Se a suspeita for no modelo ou houver dúvida se é letra ou número, selecione <strong>ALFANUMÉRICO</strong>.
+            </p>
+        </div>
+
+        <div style="display: flex; flex-direction: column; align-items: center; width: 100%; margin-bottom: 20px;">
+            <button class="btn-mode" id="btnGeradorNum" onclick="setGeradorMode('numeric')" style="width: 100%; max-width: 400px; margin: 5px;">NUMÉRICO (0-9)</button>
+            <button class="btn-mode" id="btnGeradorAlpha" onclick="setGeradorMode('alpha')" style="width: 100%; max-width: 400px; margin: 5px; border-color: #888; color: #888;">ALFANUMÉRICO (0-Z)</button>
+        </div>
+
+        <div style="width: 100%; max-width: 600px; margin-bottom: 10px;">
+            <input type="text" id="inputSequenceGerador" class="select-filtro" placeholder="DIGITE O NÚMERO APARENTE (Ex: JC30E75079934)" onkeyup="renderInteractiveBoxesGerador()" autocomplete="off" style="text-align: center; font-family: monospace; font-size: 1.2rem; letter-spacing: 2px; text-transform: uppercase; width: 100%;">
+        </div>
+
+        <div id="clickInstructionGerador" style="color: #ff4444; font-size: 0.85rem; font-weight: bold; text-align: center; display: none; margin-bottom: 10px;">
+            [CLIQUE NOS CARACTERES ABAIXO PARA MARCAR COMO SUSPEITO]
+        </div>
+
+        <div id="charContainerGerador" class="gerador-char-selector"></div>
+
+        <div style="display: flex; gap: 10px; width: 100%; max-width: 600px; justify-content: center; flex-wrap: wrap; margin-bottom: 20px;">
+            <button class="btn-action" onclick="resetGeradorForm()" style="max-width: 150px; border-color: #888; color: #888;">Limpar</button>
+            <button class="btn-action" onclick="generateCombinationsGerador()" style="max-width: 250px;">Gerar Combinações</button>
+        </div>
+
+        <div id="resultsAreaGerador" style="width: 100%; display: none;">
+            <div class="warning-box" style="text-align: center; text-indent: 0; margin-bottom: 15px; width: 100%; max-width: 100%; box-sizing: border-box;">
+                Realize a <strong>TRIAGEM TÁTICA</strong> na tabela abaixo (<span style="color:var(--accent);">OK</span> ou <span style="color:#ff4444;">SUSPEITO</span>). Use o botão de relatório para copiar os dados.
+            </div>
+            
+            <div id="statsBarGerador" class="gerador-stats"></div>
+            
+            <div class="gerador-table-wrapper">
+                <table class="gerador-table" id="resultsTableGerador">
+                    <thead>
+                        <tr>
+                            <th width="10%">#</th>
+                            <th>SEQUÊNCIA GERADA</th>
+                            <th width="40%" style="text-align:right">TRIAGEM TÁTICA</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER FLOAT DO GERADOR -->
+    <div id="geradorActionFooter">
+        <div style="font-family: monospace; font-size: 1rem; color: #fff; font-weight: bold;" id="geradorFooterInfo">0 SUSPEITAS</div>
+        <button class="btn-action" onclick="copySuspectsGerador()" style="margin: 0; max-width: 200px;">COPIAR SUSPEITAS</button>
     </div>
 
     <br>
@@ -9876,6 +10007,7 @@
         const areaEliminador = document.getElementById('areaEliminador');
         const areaRecreador = document.getElementById('areaRecreador');
         const areaVerificador = document.getElementById('areaVerificador');
+        const areaGerador = document.getElementById('areaGerador');
         const modalAuth = document.getElementById('modalAuth');
         const formLogin = document.getElementById('formLogin');
         const formCadastro = document.getElementById('formCadastro');
@@ -9888,16 +10020,18 @@
             acessosRef = database.ref('acessos');
 
             acessosRef.on('value', (snapshot) => {
-                let count = 0;
-                snapshot.forEach((childSnapshot) => {
-                    const acesso = childSnapshot.val();
-                    const cid = acesso.cidade ? acesso.cidade.toUpperCase() : "";
-                    if (!cid.includes("CAMPINA GRANDE")) {
-                        count++;
-                    }
-                });
-                if (ledCounter) ledCounter.innerText = String(count).padStart(6, '0');
-            });
+                try {
+                    let count = 0;
+                    snapshot.forEach((childSnapshot) => {
+                        const acesso = childSnapshot.val();
+                        const cid = acesso.cidade ? acesso.cidade.toUpperCase() : "";
+                        if (!cid.includes("CAMPINA GRANDE")) {
+                            count++;
+                        }
+                    });
+                    if (ledCounter) ledCounter.innerText = String(count).padStart(6, '0');
+                } catch(e) { console.warn("Erro ao contar acessos:", e); }
+            }, (error) => { console.warn("Erro Firebase Contador:", error); });
 
             auth.onAuthStateChanged(user => {
                 if (user) {
@@ -9910,6 +10044,7 @@
                             areaEliminador.style.display = 'none';
                             areaRecreador.style.display = 'none';
                             areaVerificador.style.display = 'none';
+                            areaGerador.style.display = 'none';
                             modalAuth.style.display = 'none';
                             modalPendente.style.display = 'none';
                             
@@ -9922,9 +10057,13 @@
                             areaEliminador.style.display = 'none';
                             areaRecreador.style.display = 'none';
                             areaVerificador.style.display = 'none';
+                            areaGerador.style.display = 'none';
                             modalAuth.style.display = 'none';
                             modalPendente.style.display = 'flex';
                         }
+                    }).catch(err => {
+                        console.error("Erro ao verificar status do usuário:", err);
+                        alert("Erro de conexão ao verificar sua conta.");
                     });
                 } else {
                     btnAcessoRestrito.style.display = 'block';
@@ -9933,27 +10072,30 @@
                     areaEliminador.style.display = 'none';
                     areaRecreador.style.display = 'none';
                     areaVerificador.style.display = 'none';
+                    areaGerador.style.display = 'none';
                     modalAuth.style.display = 'none';
                     modalPendente.style.display = 'none';
                 }
             });
 
             acessosRef.orderByChild('timestamp').limitToLast(50).on('child_added', (snapshot) => {
-                const acesso = snapshot.val();
-                
-                const cid = acesso.cidade ? acesso.cidade.toUpperCase() : "";
-                if (cid.includes("CAMPINA GRANDE")) return;
+                try {
+                    const acesso = snapshot.val();
+                    const cid = acesso.cidade ? acesso.cidade.toUpperCase() : "";
+                    if (cid.includes("CAMPINA GRANDE")) return;
 
-                const dataObjeto = new Date(acesso.timestamp || Date.now());
-                const dataFormatada = dataObjeto.toLocaleDateString('pt-BR');
-                const horaFormatada = dataObjeto.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                    const dataObjeto = new Date(acesso.timestamp || Date.now());
+                    const dataFormatada = dataObjeto.toLocaleDateString('pt-BR');
+                    const horaFormatada = dataObjeto.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
-                const novaLinha = document.createElement('div');
-                novaLinha.style.marginBottom = '6px';
-                novaLinha.innerHTML = `<span style="color: white;">[${dataFormatada} - ${horaFormatada}]</span> > ACESSO REGISTRADO | LOCAL: ${acesso.cidade.toUpperCase()}, ${acesso.estado.toUpperCase()}`;
-                terminalLogs.prepend(novaLinha);
-                terminalLogs.scrollTop = 0;
-            });
+                    const novaLinha = document.createElement('div');
+                    novaLinha.style.marginBottom = '6px';
+                    novaLinha.innerHTML = `<span style="color: white;">[${dataFormatada} - ${horaFormatada}]</span> > ACESSO REGISTRADO | LOCAL: ${acesso.cidade.toUpperCase()}, ${acesso.estado.toUpperCase()}`;
+                    terminalLogs.prepend(novaLinha);
+                    terminalLogs.scrollTop = 0;
+                } catch(e) { console.warn("Erro no log do terminal:", e); }
+            }, (error) => { console.warn("Erro Firebase Terminal:", error); });
+            
         } catch (error) {
             const erroLinha = document.createElement('div');
             erroLinha.innerHTML = `<span style="color: #ff4444;">> [ERRO] Falha ao conectar ao banco de dados global. Sincronização offline.</span><br>`;
@@ -10129,7 +10271,7 @@
             uploadFiles();
         }
 
-        // --- MAPA DE ACESSOS ---
+        // --- MAPA DE ACESSOS (CORRIGIDO PARA NÃO TRAVAR O SISTEMA) ---
         let mapaAcessos = null;
         let mapaCarregado = false;
 
@@ -10142,14 +10284,14 @@
             
             if (!mapaAcessos) {
                 mapaAcessos = L.map('mapaContainer').setView([-14.235, -51.925], 4);
-                L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-                    subdomains: 'abcd',
-                    maxZoom: 20
+                
+                // MUDANÇA TÁTICA 1: Provedor 100% Gratuito (Esri Dark Gray), sem chave de API.
+                L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+                    attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
+                    maxZoom: 16
                 }).addTo(mapaAcessos);
             }
             
-            // Recalcula o tamanho do mapa para evitar tela cinza em modals
             setTimeout(() => { mapaAcessos.invalidateSize(); }, 300);
 
             if (!mapaCarregado) {
@@ -10164,7 +10306,6 @@
                 if (!data) return;
 
                 const registros = Object.values(data);
-                // Ordena do mais antigo para o mais novo
                 registros.sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
 
                 const cidadesVistas = new Map();
@@ -10172,7 +10313,6 @@
                 for (let r of registros) {
                     let cid = (r.cidade || "").toUpperCase();
                     let est = (r.estado || "").toUpperCase();
-                    // Ignora acessos ocultos ou locais indesejados
                     if (!cid || cid === "DESCONHECIDA" || cid.includes("CAMPINA GRANDE") || cid.includes("OCULTA")) continue;
                     
                     let key = cid + "-" + est;
@@ -10188,10 +10328,8 @@
                 }
 
                 const listaCidades = Array.from(cidadesVistas.values());
-                // Ordena por ordem de primeira descoberta
                 listaCidades.sort((a, b) => a.first_timestamp - b.first_timestamp);
                 
-                // Pega as 10 últimas cidades exclusivas registradas
                 const recentes = listaCidades.slice(-10);
                 
                 const standardIcon = L.divIcon({ className: 'custom-div-icon', html: "<div class='dot-standard'></div>", iconSize: [8, 8], iconAnchor: [4, 4] });
@@ -10202,35 +10340,15 @@
                     let isRecent = recentes.includes(c);
                     let iconToUse = isRecent ? recentIcon : standardIcon;
 
+                    // MUDANÇA TÁTICA 2: Removemos a sobrecarga do OpenStreetMap.
+                    // O mapa só desenha o que já tem coordenada fixa para não derrubar a página.
                     if (c.lat && c.lon) {
                         L.marker([c.lat, c.lon], {icon: iconToUse}).bindPopup(`<b>${c.cidade}</b><br>${c.estado}`).addTo(mapaAcessos);
-                    } else {
-                        // Busca em cache local para não sobrecarregar a API
-                        let cacheKey = "geo_" + c.cidade + "_" + c.estado;
-                        let cached = localStorage.getItem(cacheKey);
-                        if (cached) {
-                            let geo = JSON.parse(cached);
-                            L.marker([geo.lat, geo.lon], {icon: iconToUse}).bindPopup(`<b>${c.cidade}</b><br>${c.estado}`).addTo(mapaAcessos);
-                        } else {
-                            // Delay seguro para não estourar limite da API OpenStreetMap (max 1 por segundo)
-                            setTimeout(async () => {
-                                try {
-                                    let res = await fetch(`https://nominatim.openstreetmap.org/search?city=${encodeURIComponent(c.cidade)}&state=${encodeURIComponent(c.estado)}&country=Brazil&format=json`);
-                                    let geoData = await res.json();
-                                    if (geoData && geoData.length > 0) {
-                                        let lat = geoData[0].lat;
-                                        let lon = geoData[0].lon;
-                                        localStorage.setItem(cacheKey, JSON.stringify({lat: lat, lon: lon}));
-                                        L.marker([lat, lon], {icon: iconToUse}).bindPopup(`<b>${c.cidade}</b><br>${c.estado}`).addTo(mapaAcessos);
-                                    }
-                                } catch(e) {}
-                            }, idx * 1000); 
-                        }
                     }
                 }
                 mapaCarregado = true;
             } catch(e) {
-                console.error("Erro ao carregar mapa", e);
+                console.error("Erro ao carregar os dados do mapa", e);
             }
         }
 
@@ -10244,11 +10362,13 @@
             areaEliminador.style.display = 'none'; 
             areaRecreador.style.display = 'none';
             areaVerificador.style.display = 'none';
+            areaGerador.style.display = 'none';
         }
 
         function abrirBuscador() { esconderTudo(); areaBuscador.style.display = 'flex'; }
         function abrirEliminador() { esconderTudo(); areaEliminador.style.display = 'flex'; showEliminadorSelection(); }
         function abrirVerificador() { esconderTudo(); areaVerificador.style.display = 'flex'; }
+        function abrirGerador() { esconderTudo(); areaGerador.style.display = 'flex'; }
         
         function abrirRecreador() { 
             const isMobile = window.innerWidth <= 900 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
@@ -10300,7 +10420,6 @@
                 if(_0xP[_0xVal]) { _0xSum += _0xVal*(_0xIdx+1); }
             }
 
-            /* --- CÓDIGO FANTASMA (Opacidade 20%) --- */
             let _0xDummy = document.createElement('div');
             _0xDummy.style.display = 'flex';
             _0xDummy.style.opacity = '0.15'; 
@@ -10315,7 +10434,6 @@
             }
             _0xC.appendChild(_0xDummy);
 
-            /* --- VALIDADOR REAL (Opacidade 100%) --- */
             _0xC.appendChild(_0xR('&nbsp;', _0xP[_0xSum%103], '#000', true));
             _0xC.appendChild(_0xR('&nbsp;', _0xS, '#000', true));
         }
@@ -10417,11 +10535,10 @@
             });
         }
 
-
         // =========================================================================================
-        // FERRAMENTA: ELIMINADOR DE POSSIBILIDADES (HONDA)
+        // MAPAS COMPARTILHADOS (FERRAMENTA 2 E 5)
         // =========================================================================================
-        const digitMap = {
+        const sharedDigitMap = {
             '0': [0,1,1,1,0, 1,0,0,0,1, 1,0,0,0,1, 1,0,0,0,1, 1,0,0,0,1, 1,0,0,0,1, 0,1,1,1,0],
             '1': [0,0,0,1,1, 0,0,0,0,1, 0,0,0,0,1, 0,0,0,0,1, 0,0,0,0,1, 0,0,0,0,1, 0,0,0,0,1],
             '2': [0,1,1,1,0, 1,0,0,0,1, 0,0,0,0,1, 0,0,1,1,0, 0,1,0,0,0, 1,0,0,0,0, 1,1,1,1,1],
@@ -10434,7 +10551,7 @@
             '9': [0,1,1,1,0, 1,0,0,0,1, 1,0,0,0,1, 0,1,1,1,1, 0,0,0,0,1, 0,0,0,1,0, 1,1,1,0,0]
         };
 
-        const alphaMap = {
+        const sharedAlphaMap = {
             'A': [0,0,1,0,0, 0,1,0,1,0, 1,0,0,0,1, 1,1,1,1,1, 1,0,0,0,1, 1,0,0,0,1, 1,0,0,0,1],
             'B': [1,1,1,1,0, 1,0,0,0,1, 1,0,0,0,1, 1,1,1,1,0, 1,0,0,0,1, 1,0,0,0,1, 1,1,1,1,0],
             'C': [0,1,1,1,0, 1,0,0,0,1, 1,0,0,0,0, 1,0,0,0,0, 1,0,0,0,0, 1,0,0,0,1, 0,1,1,1,0],
@@ -10460,6 +10577,9 @@
             'Z': [1,1,1,1,1, 0,0,0,0,1, 0,0,0,1,0, 0,0,1,0,0, 0,1,0,0,0, 1,0,0,0,0, 1,1,1,1,1]
         };
 
+        // =========================================================================================
+        // FERRAMENTA 2: ELIMINADOR DE POSSIBILIDADES
+        // =========================================================================================
         let elimCurrentMode = 'numeric';
         let elimCandidates = [];
         let elimSelectedIndices = new Set();
@@ -10489,8 +10609,8 @@
             elimDotElements = [];
             elimSelectedChar = null;
             
-            if (elimCurrentMode === 'numeric') { elimCandidates = Object.keys(digitMap).sort(); } 
-            else { elimCandidates = Object.keys(alphaMap).sort(); }
+            if (elimCurrentMode === 'numeric') { elimCandidates = Object.keys(sharedDigitMap).sort(); } 
+            else { elimCandidates = Object.keys(sharedAlphaMap).sort(); }
 
             for (let i = 0; i < 35; i++) {
                 const dot = document.createElement('div');
@@ -10518,7 +10638,7 @@
         
         function fillPattern(char) {
             elimSelectedChar = char;
-            const targetMap = (elimCurrentMode === 'numeric') ? digitMap : alphaMap;
+            const targetMap = (elimCurrentMode === 'numeric') ? sharedDigitMap : sharedAlphaMap;
             const pattern = targetMap[char];
             
             elimSelectedIndices.clear();
@@ -10539,7 +10659,7 @@
         }
 
         function calculateEliminadorPossibilities() {
-            const targetMap = (elimCurrentMode === 'numeric') ? digitMap : alphaMap;
+            const targetMap = (elimCurrentMode === 'numeric') ? sharedDigitMap : sharedAlphaMap;
             const fullSet = Object.keys(targetMap).sort();
 
             if (elimSelectedIndices.size === 0) {
@@ -10583,648 +10703,291 @@
         function resetEliminadorGrid() { initEliminadorGrid(); }
 
         // =========================================================================================
-        // FERRAMENTA 3: RECRIADOR DE QR CODE
+        // FERRAMENTA 5: GERADOR DE COMBINAÇÕES DE MOTORES
         // =========================================================================================
-        const qrSetupScreen = document.getElementById('qr-setup-screen');
-        const qrAppScreen = document.getElementById('qr-app-screen');
-        const qrGridContainer = document.getElementById('qr-grid-container');
-        const qrNumTop = document.getElementById('qr-num-top');
-        const qrNumBottom = document.getElementById('qr-num-bottom');
-        const qrNumLeft = document.getElementById('qr-num-left');
-        const qrNumRight = document.getElementById('qr-num-right');
-        
-        const btnExportQr = document.getElementById('btn-export-qr');
-        const btnClearQr = document.getElementById('btn-clear-qr');
-        const btnPatternsQr = document.getElementById('btn-patterns');
-        const btnBackQr = document.getElementById('btn-back-qr');
-        const btnSize25 = document.getElementById('btn-size-25');
-        const btnSize37 = document.getElementById('btn-size-37');
-        
-        let GRID_SIZE = 37;
-        let isDrawingQr = false;
-        let drawModeQr = true;
+        let geradorCurrentMode = 'numeric';
+        let geradorPossibleChars = Object.keys(sharedDigitMap).sort();
+        let geradorSuspiciousIndices = new Set();
+        let geradorCurrentSequence = "";
+        let geradorGeneratedList = [];
+        let geradorMetadata = { aparente: "", suspeitos: [] };
 
-        btnSize25.addEventListener('click', function() { startQrApp(25); });
-        btnSize37.addEventListener('click', function() { startQrApp(37); });
+        function setGeradorMode(mode) {
+            geradorCurrentMode = mode;
+            const btnNum = document.getElementById('btnGeradorNum');
+            const btnAlpha = document.getElementById('btnGeradorAlpha');
 
-        btnBackQr.addEventListener('click', function() {
-            qrAppScreen.style.display = 'none';
-            qrSetupScreen.style.display = 'flex';
-            qrGridContainer.innerHTML = '';
-        });
-
-        function startQrApp(size) {
-            GRID_SIZE = size;
-            qrSetupScreen.style.display = 'none';
-            qrAppScreen.style.display = 'flex';
-            initializeQrGrid();
+            if (mode === 'numeric') {
+                geradorPossibleChars = Object.keys(sharedDigitMap).sort();
+                btnNum.style.borderColor = 'var(--accent)'; btnNum.style.color = 'var(--accent)';
+                btnAlpha.style.borderColor = '#888'; btnAlpha.style.color = '#888';
+            } else {
+                geradorPossibleChars = [...Object.keys(sharedDigitMap), ...Object.keys(sharedAlphaMap)].sort();
+                btnAlpha.style.borderColor = 'var(--accent)'; btnAlpha.style.color = 'var(--accent)';
+                btnNum.style.borderColor = '#888'; btnNum.style.color = '#888';
+            }
+            document.getElementById('resultsAreaGerador').style.display = 'none';
+            document.getElementById('geradorActionFooter').style.display = 'none';
         }
 
-        function initializeQrGrid() {
-            qrGridContainer.innerHTML = '';
-            qrNumTop.innerHTML = ''; qrNumBottom.innerHTML = '';
-            qrNumLeft.innerHTML = ''; qrNumRight.innerHTML = '';
-
-            qrGridContainer.style.gridTemplateColumns = `repeat(${GRID_SIZE}, var(--cell-size, 18px))`;
-            qrGridContainer.style.gridTemplateRows = `repeat(${GRID_SIZE}, var(--cell-size, 18px))`;
-
-            for (let i = 1; i <= GRID_SIZE; i++) {
-                const createEl = () => {
-                    const el = document.createElement('div');
-                    el.className = 'qr-num'; el.textContent = i; return el;
-                };
-                qrNumTop.appendChild(createEl()); qrNumBottom.appendChild(createEl());
-                qrNumLeft.appendChild(createEl()); qrNumRight.appendChild(createEl());
-            }
-
-            for (let i = 0; i < GRID_SIZE * GRID_SIZE; i++) {
-                const cell = document.createElement('div');
-                cell.classList.add('qr-cell');
-                cell.dataset.index = i;
-                qrGridContainer.appendChild(cell);
-            }
+        function renderInteractiveBoxesGerador() {
+            const input = document.getElementById('inputSequenceGerador');
+            const container = document.getElementById('charContainerGerador');
+            const instruction = document.getElementById('clickInstructionGerador'); 
             
-            loadQrState(); 
-        }
-
-        function getQrStorageKey() {
-            return `qrRecreatorState_v6_${GRID_SIZE}`;
-        }
-
-        function saveQrState() {
-            try {
-                const activeCells = [...document.querySelectorAll('.qr-cell.active')].map(c => c.dataset.index);
-                localStorage.setItem(getQrStorageKey(), JSON.stringify(activeCells));
-            } catch (e) { console.error("Erro ao salvar progresso do QR", e); }
-        }
-
-        function loadQrState() {
-            try {
-                const savedData = localStorage.getItem(getQrStorageKey());
-                if(savedData) {
-                    const saved = JSON.parse(savedData);
-                    saved.forEach(idx => {
-                        const cell = document.querySelector(`.qr-cell[data-index="${idx}"]`);
-                        if(cell) cell.classList.add('active');
-                    });
-                }
-            } catch (e) { console.error("Erro ao carregar progresso do QR.", e); }
-        }
-
-        qrGridContainer.addEventListener('mousedown', function(e) {
-            if (e.target.classList.contains('qr-cell')) {
-                isDrawingQr = true;
-                drawModeQr = !e.target.classList.contains('active');
-                e.target.classList.toggle('active', drawModeQr);
-            }
-        });
-        qrGridContainer.addEventListener('mouseover', function(e) {
-            if (isDrawingQr && e.target.classList.contains('qr-cell')) {
-                e.target.classList.toggle('active', drawModeQr);
-            }
-        });
-        window.addEventListener('mouseup', function() {
-            if(isDrawingQr) { isDrawingQr = false; saveQrState(); }
-        });
-
-        qrGridContainer.addEventListener('dragstart', function(e) { e.preventDefault(); });
-
-        function drawFinder(startX, startY) {
-            for(let y = 0; y < 7; y++) {
-                for(let x = 0; x < 7; x++) {
-                    let isBlack = false;
-                    if (y === 0 || y === 6 || x === 0 || x === 6) isBlack = true; 
-                    else if (y >= 2 && y <= 4 && x >= 2 && x <= 4) isBlack = true; 
-
-                    const cellIndex = (startY + y) * GRID_SIZE + (startX + x);
-                    const cell = document.querySelector(`.qr-cell[data-index="${cellIndex}"]`);
-                    if(cell) {
-                        if(isBlack) cell.classList.add('active');
-                        else cell.classList.remove('active');
-                    }
-                }
-            }
-        }
-        function drawTimingPatterns() {
-            const limite = GRID_SIZE - 9;
-            for(let x = 8; x <= limite; x++) {
-                const cellIndex = 6 * GRID_SIZE + x;
-                const cell = document.querySelector(`.qr-cell[data-index="${cellIndex}"]`);
-                if(cell) {
-                    if (x % 2 === 0) cell.classList.add('active');
-                    else cell.classList.remove('active');
-                }
-            }
-            for(let y = 8; y <= limite; y++) {
-                const cellIndex = y * GRID_SIZE + 6;
-                const cell = document.querySelector(`.qr-cell[data-index="${cellIndex}"]`);
-                if(cell) {
-                    if (y % 2 === 0) cell.classList.add('active');
-                    else cell.classList.remove('active');
-                }
-            }
-        }
-
-        btnPatternsQr.addEventListener('click', function() {
-            drawFinder(0, 0);                           // Topo-Esquerda
-            drawFinder(GRID_SIZE - 7, 0);               // Topo-Direita
-            drawFinder(0, GRID_SIZE - 7);               // Baixo-Esquerda
-            drawTimingPatterns();                       // Linhas de sincronização
-            saveQrState();
-        });
-
-        btnExportQr.addEventListener('click', function() {
-            const canvas = document.createElement('canvas');
-            const scale = 10; 
-            const paddingModules = 4;
-            const padding = paddingModules * scale; 
-            
-            canvas.width = (GRID_SIZE * scale) + (padding * 2);
-            canvas.height = (GRID_SIZE * scale) + (padding * 2);
-            const ctx = canvas.getContext('2d');
-
-            ctx.fillStyle = '#FFFFFF';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            ctx.fillStyle = '#000000';
-            const cells = document.querySelectorAll('.qr-cell');
-            cells.forEach(cell => {
-                if (cell.classList.contains('active')) {
-                    const index = parseInt(cell.dataset.index);
-                    const col = index % GRID_SIZE;
-                    const row = Math.floor(index / GRID_SIZE);
-                    ctx.fillRect(padding + (col * scale), padding + (row * scale), scale, scale);
-                }
-            });
-
-            const link = document.createElement('a');
-            link.download = `qrcode_placa_${GRID_SIZE}x${GRID_SIZE}.png`;
-            link.href = canvas.toDataURL('image/png');
-            link.click();
-        });
-        
-        btnClearQr.addEventListener('click', function() {
-            if (confirm("ATENÇÃO: Deseja realmente limpar toda a matriz? Isso apagará o progresso salvo deste padrão.")) {
-                const cells = document.querySelectorAll('.qr-cell');
-                cells.forEach(cell => cell.classList.remove('active'));
-                localStorage.removeItem(getQrStorageKey());
-            }
-        });
-
-        // =========================================================================================
-        // FUNÇÕES GERAIS E AUTENTICAÇÃO
-        // =========================================================================================
-
-        function abrirModalAuth() { modalAuth.style.display = 'flex'; }
-        function fecharModalAuth() { modalAuth.style.display = 'none'; }
-        function fecharModalPendente() { modalPendente.style.display = 'none'; }
-
-        function toggleAuthMode() {
-            if (formLogin.style.display === 'none') { formLogin.style.display = 'flex'; formCadastro.style.display = 'none'; } 
-            else { formLogin.style.display = 'none'; formCadastro.style.display = 'flex'; }
-        }
-
-        function toggleVisibility(id) {
-            const input = document.getElementById(id);
-            if (input.type === "password") input.type = "text"; else input.type = "password";
-        }
-
-        function mascaraCPF(cpf) {
-            let v = cpf.value.replace(/\D/g, "");
-            if (v.length > 11) v = v.substring(0, 11);
-            v = v.replace(/(\d{3})(\d)/, "$1.$2"); v = v.replace(/(\d{3})(\d)/, "$1.$2"); v = v.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
-            cpf.value = v;
-        }
-
-        function mascaraTelefone(tel) {
-            let v = tel.value.replace(/\D/g, "");
-            if (v.length > 11) v = v.substring(0, 11);
-            v = v.replace(/^(\d{2})(\d)/g, "($1) $2"); v = v.replace(/(\d)(\d{4})$/, "$1-$2");
-            tel.value = v;
-        }
-
-        function fazerCadastro() {
-            const nome = document.getElementById('cadNome').value;
-            const cpf = document.getElementById('cadCPF').value;
-            const telefone = document.getElementById('cadTelefone').value;
-            const instituicao = document.getElementById('cadInstituicao').value;
-            const email = document.getElementById('cadEmail').value;
-            const senha = document.getElementById('cadSenha').value;
-            const senhaConfirma = document.getElementById('cadSenhaConfirma').value;
-
-            if(!nome || !cpf || !telefone || !instituicao || !email || !senha || !senhaConfirma) { alert("Preencha todos os campos!"); return; }
-            if(senha !== senhaConfirma) { alert("As senhas digitadas não coincidem. Verifique e tente novamente."); return; }
-
-            auth.createUserWithEmailAndPassword(email, senha).then(credenciais => {
-                database.ref('usuarios/' + credenciais.user.uid).set({ nome: nome, cpf: cpf, telefone: telefone, instituicao: instituicao, email: email, status: 'pendente' });
-                alert("Solicitação enviada com sucesso! Aguarde a liberação do Administrador.");
-            }).catch(erro => {
-                if (erro.code === 'auth/email-already-in-use') alert("Este e-mail já está cadastrado no sistema.");
-                else if (erro.code === 'auth/weak-password') alert("A senha deve ter pelo menos 6 caracteres.");
-                else alert("Erro: " + erro.message);
-            });
-        }
-
-        function fazerLogin() {
-            const email = document.getElementById('loginEmail').value;
-            const senha = document.getElementById('loginSenha').value;
-
-            if(!email || !senha) { alert("Preencha e-mail e senha!"); return; }
-
-            auth.signInWithEmailAndPassword(email, senha).catch(erro => {
-                if (erro.code === 'auth/user-not-found' || erro.code === 'auth/wrong-password') alert("E-mail ou senha incorretos.");
-                else alert("Erro: " + erro.message);
-            });
-        }
-
-        function fazerLogout() { auth.signOut().then(() => { window.location.reload(); }); }
-
-        const tituloTerminal = document.getElementById('tituloTerminal');
-        if (tituloTerminal) {
-            tituloTerminal.addEventListener('dblclick', async () => {
-                try {
-                    const snapshot = await acessosRef.once('value');
-                    const data = snapshot.val();
-                    if (!data) { alert("Nenhum acesso registrado no banco de dados ainda."); return; }
-
-                    let csvContent = "Data;Hora;Cidade;Estado\n";
-                    const registros = Object.values(data);
-                    registros.sort((a, b) => b.timestamp - a.timestamp);
-
-                    registros.forEach(registro => {
-                        const cid = registro.cidade ? registro.cidade.toUpperCase() : "DESCONHECIDA";
-                        if (cid.includes("CAMPINA GRANDE")) return; 
-                        const est = registro.estado ? registro.estado.toUpperCase() : "DESCONHECIDO";
-                        const dataObjeto = new Date(registro.timestamp || Date.now());
-                        const dataF = dataObjeto.toLocaleDateString('pt-BR');
-                        const horaF = dataObjeto.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-                        csvContent += `${dataF};${horaF};${cid};${est}\n`;
-                    });
-
-                    const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
-                    const url = URL.createObjectURL(blob);
-                    const link = document.createElement("a"); link.setAttribute("href", url);
-                    link.setAttribute("download", `Relatorio_Acessos_${new Date().toLocaleDateString('pt-BR').replace(/\//g, '-')}.csv`);
-                    document.body.appendChild(link); link.click(); document.body.removeChild(link);
-                } catch (err) { alert("Erro ao extrair o relatório."); }
-            });
-        }
-
-        async function obterLocalizacaoViaIP() {
-            try {
-                const res = await fetch('https://ipwho.is/');
-                const data = await res.json();
-                if (!data.success) throw new Error();
-                return { 
-                    cidade: data.city || 'Desconhecida', 
-                    estado: data.region || 'Desconhecido', 
-                    lat: data.latitude, 
-                    lon: data.longitude 
-                };
-            } catch (e) { 
-                return { cidade: "Oculta (Firewall)", estado: "Rede Restrita", lat: null, lon: null }; 
-            }
-        }
-
-        function obterLocalizacaoViaGPS() {
-            return new Promise((resolve, reject) => {
-                if (!navigator.geolocation) { reject("Sem suporte"); return; }
-                navigator.geolocation.getCurrentPosition(
-                    async (position) => {
-                        try {
-                            const res = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${position.coords.latitude}&longitude=${position.coords.longitude}&localityLanguage=pt`);
-                            const data = await res.json();
-                            resolve({ 
-                                cidade: data.city || data.locality || "N/A", 
-                                estado: data.principalSubdivision || "N/A", 
-                                lat: position.coords.latitude, 
-                                lon: position.coords.longitude 
-                            });
-                        } catch (e) { reject("Falha API GPS"); }
-                    },
-                    (error) => { reject("Bloqueado"); },
-                    { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 }
-                );
-            });
-        }
-
-        async function registrarMeuAcessoGlobal() {
-            let localizacao;
-            try {
-                localizacao = await obterLocalizacaoViaGPS();
-                if(gpsStatus) gpsStatus.innerHTML = "> Status: <span style='color: var(--accent);'>Sessão Ativa e Sincronizada</span>";
-            } catch (error) {
-                if(gpsStatus) gpsStatus.innerHTML = "> Status: <span style='color: #ffaa00;'>Sessão Ativa (Rastreio via IP)</span>";
-                const aviso = document.createElement('div');
-                aviso.innerHTML = `<span style="color: #ffaa00; margin-bottom: 10px; display: block;">> [AVISO] GPS bloqueado ou falhou. Rastreio por IP...</span>`;
-                terminalLogs.prepend(aviso);
-                localizacao = await obterLocalizacaoViaIP();
-            }
-            if (acessosRef) acessosRef.push({ 
-                cidade: localizacao.cidade, 
-                estado: localizacao.estado, 
-                lat: localizacao.lat || null, 
-                lon: localizacao.lon || null, 
-                timestamp: firebase.database.ServerValue.TIMESTAMP 
-            });
-        }
-
-        document.addEventListener("DOMContentLoaded", () => {
-            const contadorFotos = document.getElementById('contadorFotos');
-            if (contadorFotos) contadorFotos.innerText = `📸 Total de Padrões Cadastrados: ${imagens.length}`;
-            registrarMeuAcessoGlobal();
-        });
-
-        const gallery = document.getElementById('gallery');
-        const searchInput = document.getElementById('searchInput');
-        const selectMarca = document.getElementById('selectMarca');
-        const selectModelo = document.getElementById('selectModelo');
-        const selectAno = document.getElementById('selectAno');
-        
-        let currentFilteredList = [];
-        let currentImageIndex = -1;
-
-        function normalizar(texto) { return texto ? texto.toString().toLowerCase().replace(/[^a-z0-9]/g, '') : ''; }
-        function padronizarChave(texto) { return texto ? texto.toString().replace(/\s+/g, '').toUpperCase() : ''; }
-
-        function getTagStyle(tagName) {
-            const colors = {
-                'NIV': '#4dabf7',      
-                'MOTOR': '#ffc078',    
-                'VIS': '#b197fc',      
-                'ETIQUETA': '#20c997', 
-                'PLAQUETA': '#adb5bd', 
-                'CÂMBIO': '#ff8787',   
-                'CAMBIO': '#ff8787',   
-                'CHAPA': '#f783ac',    
-                'PAINEL': '#a9e34b',   
-                'PORTA': '#4c6ef5',    
-                'VIDRO': '#66d9e8'     
-            };
-            const c = colors[tagName.toUpperCase()] || '#7CFC00';
-            return `border: 1px dashed ${c}; color: ${c}; background-color: rgba(255, 255, 255, 0.05);`;
-        }
-
-        function initFiltros() {
-            const marcasMap = new Map();
-            imagens.forEach(img => {
-                if (img.marca && img.marca.trim() !== '') {
-                    const key = padronizarChave(img.marca);
-                    if (!marcasMap.has(key)) marcasMap.set(key, img.marca.trim().toUpperCase());
-                }
-            });
-            selectMarca.innerHTML = '<option value="">Todas as Marcas</option>';
-            Array.from(marcasMap.entries()).sort((a,b) => a[1].localeCompare(b[1])).forEach(([key, label]) => {
-                const opt = document.createElement('option'); opt.value = key; opt.innerText = label; selectMarca.appendChild(opt);
-            });
-        }
-
-        selectMarca.addEventListener('change', () => {
-            selectModelo.innerHTML = '<option value="">Todos os Modelos</option>';
-            selectAno.innerHTML = '<option value="">Todos os Anos</option>';
-            selectAno.disabled = true;
-            if (selectMarca.value) {
-                selectModelo.disabled = false;
-                const modelosMap = new Map();
-                imagens.forEach(img => {
-                    if (padronizarChave(img.marca) === selectMarca.value && img.modelo && img.modelo.trim() !== '') {
-                        const key = padronizarChave(img.modelo);
-                        if (!modelosMap.has(key)) modelosMap.set(key, img.modelo.trim().toUpperCase());
-                    }
-                });
-                Array.from(modelosMap.entries()).sort((a,b) => a[1].localeCompare(b[1])).forEach(([key, label]) => {
-                    const opt = document.createElement('option'); opt.value = key; opt.innerText = label; selectModelo.appendChild(opt);
-                });
-            } else { selectModelo.disabled = true; }
-            renderGallery();
-        });
-
-        selectModelo.addEventListener('change', () => {
-            selectAno.innerHTML = '<option value="">Todos os Anos</option>';
-            if (selectModelo.value) {
-                selectAno.disabled = false;
-                const anosMap = new Map();
-                imagens.forEach(img => {
-                    if (padronizarChave(img.marca) === selectMarca.value && padronizarChave(img.modelo) === selectModelo.value && img.ano && img.ano.toString().trim() !== '') {
-                        const key = padronizarChave(img.ano);
-                        if (!anosMap.has(key)) anosMap.set(key, img.ano.toString().trim().toUpperCase());
-                    }
-                });
-                Array.from(anosMap.entries()).sort((a,b) => a[1].localeCompare(b[1])).forEach(([key, label]) => {
-                    const opt = document.createElement('option'); opt.value = key; opt.innerText = label; selectAno.appendChild(opt);
-                });
-            } else { selectAno.disabled = true; }
-            renderGallery();
-        });
-
-        selectAno.addEventListener('change', () => renderGallery());
-
-        function limparFiltros() {
-            searchInput.value = ""; selectMarca.value = ""; selectModelo.innerHTML = '<option value="">Todos os Modelos</option>';
-            selectAno.innerHTML = '<option value="">Todos os Anos</option>'; selectModelo.disabled = true; selectAno.disabled = true;
-            renderGallery();
-        }
-
-        function renderGallery() {
-            gallery.innerHTML = "";
-            const filtroChassi = normalizar(searchInput.value), filtroMarca = selectMarca.value, filtroModelo = selectModelo.value, filtroAno = selectAno.value;
-            if (filtroChassi === "" && filtroMarca === "" && filtroModelo === "" && filtroAno === "") { currentFilteredList = []; return; }
-
-            currentFilteredList = imagens.filter(img => {
-                let passa = true;
-                if (filtroChassi) passa = passa && normalizar(img.chassi).startsWith(filtroChassi);
-                if (filtroMarca) passa = passa && padronizarChave(img.marca) === filtroMarca;
-                if (filtroModelo) passa = passa && padronizarChave(img.modelo) === filtroModelo;
-                if (filtroAno) passa = passa && padronizarChave(img.ano) === filtroAno;
-                return passa;
-            });
-            
-            currentFilteredList.forEach(img => {
-                const div = document.createElement('div'); div.className = 'thumbnail'; div.onclick = () => openModal(img);
-                let textoExtras = (img.marca && img.marca !== "") ? `${img.marca.toUpperCase()} / ${img.modelo.toUpperCase()} / ${img.ano.toUpperCase()}` : "Informação não cadastrada";
-                
-                div.innerHTML = `<img src="${encodeURI(img.arquivo)}" loading="lazy"><div class="thumb-text-container"><div class="thumb-chassi">${img.chassi}</div><div class="thumb-info">${textoExtras}</div></div>`;
-                gallery.appendChild(div);
-            });
-        }
-        searchInput.addEventListener('input', () => renderGallery());
-
-        function abrirModalAtualizacoes() {
-            const container = document.getElementById('containerListaAtualizacoes'); 
+            geradorCurrentSequence = input.value.toUpperCase().trim();
+            input.value = geradorCurrentSequence; 
             container.innerHTML = '';
-            
-            if (imagens.length === 0) {
-                container.innerHTML = '<p style="text-align: center; color: #ccc;">Nenhuma atualização registrada ainda.</p>';
-                document.getElementById('modalAtualizacoes').style.display = 'flex';
+            geradorSuspiciousIndices.clear();
+
+            if (geradorCurrentSequence.length === 0) {
+                instruction.style.display = 'none';
+                document.getElementById('resultsAreaGerador').style.display = 'none';
+                document.getElementById('geradorActionFooter').style.display = 'none';
                 return;
             }
 
-            const imagensOrdenadas = [...imagens].sort((a, b) => b.timestamp - a.timestamp);
-            const ultimas50Fotos = imagensOrdenadas.slice(0, 50);
+            instruction.style.display = 'block'; 
 
-            const divDia = document.createElement('div'); 
-            divDia.className = 'dia-atualizacao';
-            divDia.innerHTML = `<h4>📅 Últimos 50 Padrões Adicionados</h4>`;
-            
-            const ul = document.createElement('ul');
-            ultimas50Fotos.forEach(foto => {
-                let txt = (foto.marca && foto.marca !== "") ? `${foto.marca.toUpperCase()} / ${foto.modelo.toUpperCase()} / ${foto.ano.toUpperCase()}` : "Informação não cadastrada";
-                txt = `Data: ${foto.data} | ` + txt;
+            for (let i = 0; i < geradorCurrentSequence.length; i++) {
+                const char = geradorCurrentSequence[i];
                 
-                let tagsNatureza = '';
-                if (foto.natureza && foto.natureza.length > 0) {
-                    foto.natureza.forEach(nat => { 
-                        tagsNatureza += `<span class="natureza-tag" style="${getTagStyle(nat)}">${nat}</span>`; 
-                    });
+                const col = document.createElement('div');
+                col.className = 'gerador-char-column';
+
+                const box = document.createElement('div');
+                box.className = 'gerador-char-box';
+                box.onclick = () => toggleSuspicionGerador(i, box);
+                box.innerHTML = `<span>${char}</span><small>OK</small>`;
+
+                const inputSpecific = document.createElement('input');
+                inputSpecific.type = 'text';
+                inputSpecific.className = 'gerador-specific-input';
+                inputSpecific.id = `specific-chars-gerador-${i}`;
+                inputSpecific.placeholder = "Ex: 27";
+                inputSpecific.maxLength = 25;
+
+                col.appendChild(box);
+                col.appendChild(inputSpecific);
+                container.appendChild(col);
+            }
+            document.getElementById('resultsAreaGerador').style.display = 'none';
+            document.getElementById('geradorActionFooter').style.display = 'none';
+        }
+
+        function toggleSuspicionGerador(index, element) {
+            const specificInput = document.getElementById(`specific-chars-gerador-${index}`);
+            if (geradorSuspiciousIndices.has(index)) {
+                geradorSuspiciousIndices.delete(index);
+                element.classList.remove('suspicious');
+                element.querySelector('small').innerText = 'OK';
+                specificInput.style.display = 'none';
+                specificInput.value = '';
+            } else {
+                geradorSuspiciousIndices.add(index);
+                element.classList.add('suspicious');
+                element.querySelector('small').innerText = 'SUSPEITO';
+                specificInput.style.display = 'block';
+                specificInput.focus(); 
+            }
+        }
+
+        function resetGeradorForm() {
+            document.getElementById('inputSequenceGerador').value = '';
+            renderInteractiveBoxesGerador();
+        }
+
+        function generateCombinationsGerador() {
+            if (geradorSuspiciousIndices.size === 0) {
+                alert("Selecione pelo menos um caractere suspeito clicando nele.");
+                return;
+            }
+            
+            const indicesArray = Array.from(geradorSuspiciousIndices).sort((a, b) => a - b);
+            const charsPerIndex = [];
+            let totalComb = 1;
+
+            geradorMetadata.aparente = geradorCurrentSequence;
+            geradorMetadata.suspeitos = [];
+
+            for (let idx of indicesArray) {
+                let charsToUse = geradorPossibleChars;
+                let indicatedStr = "TODAS (" + (geradorCurrentMode === 'alpha' ? "0-Z" : "0-9") + ")";
+                const specificInput = document.getElementById(`specific-chars-gerador-${idx}`);
+                
+                if (specificInput && specificInput.style.display !== 'none' && specificInput.value.trim() !== '') {
+                    let typed = specificInput.value.toUpperCase().replace(/\s/g, '');
+                    let validTyped = typed.split('').filter(c => geradorPossibleChars.includes(c));
+                    if (validTyped.length > 0) {
+                        charsToUse = Array.from(new Set(validTyped));
+                        indicatedStr = charsToUse.join(', ');
+                    }
                 }
-
-                ul.innerHTML += `<li>
-                    <div class="atualizacao-left">
-                        <span class="chassi-tag">${foto.chassi}</span>
-                        <span class="info-tag">${txt}</span>
-                    </div>
-                    
-                    <div class="atualizacao-right">
-                        ${tagsNatureza}
-                        <button data-arquivo="${foto.arquivo}" onclick="abrirFotoAtualizacao(this.getAttribute('data-arquivo'))" style="background: var(--accent); color: var(--primary); border: none; padding: 0 15px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 0.8rem; height: 28px; box-sizing: border-box; display: flex; align-items: center; justify-content: center;">Ver</button>
-                    </div>
-                </li>`;
-            });
-            
-            divDia.appendChild(ul); container.appendChild(divDia);
-            document.getElementById('modalAtualizacoes').style.display = 'flex';
-        }
-        
-        function fecharModalAtualizacoes() { document.getElementById('modalAtualizacoes').style.display = 'none'; }
-
-        window.abrirFotoAtualizacao = function(arquivo) {
-            const imgObj = imagens.find(i => i.arquivo === arquivo);
-            if(imgObj) {
-                currentFilteredList = imagens; 
-                fecharModalAtualizacoes();
-                openModal(imgObj);
-            } else {
-                alert("Erro ao abrir a imagem. Arquivo não localizado no banco de dados.");
-            }
-        };
-
-        const modal = document.getElementById('modal');
-        const modalImg = document.getElementById('modalImg');
-        const imageContainer = document.getElementById('imageContainer');
-        const modalChassiDestaque = document.getElementById('modalChassiDestaque');
-        const modalTagsContainer = document.getElementById('modalTagsContainer');
-        const modalInfoExtra = document.getElementById('modalInfoExtra');
-        const shareBtn = document.getElementById('shareBtn');
-        const canvas = document.getElementById('conversionCanvas');
-        let scale = 1, panningX = 0, panningY = 0, startX = 0, startY = 0, isDragging = false;
-        
-        let isInverted = false;
-
-        function toggleInvertColors() {
-            isInverted = !isInverted;
-            if (isInverted) {
-                modalImg.style.filter = "invert(1)";
-            } else {
-                modalImg.style.filter = "none";
-            }
-        }
-
-        function openModal(imgObj) {
-            currentImageIndex = currentFilteredList.findIndex(i => i.arquivo === imgObj.arquivo);
-            modalImg.src = encodeURI(imgObj.arquivo); 
-            modalChassiDestaque.innerText = imgObj.chassi;
-            
-            let tagsHtml = '';
-            if (imgObj.natureza && imgObj.natureza.length > 0) {
-                imgObj.natureza.forEach(nat => {
-                    tagsHtml += `<span class="natureza-tag" style="${getTagStyle(nat)}">${nat}</span>`;
+                
+                charsPerIndex.push({ idx: idx, chars: charsToUse });
+                totalComb *= charsToUse.length;
+                
+                geradorMetadata.suspeitos.push({
+                    pos: idx + 1,
+                    charOriginal: geradorCurrentSequence[idx],
+                    indicadas: indicatedStr
                 });
             }
-            modalTagsContainer.innerHTML = tagsHtml;
-            
-            modalInfoExtra.innerText = (imgObj.marca && imgObj.marca !== "") ? `${imgObj.marca} | ${imgObj.modelo} | ${imgObj.ano}` : "Informação não cadastrada";
-            scale = 1; panningX = 0; panningY = 0; 
-            
-            isInverted = false;
-            modalImg.style.filter = 'none';
-            
-            updateTransform(); modal.style.display = 'flex';
-        }
-        function closeModal() { modal.style.display = 'none'; }
-        function navigateModal(direction) {
-            if (currentFilteredList.length <= 1) return;
-            currentImageIndex = (currentImageIndex + direction + currentFilteredList.length) % currentFilteredList.length;
-            openModal(currentFilteredList[currentImageIndex]);
-        }
 
-        async function shareImage() {
-            const originalText = shareBtn.innerText;
-            try {
-                const ctx = canvas.getContext('2d'); canvas.width = modalImg.naturalWidth; canvas.height = modalImg.naturalHeight; 
-                
-                if (isInverted) {
-                    ctx.filter = 'invert(1)';
-                } else {
-                    ctx.filter = 'none';
-                }
-                
-                ctx.drawImage(modalImg, 0, 0);
-                ctx.filter = 'none'; 
-                
-                canvas.toBlob(async (blob) => {
-                    try { await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]); shareBtn.innerText = "Copiado!"; setTimeout(() => shareBtn.innerText = originalText, 2000);
-                    } catch (e) { alert("Erro de Segurança: O navegador só permite copiar se o site usar HTTPS."); }
-                }, 'image/png');
-            } catch (err) { alert("Erro na imagem."); }
-        }
-        function downloadImage() { const link = document.createElement('a'); link.href = modalImg.src; link.download = modalChassiDestaque.innerText + ".jpg"; document.body.appendChild(link); link.click(); document.body.removeChild(link); }
-        
-        async function copyNumber() { try { await navigator.clipboard.writeText(modalChassiDestaque.innerText); document.getElementById('copyNumberBtn').innerText = "Copiado!"; setTimeout(() => document.getElementById('copyNumberBtn').innerText = "Copiar Numeração", 2000); } catch (e) { alert("Erro"); } }
-        function reportarInconsistencia() { window.open("https://docs.google.com/forms/d/e/1FAIpQLSdOZECyTHgc15p5pcQF386JzcPwqn7PiEc2NLtnX6d_H-tcJQ/viewform?usp=pp_url&entry.202619458=" + encodeURIComponent(modalChassiDestaque.innerText.trim()), '_blank'); }
+            let limitWarning = (geradorCurrentMode === 'alpha') ? 46656 : 10000;
 
-        function abrirModalDoacao() { document.getElementById('modalDoacao').style.display = 'flex'; }
-        function fecharModalDoacao() { document.getElementById('modalDoacao').style.display = 'none'; }
-
-        document.addEventListener('keydown', (e) => {
-            if (modal.style.display === 'flex' && e.key === 'Escape') {
-                if (document.getElementById('modalMapa').style.display === 'flex') {
-                    fecharModalMapa();
-                } else if (document.getElementById('modalRestricaoMobile').style.display === 'flex') {
-                    fecharModalRestricaoMobile();
-                } else if (document.getElementById('modalAtualizacoes').style.display === 'flex') {
-                    fecharModalAtualizacoes();
-                } else if (document.getElementById('modalSugestao').style.display === 'flex') {
-                    fecharModalSugestao();
-                } else if (document.getElementById('modalDoacao').style.display === 'flex') {
-                    fecharModalDoacao();
-                } else if (modalAuth.style.display === 'flex') {
-                    fecharModalAuth();
-                } else if (document.getElementById('modalContribuicao').style.display === 'flex') {
-                    fecharModalContribuicao();
-                } else {
-                    closeModal();
-                }
-            } else if (modal.style.display === 'flex') { 
-                if (e.key === 'ArrowRight') navigateModal(1); 
-                if (e.key === 'ArrowLeft') navigateModal(-1); 
+            if (totalComb > limitWarning) {
+                if (!confirm(`ATENÇÃO: Serão geradas ${totalComb.toLocaleString()} combinações.\nDeseja continuar? Isso pode travar o navegador.`)) return;
             }
-        });
 
-        function updateTransform() { modalImg.style.transform = `translate(${panningX}px, ${panningY}px) scale(${scale})`; }
-        imageContainer.addEventListener('wheel', (e) => { e.preventDefault(); scale = Math.min(Math.max(.5, scale * (e.deltaY > 0 ? 0.9 : 1.1)), 8); updateTransform(); });
-        imageContainer.addEventListener('mousedown', (e) => { isDragging = true; startX = e.clientX - panningX; startY = e.clientY - panningY; });
-        window.addEventListener('mousemove', (e) => { if (isDragging) { panningX = e.clientX - startX; panningY = e.clientY - startY; updateTransform(); } });
-        window.addEventListener('mouseup', () => isDragging = false);
-        let lastTouchDist = 0;
-        imageContainer.addEventListener('touchstart', (e) => {
-            if (e.touches.length === 1) { isDragging = true; startX = e.touches[0].clientX - panningX; startY = e.touches[0].clientY - panningY; } 
-            else if (e.touches.length === 2) { lastTouchDist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY); }
-        });
-        imageContainer.addEventListener('touchmove', (e) => {
-            if (e.touches.length === 1 && isDragging) { panningX = e.touches[0].clientX - startX; panningY = e.touches[0].clientY - startY; updateTransform(); } 
-            else if (e.touches.length === 2) { const dist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY); scale = Math.min(Math.max(.5, scale * (dist / lastTouchDist)), 8); lastTouchDist = dist; updateTransform(); }
-        });
-        imageContainer.addEventListener('touchend', () => { isDragging = false; });
+            const baseString = geradorCurrentSequence.split('');
+            const cleanResults = [];
+            
+            function permute(depth, currentArr) {
+                if (depth === charsPerIndex.length) {
+                    cleanResults.push(currentArr.join(''));
+                    return;
+                }
+                const info = charsPerIndex[depth];
+                for (let char of info.chars) {
+                    currentArr[info.idx] = char;
+                    permute(depth + 1, [...currentArr]);
+                }
+            }
+            
+            permute(0, baseString);
+            geradorGeneratedList = cleanResults; 
+            displayResultsGerador(cleanResults);
+        }
+
+        function displayResultsGerador(list) {
+            const tbody = document.querySelector('#resultsTableGerador tbody');
+            const area = document.getElementById('resultsAreaGerador');
+            const stats = document.getElementById('statsBarGerador');
+            
+            tbody.innerHTML = '';
+            
+            const limit = 3000; 
+            const displayList = list.slice(0, limit);
+
+            displayList.forEach((seq, index) => {
+                const tr = document.createElement('tr');
+                tr.id = `gerador-row-${index}`;
+                
+                let formattedSeq = '';
+                for(let i=0; i<seq.length; i++) {
+                    if(geradorSuspiciousIndices.has(i)) {
+                        formattedSeq += `<span class="highlight-suspect">${seq[i]}</span>`;
+                    } else {
+                        formattedSeq += seq[i];
+                    }
+                }
+
+                tr.innerHTML = `
+                    <td style="color:#555">${index + 1}</td>
+                    <td><span class="seq-text" style="font-family: monospace;">${formattedSeq}</span></td>
+                    <td class="action-cell">
+                        <div class="gerador-action-group">
+                            <div class="gerador-check-btn gerador-btn-copy" onclick="copyIndividualGerador(event, '${seq}', this)" title="Copiar">COPIAR 📋</div>
+                            <div class="gerador-check-btn btn-ok" onclick="setStatusGerador(${index}, 'safe')">OK</div>
+                            <div class="gerador-check-btn btn-danger" onclick="setStatusGerador(${index}, 'danger')">SUSPEITA</div>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            stats.innerHTML = `
+                <span>RESULTADOS: ${list.length.toLocaleString()}${list.length > limit ? ' (Exibindo 3000)' : ''}</span>
+                <button class="btn-action" onclick="copyAllGeneratedGerador()" style="margin:0; padding: 8px 15px; font-size: 0.85rem;">📋 Copiar Relatório</button>
+            `;
+            
+            area.style.display = 'block';
+            document.getElementById('geradorActionFooter').style.display = 'none';
+        }
+
+        function setStatusGerador(index, type) {
+            const row = document.getElementById(`gerador-row-${index}`);
+            row.classList.remove('status-safe', 'status-danger');
+            
+            if (row.dataset.currentStatus === type) {
+                row.dataset.currentStatus = '';
+            } else {
+                row.dataset.currentStatus = type;
+                row.classList.add(type === 'safe' ? 'status-safe' : 'status-danger');
+            }
+            updateFooterGerador();
+        }
+
+        function copyIndividualGerador(e, text, btnElement) {
+            e.stopPropagation(); 
+            navigator.clipboard.writeText(text).then(() => {
+                const original = "COPIAR 📋";
+                btnElement.innerHTML = '✔'; 
+                btnElement.classList.add('copied');
+                setTimeout(() => {
+                    btnElement.innerHTML = original;
+                    btnElement.classList.remove('copied');
+                }, 1000);
+            });
+        }
+
+        function copyAllGeneratedGerador() {
+            if (geradorGeneratedList.length === 0) return;
+            
+            let relatorio = `*🚨 NIEF - RELATÓRIO DE COMBINAÇÕES 🚨*\n\n`;
+            relatorio += `*MOTOR APARENTE:* ${geradorMetadata.aparente}\n\n`;
+            
+            relatorio += `*CARACTERES SUSPEITOS E POSSIBILIDADES:*\n`;
+            geradorMetadata.suspeitos.forEach(s => {
+                relatorio += `- Posição ${s.pos} [ ${s.charOriginal} ] ➔ Possibilidades: ${s.indicadas}\n`;
+            });
+            
+            relatorio += `\n*TOTAL GERADO:* ${geradorGeneratedList.length.toLocaleString()}\n\n`;
+            relatorio += `*SEQUÊNCIAS:*\n`;
+            geradorGeneratedList.forEach(seq => {
+                relatorio += `${seq}\n`;
+            });
+            
+            navigator.clipboard.writeText(relatorio).then(() => {
+                alert("Relatório completo copiado para a área de transferência!");
+            });
+        }
+
+        function updateFooterGerador() {
+            const dangerRows = document.querySelectorAll('#resultsTableGerador tr[data-current-status="danger"]');
+            const allActiveRows = document.querySelectorAll('#resultsTableGerador tr[data-current-status]');
+            const footer = document.getElementById('geradorActionFooter');
+            const info = document.getElementById('geradorFooterInfo');
+
+            info.innerText = `${dangerRows.length} SUSPEITA(S)`;
+            
+            if (allActiveRows.length > 0) {
+                footer.style.display = 'flex';
+            } else {
+                footer.style.display = 'none';
+            }
+        }
+
+        function copySuspectsGerador() {
+            const rows = document.querySelectorAll('#resultsTableGerador tr[data-current-status="danger"]');
+            if (rows.length === 0) {
+                alert("Nenhuma suspeita marcada em VERMELHO.");
+                return;
+            }
+            let suspects = [];
+            rows.forEach(row => {
+                suspects.push(row.querySelector('.seq-text').innerText);
+            });
+
+            const header = "*🚨 NIEF - NUMERAÇÕES COM RESTRIÇÃO RF 🚨*\n\n";
+            const body = suspects.map(s => `${s}`).join('\n');
+            const footer = `\n\n*TOTAL: ${suspects.length} VEÍCULOS SOB SUSPEITA*`;
+            
+            navigator.clipboard.writeText(header + body + footer).then(() => {
+                alert("Suspeitas copiadas para colar no WhatsApp!");
+            });
+        }
     </script>
 </body>
 </html>
