@@ -674,7 +674,7 @@
         <button class="btn-sair" onclick="fazerLogout()">Sair da Ferramenta Restrita</button>
     </div>
 
-    <!-- FERRAMENTA 1: BUSCADOR DE PADRões -->
+    <!-- FERRAMENTA 1: BUSCADOR DE PADRÕES -->
     <div id="areaBuscador" style="display: none; width: 100%; flex-direction: column; align-items: center; max-width: 1100px;">
         <button class="btn-voltar-menu" onclick="voltarDashboard()">⬅ Voltar ao Painel</button>
         
@@ -1092,8 +1092,7 @@
         // =========================================================================
         // ATENÇÃO: COLE A SUA LISTA DE IMAGENS COMPLETA LOGO ABAIXO!
         // =========================================================================
-        const imagens = [
-        ];
+        const imagens = [];
         // =========================================================================
 
         const firebaseConfig = {
@@ -1831,6 +1830,188 @@
         function resetEliminadorGrid() { initEliminadorGrid(); }
 
         // =========================================================================================
+        // FERRAMENTA 3: RECRIADOR DE QR CODE
+        // =========================================================================================
+        const qrSetupScreen = document.getElementById('qr-setup-screen');
+        const qrAppScreen = document.getElementById('qr-app-screen');
+        const qrGridContainer = document.getElementById('qr-grid-container');
+        const qrNumTop = document.getElementById('qr-num-top');
+        const qrNumBottom = document.getElementById('qr-num-bottom');
+        const qrNumLeft = document.getElementById('qr-num-left');
+        const qrNumRight = document.getElementById('qr-num-right');
+        
+        let GRID_SIZE = 37;
+        let isDrawingQr = false;
+        let drawModeQr = true;
+
+        document.getElementById('btn-size-25').addEventListener('click', function() { startQrApp(25); });
+        document.getElementById('btn-size-37').addEventListener('click', function() { startQrApp(37); });
+
+        document.getElementById('btn-back-qr').addEventListener('click', function() {
+            qrAppScreen.style.display = 'none';
+            qrSetupScreen.style.display = 'flex';
+            qrGridContainer.innerHTML = '';
+        });
+
+        function startQrApp(size) {
+            GRID_SIZE = size;
+            qrSetupScreen.style.display = 'none';
+            qrAppScreen.style.display = 'flex';
+            initializeQrGrid();
+        }
+
+        function initializeQrGrid() {
+            qrGridContainer.innerHTML = '';
+            qrNumTop.innerHTML = ''; qrNumBottom.innerHTML = '';
+            qrNumLeft.innerHTML = ''; qrNumRight.innerHTML = '';
+
+            qrGridContainer.style.gridTemplateColumns = `repeat(${GRID_SIZE}, var(--cell-size, 18px))`;
+            qrGridContainer.style.gridTemplateRows = `repeat(${GRID_SIZE}, var(--cell-size, 18px))`;
+
+            for (let i = 1; i <= GRID_SIZE; i++) {
+                const createEl = () => {
+                    const el = document.createElement('div');
+                    el.className = 'qr-num'; el.textContent = i; return el;
+                };
+                qrNumTop.appendChild(createEl()); qrNumBottom.appendChild(createEl());
+                qrNumLeft.appendChild(createEl()); qrNumRight.appendChild(createEl());
+            }
+
+            for (let i = 0; i < GRID_SIZE * GRID_SIZE; i++) {
+                const cell = document.createElement('div');
+                cell.classList.add('qr-cell');
+                cell.dataset.index = i;
+                qrGridContainer.appendChild(cell);
+            }
+            
+            loadQrState(); 
+        }
+
+        function getQrStorageKey() {
+            return `qrRecreatorState_v6_${GRID_SIZE}`;
+        }
+
+        function saveQrState() {
+            try {
+                const activeCells = [...document.querySelectorAll('.qr-cell.active')].map(c => c.dataset.index);
+                localStorage.setItem(getQrStorageKey(), JSON.stringify(activeCells));
+            } catch (e) { console.error("Erro ao salvar progresso do QR", e); }
+        }
+
+        function loadQrState() {
+            try {
+                const savedData = localStorage.getItem(getQrStorageKey());
+                if(savedData) {
+                    const saved = JSON.parse(savedData);
+                    saved.forEach(idx => {
+                        const cell = document.querySelector(`.qr-cell[data-index="${idx}"]`);
+                        if(cell) cell.classList.add('active');
+                    });
+                }
+            } catch (e) { console.error("Erro ao carregar progresso do QR.", e); }
+        }
+
+        qrGridContainer.addEventListener('mousedown', function(e) {
+            if (e.target.classList.contains('qr-cell')) {
+                isDrawingQr = true;
+                drawModeQr = !e.target.classList.contains('active');
+                e.target.classList.toggle('active', drawModeQr);
+            }
+        });
+        qrGridContainer.addEventListener('mouseover', function(e) {
+            if (isDrawingQr && e.target.classList.contains('qr-cell')) {
+                e.target.classList.toggle('active', drawModeQr);
+            }
+        });
+        window.addEventListener('mouseup', function() {
+            if(isDrawingQr) { isDrawingQr = false; saveQrState(); }
+        });
+
+        qrGridContainer.addEventListener('dragstart', function(e) { e.preventDefault(); });
+
+        function drawFinder(startX, startY) {
+            for(let y = 0; y < 7; y++) {
+                for(let x = 0; x < 7; x++) {
+                    let isBlack = false;
+                    if (y === 0 || y === 6 || x === 0 || x === 6) isBlack = true; 
+                    else if (y >= 2 && y <= 4 && x >= 2 && x <= 4) isBlack = true; 
+
+                    const cellIndex = (startY + y) * GRID_SIZE + (startX + x);
+                    const cell = document.querySelector(`.qr-cell[data-index="${cellIndex}"]`);
+                    if(cell) {
+                        if(isBlack) cell.classList.add('active');
+                        else cell.classList.remove('active');
+                    }
+                }
+            }
+        }
+        function drawTimingPatterns() {
+            const limite = GRID_SIZE - 9;
+            for(let x = 8; x <= limite; x++) {
+                const cellIndex = 6 * GRID_SIZE + x;
+                const cell = document.querySelector(`.qr-cell[data-index="${cellIndex}"]`);
+                if(cell) {
+                    if (x % 2 === 0) cell.classList.add('active');
+                    else cell.classList.remove('active');
+                }
+            }
+            for(let y = 8; y <= limite; y++) {
+                const cellIndex = y * GRID_SIZE + 6;
+                const cell = document.querySelector(`.qr-cell[data-index="${cellIndex}"]`);
+                if(cell) {
+                    if (y % 2 === 0) cell.classList.add('active');
+                    else cell.classList.remove('active');
+                }
+            }
+        }
+
+        document.getElementById('btn-patterns').addEventListener('click', function() {
+            drawFinder(0, 0);                           
+            drawFinder(GRID_SIZE - 7, 0);               
+            drawFinder(0, GRID_SIZE - 7);               
+            drawTimingPatterns();                       
+            saveQrState();
+        });
+
+        document.getElementById('btn-export-qr').addEventListener('click', function() {
+            const canvas = document.createElement('canvas');
+            const scale = 10; 
+            const paddingModules = 4;
+            const padding = paddingModules * scale; 
+            
+            canvas.width = (GRID_SIZE * scale) + (padding * 2);
+            canvas.height = (GRID_SIZE * scale) + (padding * 2);
+            const ctx = canvas.getContext('2d');
+
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#000000';
+            const cells = document.querySelectorAll('.qr-cell');
+            cells.forEach(cell => {
+                if (cell.classList.contains('active')) {
+                    const index = parseInt(cell.dataset.index);
+                    const col = index % GRID_SIZE;
+                    const row = Math.floor(index / GRID_SIZE);
+                    ctx.fillRect(padding + (col * scale), padding + (row * scale), scale, scale);
+                }
+            });
+
+            const link = document.createElement('a');
+            link.download = `qrcode_placa_${GRID_SIZE}x${GRID_SIZE}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        });
+        
+        document.getElementById('btn-clear-qr').addEventListener('click', function() {
+            if (confirm("ATENÇÃO: Deseja realmente limpar toda a matriz? Isso apagará o progresso salvo deste padrão.")) {
+                const cells = document.querySelectorAll('.qr-cell');
+                cells.forEach(cell => cell.classList.remove('active'));
+                localStorage.removeItem(getQrStorageKey());
+            }
+        });
+
+        // =========================================================================================
         // FERRAMENTA 5: GERADOR DE COMBINAÇÕES DE MOTORES
         // =========================================================================================
         let geradorCurrentMode = 'numeric';
@@ -2116,7 +2297,14 @@
                 alert("Suspeitas copiadas para colar no WhatsApp!");
             });
         }
-        
+
+        // =========================================================================================
+        // AUTENTICAÇÃO E FUNÇÕES GERAIS (MODAIS)
+        // =========================================================================================
+        function abrirModalAuth() { document.getElementById('modalAuth').style.display = 'flex'; }
+        function fecharModalAuth() { document.getElementById('modalAuth').style.display = 'none'; }
+        function fecharModalPendente() { document.getElementById('modalPendente').style.display = 'none'; }
+
         function toggleAuthMode() {
             if (document.getElementById('formLogin').style.display === 'none') { 
                 document.getElementById('formLogin').style.display = 'flex'; 
@@ -2126,19 +2314,19 @@
                 document.getElementById('formCadastro').style.display = 'flex'; 
             }
         }
-        
+
         function toggleVisibility(id) {
             const input = document.getElementById(id);
             if (input.type === "password") input.type = "text"; else input.type = "password";
         }
-        
+
         function mascaraCPF(cpf) {
             let v = cpf.value.replace(/\D/g, "");
             if (v.length > 11) v = v.substring(0, 11);
             v = v.replace(/(\d{3})(\d)/, "$1.$2"); v = v.replace(/(\d{3})(\d)/, "$1.$2"); v = v.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
             cpf.value = v;
         }
-        
+
         function mascaraTelefone(tel) {
             let v = tel.value.replace(/\D/g, "");
             if (v.length > 11) v = v.substring(0, 11);
@@ -2146,6 +2334,433 @@
             tel.value = v;
         }
 
+        function fazerCadastro() {
+            const nome = document.getElementById('cadNome').value;
+            const cpf = document.getElementById('cadCPF').value;
+            const telefone = document.getElementById('cadTelefone').value;
+            const instituicao = document.getElementById('cadInstituicao').value;
+            const email = document.getElementById('cadEmail').value;
+            const senha = document.getElementById('cadSenha').value;
+            const senhaConfirma = document.getElementById('cadSenhaConfirma').value;
+
+            if(!nome || !cpf || !telefone || !instituicao || !email || !senha || !senhaConfirma) { alert("Preencha todos os campos!"); return; }
+            if(senha !== senhaConfirma) { alert("As senhas digitadas não coincidem. Verifique e tente novamente."); return; }
+
+            auth.createUserWithEmailAndPassword(email, senha).then(credenciais => {
+                database.ref('usuarios/' + credenciais.user.uid).set({ nome: nome, cpf: cpf, telefone: telefone, instituicao: instituicao, email: email, status: 'pendente' });
+                alert("Solicitação enviada com sucesso! Aguarde a liberação do Administrador.");
+            }).catch(erro => {
+                if (erro.code === 'auth/email-already-in-use') alert("Este e-mail já está cadastrado no sistema.");
+                else if (erro.code === 'auth/weak-password') alert("A senha deve ter pelo menos 6 caracteres.");
+                else alert("Erro: " + erro.message);
+            });
+        }
+
+        function fazerLogin() {
+            const email = document.getElementById('loginEmail').value;
+            const senha = document.getElementById('loginSenha').value;
+
+            if(!email || !senha) { alert("Preencha e-mail e senha!"); return; }
+
+            auth.signInWithEmailAndPassword(email, senha).catch(erro => {
+                if (erro.code === 'auth/user-not-found' || erro.code === 'auth/wrong-password') alert("E-mail ou senha incorretos.");
+                else alert("Erro ao fazer login: Verifique sua conexão e tente novamente.");
+            });
+        }
+
+        function fazerLogout() { auth.signOut().then(() => { window.location.reload(); }); }
+
+        const tituloTerminal = document.getElementById('tituloTerminal');
+        if (tituloTerminal) {
+            tituloTerminal.addEventListener('dblclick', async () => {
+                try {
+                    const snapshot = await acessosRef.once('value');
+                    const data = snapshot.val();
+                    if (!data) { alert("Nenhum acesso registrado no banco de dados ainda."); return; }
+
+                    let csvContent = "Data;Hora;Cidade;Estado\n";
+                    const registros = Object.values(data);
+                    registros.sort((a, b) => b.timestamp - a.timestamp);
+
+                    registros.forEach(registro => {
+                        const cid = registro.cidade ? registro.cidade.toUpperCase() : "DESCONHECIDA";
+                        if (cid.includes("CAMPINA GRANDE")) return; 
+                        const est = registro.estado ? registro.estado.toUpperCase() : "DESCONHECIDO";
+                        const dataObjeto = new Date(registro.timestamp || Date.now());
+                        const dataF = dataObjeto.toLocaleDateString('pt-BR');
+                        const horaF = dataObjeto.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                        csvContent += `${dataF};${horaF};${cid};${est}\n`;
+                    });
+
+                    const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement("a"); link.setAttribute("href", url);
+                    link.setAttribute("download", `Relatorio_Acessos_${new Date().toLocaleDateString('pt-BR').replace(/\//g, '-')}.csv`);
+                    document.body.appendChild(link); link.click(); document.body.removeChild(link);
+                } catch (err) { alert("Erro ao extrair o relatório."); }
+            });
+        }
+
+        async function obterLocalizacaoViaIP() {
+            try {
+                const res = await fetch('https://ipwho.is/');
+                const data = await res.json();
+                if (!data.success) throw new Error();
+                return { 
+                    cidade: data.city || 'Desconhecida', 
+                    estado: data.region || 'Desconhecido', 
+                    lat: data.latitude, 
+                    lon: data.longitude 
+                };
+            } catch (e) { 
+                return { cidade: "Oculta (Firewall)", estado: "Rede Restrita", lat: null, lon: null }; 
+            }
+        }
+
+        function obterLocalizacaoViaGPS() {
+            return new Promise((resolve, reject) => {
+                if (!navigator.geolocation) { reject("Sem suporte"); return; }
+                navigator.geolocation.getCurrentPosition(
+                    async (position) => {
+                        try {
+                            const res = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${position.coords.latitude}&longitude=${position.coords.longitude}&localityLanguage=pt`);
+                            const data = await res.json();
+                            resolve({ 
+                                cidade: data.city || data.locality || "N/A", 
+                                estado: data.principalSubdivision || "N/A", 
+                                lat: position.coords.latitude, 
+                                lon: position.coords.longitude 
+                            });
+                        } catch (e) { reject("Falha API GPS"); }
+                    },
+                    (error) => { reject("Bloqueado"); },
+                    { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 }
+                );
+            });
+        }
+
+        async function registrarMeuAcessoGlobal() {
+            let localizacao;
+            try {
+                localizacao = await obterLocalizacaoViaGPS();
+                if(gpsStatus) gpsStatus.innerHTML = "> Status: <span style='color: var(--accent);'>Sessão Ativa e Sincronizada</span>";
+            } catch (error) {
+                if(gpsStatus) gpsStatus.innerHTML = "> Status: <span style='color: #ffaa00;'>Sessão Ativa (Rastreio via IP)</span>";
+                const aviso = document.createElement('div');
+                aviso.innerHTML = `<span style="color: #ffaa00; margin-bottom: 10px; display: block;">> [AVISO] GPS bloqueado ou falhou. Rastreio por IP...</span>`;
+                if(terminalLogs) terminalLogs.prepend(aviso);
+                localizacao = await obterLocalizacaoViaIP();
+            }
+            if (acessosRef) acessosRef.push({ 
+                cidade: localizacao.cidade, 
+                estado: localizacao.estado, 
+                lat: localizacao.lat || null, 
+                lon: localizacao.lon || null, 
+                timestamp: firebase.database.ServerValue.TIMESTAMP 
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const contadorFotos = document.getElementById('contadorFotos');
+            if (contadorFotos && imagens && imagens.length !== undefined) {
+                contadorFotos.innerText = `📸 Total de Padrões Cadastrados: ${imagens.length}`;
+            }
+            registrarMeuAcessoGlobal();
+        });
+
+        // =========================================================================================
+        // MOTOR DA GALERIA
+        // =========================================================================================
+        const gallery = document.getElementById('gallery');
+        const searchInput = document.getElementById('searchInput');
+        const selectMarca = document.getElementById('selectMarca');
+        const selectModelo = document.getElementById('selectModelo');
+        const selectAno = document.getElementById('selectAno');
+        
+        let currentFilteredList = [];
+        let currentImageIndex = -1;
+
+        function normalizar(texto) { return texto ? texto.toString().toLowerCase().replace(/[^a-z0-9]/g, '') : ''; }
+        function padronizarChave(texto) { return texto ? texto.toString().replace(/\s+/g, '').toUpperCase() : ''; }
+
+        function getTagStyle(tagName) {
+            const colors = {
+                'NIV': '#4dabf7',      
+                'MOTOR': '#ffc078',    
+                'VIS': '#b197fc',      
+                'ETIQUETA': '#20c997', 
+                'PLAQUETA': '#adb5bd', 
+                'CÂMBIO': '#ff8787',   
+                'CAMBIO': '#ff8787',   
+                'CHAPA': '#f783ac',    
+                'PAINEL': '#a9e34b',   
+                'PORTA': '#4c6ef5',    
+                'VIDRO': '#66d9e8'     
+            };
+            const c = colors[tagName.toUpperCase()] || '#7CFC00';
+            return `border: 1px dashed ${c}; color: ${c}; background-color: rgba(255, 255, 255, 0.05);`;
+        }
+
+        function initFiltros() {
+            const marcasMap = new Map();
+            imagens.forEach(img => {
+                if (img.marca && img.marca.trim() !== '') {
+                    const key = padronizarChave(img.marca);
+                    if (!marcasMap.has(key)) marcasMap.set(key, img.marca.trim().toUpperCase());
+                }
+            });
+            selectMarca.innerHTML = '<option value="">Todas as Marcas</option>';
+            Array.from(marcasMap.entries()).sort((a,b) => a[1].localeCompare(b[1])).forEach(([key, label]) => {
+                const opt = document.createElement('option'); opt.value = key; opt.innerText = label; selectMarca.appendChild(opt);
+            });
+        }
+
+        selectMarca.addEventListener('change', () => {
+            selectModelo.innerHTML = '<option value="">Todos os Modelos</option>';
+            selectAno.innerHTML = '<option value="">Todos os Anos</option>';
+            selectAno.disabled = true;
+            if (selectMarca.value) {
+                selectModelo.disabled = false;
+                const modelosMap = new Map();
+                imagens.forEach(img => {
+                    if (padronizarChave(img.marca) === selectMarca.value && img.modelo && img.modelo.trim() !== '') {
+                        const key = padronizarChave(img.modelo);
+                        if (!modelosMap.has(key)) modelosMap.set(key, img.modelo.trim().toUpperCase());
+                    }
+                });
+                Array.from(modelosMap.entries()).sort((a,b) => a[1].localeCompare(b[1])).forEach(([key, label]) => {
+                    const opt = document.createElement('option'); opt.value = key; opt.innerText = label; selectModelo.appendChild(opt);
+                });
+            } else { selectModelo.disabled = true; }
+            renderGallery();
+        });
+
+        selectModelo.addEventListener('change', () => {
+            selectAno.innerHTML = '<option value="">Todos os Anos</option>';
+            if (selectModelo.value) {
+                selectAno.disabled = false;
+                const anosMap = new Map();
+                imagens.forEach(img => {
+                    if (padronizarChave(img.marca) === selectMarca.value && padronizarChave(img.modelo) === selectModelo.value && img.ano && img.ano.toString().trim() !== '') {
+                        const key = padronizarChave(img.ano);
+                        if (!anosMap.has(key)) anosMap.set(key, img.ano.toString().trim().toUpperCase());
+                    }
+                });
+                Array.from(anosMap.entries()).sort((a,b) => a[1].localeCompare(b[1])).forEach(([key, label]) => {
+                    const opt = document.createElement('option'); opt.value = key; opt.innerText = label; selectAno.appendChild(opt);
+                });
+            } else { selectAno.disabled = true; }
+            renderGallery();
+        });
+
+        selectAno.addEventListener('change', () => renderGallery());
+
+        function limparFiltros() {
+            searchInput.value = ""; selectMarca.value = ""; selectModelo.innerHTML = '<option value="">Todos os Modelos</option>';
+            selectAno.innerHTML = '<option value="">Todos os Anos</option>'; selectModelo.disabled = true; selectAno.disabled = true;
+            renderGallery();
+        }
+
+        function renderGallery() {
+            gallery.innerHTML = "";
+            const filtroChassi = normalizar(searchInput.value), filtroMarca = selectMarca.value, filtroModelo = selectModelo.value, filtroAno = selectAno.value;
+            if (filtroChassi === "" && filtroMarca === "" && filtroModelo === "" && filtroAno === "") { currentFilteredList = []; return; }
+
+            currentFilteredList = imagens.filter(img => {
+                let passa = true;
+                if (filtroChassi) passa = passa && normalizar(img.chassi).startsWith(filtroChassi);
+                if (filtroMarca) passa = passa && padronizarChave(img.marca) === filtroMarca;
+                if (filtroModelo) passa = passa && padronizarChave(img.modelo) === filtroModelo;
+                if (filtroAno) passa = passa && padronizarChave(img.ano) === filtroAno;
+                return passa;
+            });
+            
+            currentFilteredList.forEach(img => {
+                const div = document.createElement('div'); div.className = 'thumbnail'; div.onclick = () => openModal(img);
+                let textoExtras = (img.marca && img.marca !== "") ? `${img.marca.toUpperCase()} / ${img.modelo.toUpperCase()} / ${img.ano.toUpperCase()}` : "Informação não cadastrada";
+                
+                div.innerHTML = `<img src="${encodeURI(img.arquivo)}" loading="lazy"><div class="thumb-text-container"><div class="thumb-chassi">${img.chassi}</div><div class="thumb-info">${textoExtras}</div></div>`;
+                gallery.appendChild(div);
+            });
+        }
+        searchInput.addEventListener('input', () => renderGallery());
+
+        function abrirModalAtualizacoes() {
+            const container = document.getElementById('containerListaAtualizacoes'); 
+            container.innerHTML = '';
+            
+            if (imagens.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #ccc;">Nenhuma atualização registrada ainda.</p>';
+                document.getElementById('modalAtualizacoes').style.display = 'flex';
+                return;
+            }
+
+            const imagensOrdenadas = [...imagens].sort((a, b) => b.timestamp - a.timestamp);
+            const ultimas50Fotos = imagensOrdenadas.slice(0, 50);
+
+            const divDia = document.createElement('div'); 
+            divDia.className = 'dia-atualizacao';
+            divDia.innerHTML = `<h4>📅 Últimos 50 Padrões Adicionados</h4>`;
+            
+            const ul = document.createElement('ul');
+            ultimas50Fotos.forEach(foto => {
+                let txt = (foto.marca && foto.marca !== "") ? `${foto.marca.toUpperCase()} / ${foto.modelo.toUpperCase()} / ${foto.ano.toUpperCase()}` : "Informação não cadastrada";
+                txt = `Data: ${foto.data} | ` + txt;
+                
+                let tagsNatureza = '';
+                if (foto.natureza && foto.natureza.length > 0) {
+                    foto.natureza.forEach(nat => { 
+                        tagsNatureza += `<span class="natureza-tag" style="${getTagStyle(nat)}">${nat}</span>`; 
+                    });
+                }
+
+                ul.innerHTML += `<li>
+                    <div class="atualizacao-left">
+                        <span class="chassi-tag">${foto.chassi}</span>
+                        <span class="info-tag">${txt}</span>
+                    </div>
+                    
+                    <div class="atualizacao-right">
+                        ${tagsNatureza}
+                        <button data-arquivo="${foto.arquivo}" onclick="abrirFotoAtualizacao(this.getAttribute('data-arquivo'))" style="background: var(--accent); color: var(--primary); border: none; padding: 0 15px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 0.8rem; height: 28px; box-sizing: border-box; display: flex; align-items: center; justify-content: center;">Ver</button>
+                    </div>
+                </li>`;
+            });
+            
+            divDia.appendChild(ul); container.appendChild(divDia);
+            document.getElementById('modalAtualizacoes').style.display = 'flex';
+        }
+        
+        function fecharModalAtualizacoes() { document.getElementById('modalAtualizacoes').style.display = 'none'; }
+
+        window.abrirFotoAtualizacao = function(arquivo) {
+            const imgObj = imagens.find(i => i.arquivo === arquivo);
+            if(imgObj) {
+                currentFilteredList = imagens; 
+                fecharModalAtualizacoes();
+                openModal(imgObj);
+            } else {
+                alert("Erro ao abrir a imagem. Arquivo não localizado no banco de dados.");
+            }
+        };
+
+        const modal = document.getElementById('modal');
+        const modalImg = document.getElementById('modalImg');
+        const imageContainer = document.getElementById('imageContainer');
+        const modalChassiDestaque = document.getElementById('modalChassiDestaque');
+        const modalTagsContainer = document.getElementById('modalTagsContainer');
+        const modalInfoExtra = document.getElementById('modalInfoExtra');
+        const shareBtn = document.getElementById('shareBtn');
+        const canvas = document.getElementById('conversionCanvas');
+        let scale = 1, panningX = 0, panningY = 0, startX = 0, startY = 0, isDragging = false;
+        
+        let isInverted = false;
+
+        function toggleInvertColors() {
+            isInverted = !isInverted;
+            if (isInverted) {
+                modalImg.style.filter = "invert(1)";
+            } else {
+                modalImg.style.filter = "none";
+            }
+        }
+
+        function openModal(imgObj) {
+            currentImageIndex = currentFilteredList.findIndex(i => i.arquivo === imgObj.arquivo);
+            modalImg.src = encodeURI(imgObj.arquivo); 
+            modalChassiDestaque.innerText = imgObj.chassi;
+            
+            let tagsHtml = '';
+            if (imgObj.natureza && imgObj.natureza.length > 0) {
+                imgObj.natureza.forEach(nat => {
+                    tagsHtml += `<span class="natureza-tag" style="${getTagStyle(nat)}">${nat}</span>`;
+                });
+            }
+            modalTagsContainer.innerHTML = tagsHtml;
+            
+            modalInfoExtra.innerText = (imgObj.marca && imgObj.marca !== "") ? `${imgObj.marca} | ${imgObj.modelo} | ${imgObj.ano}` : "Informação não cadastrada";
+            scale = 1; panningX = 0; panningY = 0; 
+            
+            isInverted = false;
+            modalImg.style.filter = 'none';
+            
+            updateTransform(); modal.style.display = 'flex';
+        }
+        function closeModal() { modal.style.display = 'none'; }
+        function navigateModal(direction) {
+            if (currentFilteredList.length <= 1) return;
+            currentImageIndex = (currentImageIndex + direction + currentFilteredList.length) % currentFilteredList.length;
+            openModal(currentFilteredList[currentImageIndex]);
+        }
+
+        async function shareImage() {
+            const originalText = shareBtn.innerText;
+            try {
+                const ctx = canvas.getContext('2d'); canvas.width = modalImg.naturalWidth; canvas.height = modalImg.naturalHeight; 
+                
+                if (isInverted) {
+                    ctx.filter = 'invert(1)';
+                } else {
+                    ctx.filter = 'none';
+                }
+                
+                ctx.drawImage(modalImg, 0, 0);
+                ctx.filter = 'none'; 
+                
+                canvas.toBlob(async (blob) => {
+                    try { await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]); shareBtn.innerText = "Copiado!"; setTimeout(() => shareBtn.innerText = originalText, 2000);
+                    } catch (e) { alert("Erro de Segurança: O navegador só permite copiar se o site usar HTTPS."); }
+                }, 'image/png');
+            } catch (err) { alert("Erro na imagem."); }
+        }
+        function downloadImage() { const link = document.createElement('a'); link.href = modalImg.src; link.download = modalChassiDestaque.innerText + ".jpg"; document.body.appendChild(link); link.click(); document.body.removeChild(link); }
+        
+        async function copyNumber() { try { await navigator.clipboard.writeText(modalChassiDestaque.innerText); document.getElementById('copyNumberBtn').innerText = "Copiado!"; setTimeout(() => document.getElementById('copyNumberBtn').innerText = "Copiar Numeração", 2000); } catch (e) { alert("Erro"); } }
+        function reportarInconsistencia() { window.open("https://docs.google.com/forms/d/e/1FAIpQLSdOZECyTHgc15p5pcQF386JzcPwqn7PiEc2NLtnX6d_H-tcJQ/viewform?usp=pp_url&entry.202619458=" + encodeURIComponent(modalChassiDestaque.innerText.trim()), '_blank'); }
+
+        function abrirModalDoacao() { document.getElementById('modalDoacao').style.display = 'flex'; }
+        function fecharModalDoacao() { document.getElementById('modalDoacao').style.display = 'none'; }
+
+        document.addEventListener('keydown', (e) => {
+            if (modal.style.display === 'flex' && e.key === 'Escape') {
+                if (document.getElementById('modalMapa').style.display === 'flex') {
+                    fecharModalMapa();
+                } else if (document.getElementById('modalRestricaoMobile').style.display === 'flex') {
+                    fecharModalRestricaoMobile();
+                } else if (document.getElementById('modalAtualizacoes').style.display === 'flex') {
+                    fecharModalAtualizacoes();
+                } else if (document.getElementById('modalSugestao').style.display === 'flex') {
+                    fecharModalSugestao();
+                } else if (document.getElementById('modalDoacao').style.display === 'flex') {
+                    fecharModalDoacao();
+                } else if (modalAuth.style.display === 'flex') {
+                    fecharModalAuth();
+                } else if (document.getElementById('modalContribuicao').style.display === 'flex') {
+                    fecharModalContribuicao();
+                } else {
+                    closeModal();
+                }
+            } else if (modal.style.display === 'flex') { 
+                if (e.key === 'ArrowRight') navigateModal(1); 
+                if (e.key === 'ArrowLeft') navigateModal(-1); 
+            }
+        });
+
+        function updateTransform() { modalImg.style.transform = `translate(${panningX}px, ${panningY}px) scale(${scale})`; }
+        imageContainer.addEventListener('wheel', (e) => { e.preventDefault(); scale = Math.min(Math.max(.5, scale * (e.deltaY > 0 ? 0.9 : 1.1)), 8); updateTransform(); });
+        imageContainer.addEventListener('mousedown', (e) => { isDragging = true; startX = e.clientX - panningX; startY = e.clientY - panningY; });
+        window.addEventListener('mousemove', (e) => { if (isDragging) { panningX = e.clientX - startX; panningY = e.clientY - startY; updateTransform(); } });
+        window.addEventListener('mouseup', () => isDragging = false);
+        let lastTouchDist = 0;
+        imageContainer.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 1) { isDragging = true; startX = e.touches[0].clientX - panningX; startY = e.touches[0].clientY - panningY; } 
+            else if (e.touches.length === 2) { lastTouchDist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY); }
+        });
+        imageContainer.addEventListener('touchmove', (e) => {
+            if (e.touches.length === 1 && isDragging) { panningX = e.touches[0].clientX - startX; panningY = e.touches[0].clientY - startY; updateTransform(); } 
+            else if (e.touches.length === 2) { const dist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY); scale = Math.min(Math.max(.5, scale * (dist / lastTouchDist)), 8); lastTouchDist = dist; updateTransform(); }
+        });
+        imageContainer.addEventListener('touchend', () => { isDragging = false; });
     </script>
 </body>
 </html>
