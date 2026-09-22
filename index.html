@@ -10425,6 +10425,85 @@
 
                 const cidadesVistas = new Map();
                 
+                // Mapeamento Estático extraído do arquivo cidades.txt
+                const preCodedGeo = {
+                    "ÁGUAS LINDAS DE GOIÁS": [-15.762, -48.277], "ALAGOA NOVA": [-7.069, -35.760], "ALHANDRA": [-7.433, -34.908],
+                    "ALTOS": [-5.039, -42.457], "ANANINDEUA": [-1.365, -48.371], "ANDRADINA": [-20.895, -51.378],
+                    "APARECIDA": [-22.846, -45.228], "APUCARANA": [-23.551, -51.460], "AQUIDAUANA": [-20.468, -55.795],
+                    "ARACAJU": [-10.947, -37.073], "ARACATI": [-4.561, -37.766], "ARAGUAÍNA": [-7.194, -48.204],
+                    "ARAGUARI": [-18.647, -48.193], "ARAPIRACA": [-9.752, -36.657], "ARAPONGAS": [-23.415, -51.425],
+                    "ARARAQUARA": [-21.794, -48.176], "AREADO": [-21.360, -46.143], "ARIQUEMES": [-9.908, -63.033],
+                    "ASSUNÇÃO": [-7.042, -36.758], "ASUNCIÓN": [-25.263, -57.575], "ATIBAIA": [-23.118, -46.550],
+                    "AUGUSTO CORRÊA": [-1.021, -46.633], "BARCARENA": [-1.512, -48.618], "BARREIRINHAS": [-2.753, -42.825],
+                    "BAYEUX": [-7.124, -34.931], "BELÉM": [-1.455, -48.502], "BELO HORIZONTE": [-19.920, -43.937],
+                    "BENEVIDES": [-1.361, -48.246], "BIRIGUI": [-21.288, -50.340], "BLUMENAU": [-26.919, -49.066],
+                    "BOA VISTA": [-2.823, -60.675], "BORBOREMA": [-21.619, -49.073], "BRAGANÇA": [-1.053, -46.762],
+                    "BRAGANÇA PAULISTA": [-22.951, -46.541], "BRASÍLIA": [-15.797, -47.891], "BREJO DO CRUZ": [-6.349, -37.498],
+                    "BREJO SANTO": [-7.493, -38.988], "BRUMADO": [-14.205, -41.666], "BUENOS AIRES": [-34.603, -58.381],
+                    "BURITI DO TOCANTINS": [-5.316, -48.225], "CABEDELO": [-6.980, -34.833], "CACHOEIRA DO PIRIÁ": [-1.758, -46.536],
+                    "CAJAZEIRAS": [-6.890, -38.560], "CAMAQUÃ": [-30.849, -51.810], "CAMPO ALEGRE DE LOURDES": [-9.519, -43.011],
+                    "CAMPO GRANDE": [-20.469, -54.620], "CAMPO MOURÃO": [-24.043, -52.378], "CAMPINAS": [-22.909, -47.062],
+                    "CANELONES": [-34.522, -56.277], "CANOINHAS": [-26.177, -50.392], "CAPANEMA": [-1.196, -47.177],
+                    "CAPITÃO POÇO": [-1.745, -47.062], "CARIÚS": [-6.531, -39.493], "CASCAVEL": [-24.957, -53.463],
+                    "CASTANHAL": [-1.293, -47.926], "CASTELO BRANCO": [39.822, -7.491], "CASTRO": [-24.789, -50.011],
+                    "CATOLÉ DO ROCHA": [-6.343, -37.747], "CAXIAS": [-4.862, -43.355], "CAXIAS DO SUL": [-29.168, -51.179],
+                    "CHAPECÓ": [-27.100, -52.615], "CIANORTE": [-23.823, -52.605], "CIUDAD DEL ESTE": [-25.513, -54.611],
+                    "COIMBRA": [40.205, -8.419], "CONDE": [-7.259, -34.907], "CRATO": [-7.234, -39.412],
+                    "CRUZMALTINA": [-23.953, -51.492], "CUIABÁ": [-15.595, -56.096], "CUITEGI": [-6.892, -35.526],
+                    "CUJUBIM": [-9.362, -62.585], "CURITIBA": [-25.428, -49.273], "DIVINÓPOLIS": [-20.143, -44.890],
+                    "DOURADOS": [-22.221, -54.805], "DRACENA": [-21.482, -51.530], "EUCLIDES DA CUNHA": [-10.505, -39.015],
+                    "FÁTIMA DO SUL": [-22.373, -54.515], "FLORIANÓPOLIS": [-27.596, -48.549], "FORQUILHINHA": [-28.746, -49.467],
+                    "FORTALEZA": [-3.717, -38.543], "FRANCISCO SÁ": [-16.475, -43.702], "GOIÂNIA": [-16.686, -49.264],
+                    "GOVERNADOR VALADARES": [-18.852, -41.950], "GUAÍRA": [-24.081, -54.257], "GUARABIRA": [-6.852, -35.488],
+                    "GUARUJÁ": [-23.993, -46.256], "IGUAPE": [-24.707, -47.556], "IGUATEMI": [-23.680, -54.561],
+                    "IJUÍ": [-28.387, -53.916], "ILHÉUS": [-14.793, -39.043], "IMPERATRIZ": [-5.518, -47.477],
+                    "ITABERABA": [-12.529, -40.298], "ITABIRA": [-19.620, -43.226], "ITAÍ": [-23.418, -49.090],
+                    "ITAJAÍ": [-26.910, -48.665], "ITANHAÉM": [-24.182, -46.788], "ITAPETININGA": [-23.590, -48.053],
+                    "ITAPIRA": [-22.434, -46.824], "ITAPUÃ DO OESTE": [-9.197, -63.181], "ITUPIRANGA": [-5.139, -49.328],
+                    "JABOATÃO DOS GUARARAPES": [-8.113, -35.015], "JAPORÃ": [-23.916, -54.520], "JARAGUÁ DO SUL": [-26.485, -49.071],
+                    "JARINU": [-23.099, -46.726], "JOÃO PESSOA": [-7.115, -34.863], "JOINVILLE": [-26.304, -48.846],
+                    "JUAZEIRO DO NORTE": [-7.206, -39.314], "JUNDIAÍ": [-23.185, -46.897], "JUNÍN": [-34.583, -60.945],
+                    "LAS PIEDRAS": [-34.726, -56.216], "LINDÓIA": [-22.524, -46.650], "LOANDA": [-22.929, -53.136],
+                    "LONDRINA": [-23.310, -51.162], "MACAU": [-5.111, -36.634], "MADRID": [40.416, -3.703],
+                    "MANDAGUAÇU": [-23.344, -52.095], "MARABÁ": [-5.368, -49.090], "MARECHAL CÂNDIDO RONDON": [-24.558, -54.056],
+                    "MARI": [-7.060, -35.316], "MARINGÁ": [-23.420, -51.933], "MARITUBA": [-1.355, -48.341],
+                    "MARTINS": [-6.091, -37.915], "MATHIAS LOBATO": [-18.574, -41.954], "MATINHOS": [-25.816, -48.542],
+                    "MATÕES": [-5.518, -43.201], "MIRACATU": [-24.281, -47.457], "MONTEIRO": [-7.893, -37.116],
+                    "MONTES CLAROS": [-16.735, -43.861], "MONTEVIDÉU": [-34.901, -56.164], "MUNDO NOVO": [-23.938, -54.284],
+                    "NATAL": [-5.794, -35.211], "NAVIRAÍ": [-23.064, -54.190], "NOSSA SENHORA DO SOCORRO": [-10.852, -37.234],
+                    "NOVA ANDRADINA": [-22.235, -53.346], "OEIRAS": [38.694, -9.309], "OSÓRIO": [-29.889, -50.270],
+                    "PAÇO DO LUMIAR": [-2.525, -44.108], "PALMAS": [-10.212, -48.360], "PARAIBUNA": [-23.385, -45.660],
+                    "PARAÍSO DO NORTE": [-23.284, -52.607], "PARAGOMINAS": [-2.999, -47.353], "PARANAGUÁ": [-25.518, -48.514],
+                    "PARANAVAÍ": [-23.078, -52.463], "PARELHAS": [-6.690, -36.657], "PATOS": [-7.025, -37.276],
+                    "PATY DO ALFERES": [-22.426, -43.418], "PAU DOS FERROS": [-6.113, -38.204], "PAULINO NEVES": [-2.723, -42.532],
+                    "PAULISTA": [-7.940, -34.872], "PEDRO JUAN CABALLERO": [-22.541, -55.727], "PERUÍBE": [-24.321, -46.997],
+                    "PETROLINA": [-9.394, -40.509], "PIRACICABA": [-22.725, -47.649], "PIRAPORA": [-17.348, -44.945],
+                    "POCINHOS": [-7.075, -36.061], "POMBAL": [-6.770, -37.798], "PONTA PORÃ": [-22.536, -55.733],
+                    "PONTE SERRADA": [-26.872, -52.012], "PORTEIRAS": [-7.531, -39.115], "PORTO ALEGRE": [-30.034, -51.211],
+                    "PORTO VELHO": [-8.761, -63.903], "POXORÉO": [-15.837, -54.389], "PRAIA GRANDE": [-24.005, -46.402],
+                    "PRESIDENTE PRUDENTE": [-22.125, -51.388], "PUXINANÃ": [-7.161, -35.962], "RECIFE": [-8.047, -34.877],
+                    "REGISTRO": [-24.488, -47.844], "RIBEIRÃO PRETO": [-21.170, -47.810], "RIO CLARO": [-22.411, -47.561],
+                    "RIO DE JANEIRO": [-22.906, -43.172], "RIO GRANDE": [-32.030, -52.098], "RIO TINTO": [-6.804, -35.081],
+                    "RIO VERDE": [-17.791, -50.923], "ROLÂNDIA": [-23.310, -51.368], "ROMA": [41.902, 12.496],
+                    "ROSÁRIO": [-2.936, -44.238], "SALVADOR": [-12.971, -38.510], "SAN JOSE": [37.338, -121.886],
+                    "SANTA CRUZ DO SUL": [-29.713, -52.428], "SANTA INÊS": [-3.666, -45.380], "SANTA ISABEL DO PARÁ": [-1.298, -48.161],
+                    "SANTA LUZIA DO PARÁ": [-1.517, -46.902], "SANTA MARIA DO PARÁ": [-1.439, -47.570], "SANTA TEREZA DO OESTE": [-25.045, -53.626],
+                    "SANTO AMARO DAS BROTAS": [-10.789, -37.054], "SANTO ANTÔNIO DE JESUS": [-12.966, -39.261], "SANTOS": [-23.961, -46.333],
+                    "SÃO BENTO DO SUL": [-26.248, -49.381], "SÃO CRISTÓVÃO": [-11.011, -37.201], "SÃO JOAQUIM DA BARRA": [-20.581, -47.859],
+                    "SÃO JOÃO DA BOA VISTA": [-21.968, -46.797], "SÃO JOSÉ DE RIBAMAR": [-2.553, -44.053], "SÃO JOSÉ DO BELMONTE": [-7.859, -38.756],
+                    "SÃO JOSÉ DO RIO PRETO": [-20.812, -49.376], "SÃO JOSÉ DOS CAMPOS": [-23.179, -45.887], "SÃO LUÍS": [-2.529, -44.302],
+                    "SÃO MIGUEL DO GUAMÁ": [-1.619, -47.481], "SÃO PAULO": [-23.550, -46.633], "SÃO SEBASTIÃO DO TOCANTINS": [-5.258, -48.204],
+                    "SÃO TOMÉ": [-23.535, -52.590], "SARANDI": [-23.444, -51.874], "SIRINHAÉM": [-8.588, -35.111],
+                    "SOUSA": [-6.763, -38.225], "SPRINGFIELD": [41.161, -96.126], "TAQUARA": [-29.650, -50.776],
+                    "TERESINA": [-5.089, -42.801], "TERRA ALTA": [-1.042, -47.883], "TERRA NOVA": [-8.234, -39.375],
+                    "TEUTÔNIA": [-29.447, -51.811], "TIMBAÚBA": [-7.502, -35.318], "TIMBÓ": [-26.822, -49.273],
+                    "TIMON": [-5.093, -42.825], "TOBATÍ": [-25.263, -57.067], "TOLEDO": [-24.717, -53.743],
+                    "TRAMANDAÍ": [-29.986, -50.134], "TUBARÃO": [-28.468, -49.006], "UBERLÂNDIA": [-18.918, -48.277],
+                    "UIRAÚNA": [-6.519, -38.411], "UMUARAMA": [-23.766, -53.323], "URUÇUÍ": [-7.228, -44.556],
+                    "VALPARAÍSO DE GOIÁS": [-16.071, -47.986], "VÁRZEA GRANDE": [-15.650, -56.132], "VIANA": [-3.220, -45.002],
+                    "VILA VELHA": [-20.330, -40.293], "VITÓRIA DA CONQUISTA": [-14.866, -40.839]
+                };
+                
                 for (let r of registros) {
                     let cid = (r.cidade || "").toUpperCase().replace("REGIÃO METROPOLITANA DE ", "").replace("REGIAO METROPOLITANA DE ", "");
                     let est = (r.estado || "").toUpperCase();
@@ -10455,10 +10534,10 @@
                     let isRecent = recentes.includes(c);
                     let iconToUse = isRecent ? recentIcon : standardIcon;
 
-                    if (c.lat && c.lon) {
-                        L.marker([c.lat, c.lon], {icon: iconToUse}).bindPopup(`<b>${c.cidade}</b><br>${c.estado}`).addTo(mapaAcessos);
-                    } else if (preCodedGeo[c.cidade]) {
+                    if (preCodedGeo[c.cidade]) {
                         L.marker(preCodedGeo[c.cidade], {icon: iconToUse}).bindPopup(`<b>${c.cidade}</b><br>${c.estado}`).addTo(mapaAcessos);
+                    } else if (c.lat && c.lon) {
+                        L.marker([c.lat, c.lon], {icon: iconToUse}).bindPopup(`<b>${c.cidade}</b><br>${c.estado}`).addTo(mapaAcessos);
                     }
                 }
                 mapaCarregado = true;
