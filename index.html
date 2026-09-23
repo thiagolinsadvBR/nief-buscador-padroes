@@ -690,7 +690,6 @@
             <button class="btn-ferramenta" onclick="abrirGerador()">
                 <span>Gerador de Combinações<br>Numeração de Motores</span>
             </button>
-            <!-- NOVO BOTÃO DA FERRAMENTA DE VALIDADOR VW -->
             <button class="btn-ferramenta" onclick="abrirValidadorVW()">
                 <span>Validador de Etiqueta VW<br>Capa da Correia</span>
             </button>
@@ -817,7 +816,7 @@
         </div>
 
         <div class="warning-box" style="text-align: center; text-indent: 0; margin-bottom: 15px;">
-            Caracteres ilegíveis ou código de barras parcialmente destruído? Solicite apoio imediato da inteligência <a href="https://wa.me/5583982203949" target="_blank" style="color: var(--accent); font-weight: bold; text-decoration: underline;">CLICANDO AQUI</a>.
+            Caracteres ilegíveis ou código de barras parcialmente destruído? Solicite apoio imediato da inteligência.
         </div>
 
         <div style="width: 100%; max-width: 600px; display: flex; gap: 10px; justify-content: center; margin-bottom: 10px;">
@@ -826,7 +825,7 @@
         </div>
 
         <div id="instructionBoxEta" class="warning-box" style="display: none;">
-            Se o padrão gerado não for idêntico ao da etiqueta na motocicleta, solicite apoio para análise completa da etiqueta <a href="https://wa.me/5583982203949" target="_blank" style="color: var(--accent); font-weight: bold; text-decoration: underline;">CLICANDO AQUI</a>.
+            Se o padrão gerado não for idêntico ao da etiqueta na motocicleta, solicite apoio para análise completa da etiqueta.
         </div>
 
         <!-- Área do Código de Barras -->
@@ -903,11 +902,17 @@
         <button class="btn-voltar-menu" onclick="voltarDashboard()">⬅ Voltar ao Painel</button>
         
         <div class="tool-title">Validador de Etiqueta VW (Capa da Correia)</div>
-        <div>
+        <div style="width: 100%; max-width: 600px;">
             <div class="tool-guide-title">Instruções de Uso:</div>
-            <p class="tool-guide-text">
-                Insira a numeração puramente numérica (12 ou 14 dígitos) <b>OU</b> a sequência alfanumérica completa de 16 caracteres (Ex: CCRU239965490526) para gerar as barras originais e confrontar com a etiqueta vistoriada.
+            <p class="tool-guide-text" style="text-align: center; margin-bottom: 10px;">
+                Para gerar as barras originais da etiqueta e confrontar com a etiqueta vistoriada, insira a numeração puramente numérica (12 ou 14 dígitos - ETIQUETA ANTIGA, MENOS BARRAS), conforme imagem abaixo:
             </p>
+            <img src="eta_vw_capa_correia_antiga.png" alt="Exemplo Etiqueta Antiga" style="max-width: 100%; height: auto; display: block; margin: 0 auto 15px auto; border-radius: 6px; border: 1px solid #444;">
+            
+            <p class="tool-guide-text" style="text-align: center; margin-bottom: 10px;">
+                <b>OU</b> a sequência alfanumérica completa de 16 caracteres (ETIQUETA MODERNA, MAIS BARRAS), conforme imagem abaixo:
+            </p>
+            <img src="eta_vw_capa_correia_moderna.png" alt="Exemplo Etiqueta Moderna" style="max-width: 100%; height: auto; display: block; margin: 0 auto 20px auto; border-radius: 6px; border: 1px solid #444;">
         </div>
         
         <div style="width: 100%; max-width: 600px; margin-bottom: 10px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
@@ -922,15 +927,17 @@
         <div id="resultAreaVW" style="display: none; width: 100%; max-width: 600px; flex-direction: column; align-items: center;">
             <div id="exportContentVW" style="width: 100%; background: #1a1a1a; padding: 20px; border-radius: 8px; border: 1px solid #333; box-sizing: border-box;">
                 <h3 id="statusMessageVW" class="vw-status"></h3>
+                
                 <div id="translationNoteVW" class="warning-box" style="display: none; text-align: center; margin: 0 auto 15px auto;"></div>
 
                 <div id="barcodeContainerVW" style="text-align: center; background: white; padding: 15px; border-radius: 4px; cursor: pointer; border: 2px solid var(--accent); transition: transform 0.2s; width: 100%; box-sizing: border-box; overflow: hidden;" onclick="abrirModalVW()" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
                     <h4 style="color: black; margin: 0 0 5px 0; font-size: 1.1rem;">Padrão de Barras Gerado</h4>
                     <span style="color: #333; font-size: 0.85rem; font-weight: bold; display: block; margin-bottom: 5px;">SISTEMAS IDV/EFV</span>
                     <div style="font-size: 0.8rem; color: #006600; background: #e6ffe6; padding: 4px; border-radius: 4px; border: 1px dashed #006600; margin-bottom: 10px; display: inline-block; font-weight: bold;">👆 Toque na imagem para visualização tática (Gire o Celular)</div>
-                    <svg id="barcodeVW"></svg>
+                    <svg id="barcodeVW" style="width: 100%; max-width: 100%; height: auto; display: block; margin: 0 auto;"></svg>
                 </div>
             </div>
+            
             <button class="btn-action" id="downloadBtnVW" onclick="baixarRelatorioVW()" style="margin-top: 15px; width: 100%; max-width: 300px;">💾 Baixar Relatório PNG</button>
         </div>
     </div>
@@ -939,10 +946,12 @@
     <div id="barcodeModalVW" class="modal-overlay" onclick="if(event.target === this) fecharModalVW()">
         <div id="modalWrapperVW" class="vw-modal-wrapper">
             <span class="close-btn" onclick="fecharModalVW()" style="position: absolute; top: 5px; right: 15px; color: #333; font-size: 28px; font-weight: bold; cursor: pointer; z-index: 10;">&times;</span>
+            
             <div id="areaCapturaModalVW" style="background-color: #ffffff; padding: 10px; border-radius: 4px; width: 100%; box-sizing: border-box; overflow: hidden;">
                 <div style="color: #000000; font-size: 18px; font-weight: bold; margin-bottom: 10px; margin-top: 10px; text-transform: uppercase;">Visão de Vistoria - SISTEMAS IDV/EFV</div>
-                <svg id="modalBarcodeVW"></svg>
+                <svg id="modalBarcodeVW" style="width: 100%; max-width: 100%; height: auto; display: block; margin: 0 auto;"></svg>
             </div>
+
             <button class="btn-action" onclick="compartilharWhatsAppVW()" id="btnShareWaVW" style="width: 100%; background-color: #25D366; color: white; border: none; margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 8px;">
                 <svg viewBox="0 0 24 24" style="width: 22px; height: 22px; fill: currentColor;">
                     <path d="M12.031 0C5.385 0 0 5.385 0 12.031c0 2.126.551 4.194 1.597 6.01L.026 24l6.104-1.602A11.97 11.97 0 0012.031 24c6.646 0 12.031-5.385 12.031-12.031S18.677 0 12.031 0zm0 22.012c-1.801 0-3.565-.484-5.115-1.403l-.367-.217-3.8.997.997-3.8-.238-.378a10.01 10.01 0 01-1.531-5.365c0-5.541 4.511-10.051 10.054-10.051 5.54 0 10.051 4.51 10.051 10.051s-4.51 10.051-10.051 10.051zm5.517-7.53c-.302-.152-1.787-.882-2.063-.983-.277-.101-.48-.152-.683.152-.202.304-.783.983-.959 1.185-.177.203-.354.228-.657.076-1.554-.775-2.73-1.432-3.805-2.834-.277-.361.277-.334.862-1.503.076-.152.038-.279-.038-.431-.076-.152-.683-1.648-.936-2.257-.246-.593-.497-.512-.683-.521-.177-.008-.38-.008-.582-.008-.203 0-.532.076-.811.38-.278.304-1.063 1.039-1.063 2.534 0 1.495 1.089 2.94 1.241 3.143.152.203 2.143 3.27 5.188 4.582 1.631.703 2.298.761 3.132.64.912-.132 2.812-1.149 3.204-2.26.393-1.111.393-2.064.276-2.261-.116-.197-.419-.298-.722-.45z"/>
@@ -10517,8 +10526,8 @@
             "JOINVILLE": [-26.304, -48.846], "JUNDIAÍ": [-23.185, -46.897], "JUNÍN": [-34.583, -60.945],
             "LAS PIEDRAS": [-34.726, -56.216], "LINDÓIA": [-22.524, -46.650], "LOANDA": [-22.929, -53.136],
             "LONDRINA": [-23.310, -51.162], "MACAU": [-5.111, -36.634], "MADRID": [40.416, -3.703],
-            "MANDAGUAÇU": [-23.344, -52.095], "MARECHAL CÂNDIDO RONDON": [-24.558, -54.056], "MARI": [-7.060, -35.316], 
-            "MARITUBA": [-1.355, -48.341], "MARTINS": [-6.091, -37.915], "MATHIAS LOBATO": [-18.574, -41.954], 
+            "MANDAGUAÇU": [-23.344, -52.095], "MARABÁ": [-5.368, -49.090], "MARECHAL CÂNDIDO RONDON": [-24.558, -54.056],
+            "MARI": [-7.060, -35.316], "MARITUBA": [-1.355, -48.341], "MARTINS": [-6.091, -37.915], "MATHIAS LOBATO": [-18.574, -41.954], 
             "MATINHOS": [-25.816, -48.542], "MATÕES": [-5.518, -43.201], "MIRACATU": [-24.281, -47.457], 
             "MONTEIRO": [-7.893, -37.116], "MONTES CLAROS": [-16.735, -43.861], "MONTEVIDÉU": [-34.901, -56.164], 
             "MUNDO NOVO": [-23.938, -54.284], "NAVIRAÍ": [-23.064, -54.190], "NOSSA SENHORA DO SOCORRO": [-10.852, -37.234],
