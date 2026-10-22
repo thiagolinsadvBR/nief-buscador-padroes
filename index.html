@@ -448,6 +448,31 @@
             .vw-modal-wrapper { transform: translate(-50%, -50%); width: 95vw; }
         }
 
+        /* ESTILOS ESPECÍFICOS - QUIZ */
+        .quiz-tabs { display: flex; gap: 10px; margin-bottom: 20px; width: 100%; max-width: 800px; justify-content: center; }
+        .btn-tab { flex: 1; padding: 12px; background: #252525; color: #aaa; border: 1px solid #444; border-radius: 8px; cursor: pointer; font-weight: bold; transition: all 0.2s; text-align: center; }
+        .btn-tab.active { background: var(--accent); color: var(--primary); border-color: var(--accent); }
+        
+        .quiz-question-card { background: #222; border: 1px solid #444; border-radius: 8px; padding: 20px; margin-bottom: 20px; width: 100%; max-width: 800px; box-sizing: border-box; }
+        .quiz-question-title { font-size: 1.1rem; color: #fff; margin-bottom: 15px; font-weight: bold; line-height: 1.4; }
+        .quiz-options { display: flex; flex-direction: column; gap: 10px; }
+        .quiz-option { background: #333; color: #ddd; padding: 12px 15px; border-radius: 6px; border: 1px solid #555; cursor: pointer; transition: background 0.2s; line-height: 1.3; }
+        .quiz-option:hover { background: #444; }
+        .quiz-option.correct { background: rgba(124, 252, 0, 0.2); border-color: var(--accent); color: var(--accent); font-weight: bold; cursor: default; }
+        .quiz-option.incorrect { background: rgba(255, 68, 68, 0.2); border-color: #ff4444; color: #ff4444; font-weight: bold; cursor: default; }
+        .quiz-option.disabled { pointer-events: none; opacity: 0.6; }
+        .quiz-option.disabled.correct { opacity: 1; }
+        .quiz-option.disabled.incorrect { opacity: 1; }
+
+        .ranking-table { width: 100%; max-width: 800px; border-collapse: collapse; margin-top: 10px; }
+        .ranking-table th, .ranking-table td { padding: 12px; text-align: left; border-bottom: 1px solid #444; color: #ddd; }
+        .ranking-table th { background: #222; color: var(--accent); font-weight: bold; }
+        .ranking-table tr:nth-child(1) td { color: #FFD700; font-weight: bold; font-size: 1.1rem; }
+        .ranking-table tr:nth-child(2) td { color: #C0C0C0; font-weight: bold; }
+        .ranking-table tr:nth-child(3) td { color: #cd7f32; font-weight: bold; }
+        
+        .quiz-stats { position: sticky; top: var(--topbar-height); background: rgba(26, 26, 26, 0.95); padding: 10px; border-bottom: 1px solid #444; z-index: 900; display: flex; justify-content: space-between; width: 100%; max-width: 800px; box-sizing: border-box; color: var(--accent); font-weight: bold; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+
         /* PONTOS DO MAPA (ESCOPO GLOBAL PARA FUNCIONAR NO PC E MOBILE) */
         .dot-standard {
             background-color: var(--accent);
@@ -693,6 +718,10 @@
             <button class="btn-ferramenta" onclick="abrirValidadorVW()">
                 <span>Validador de Etiqueta VW<br>Capa da Correia</span>
             </button>
+            <!-- NOVO BOTÃO DA FERRAMENTA DE QUIZ -->
+            <button class="btn-ferramenta" onclick="abrirQuiz()">
+                <span>Quiz IDV<br>Teste seus Conhecimentos</span>
+            </button>
         </div>
         <button class="btn-sair" onclick="fazerLogout()">Sair da Ferramenta Restrita</button>
     </div>
@@ -816,7 +845,7 @@
         </div>
 
         <div class="warning-box" style="text-align: center; text-indent: 0; margin-bottom: 15px;">
-            Caracteres ilegíveis ou código de barras parcialmente destruído? Solicite apoio imediato da inteligência.
+            Caracteres ilegíveis ou código de barras parcialmente destruído? Faça tentativas substituindo os caracteres até que as barras batam.
         </div>
 
         <div style="width: 100%; max-width: 600px; display: flex; gap: 10px; justify-content: center; margin-bottom: 10px;">
@@ -825,7 +854,7 @@
         </div>
 
         <div id="instructionBoxEta" class="warning-box" style="display: none;">
-            Se o padrão gerado não for idêntico ao da etiqueta na motocicleta, solicite apoio para análise completa da etiqueta.
+            Se o padrão gerado não for idêntico ao da etiqueta na motocicleta, a etiqueta é falsa.
         </div>
 
         <!-- Área do Código de Barras -->
@@ -905,12 +934,12 @@
         <div style="width: 100%; max-width: 600px;">
             <div class="tool-guide-title">Instruções de Uso:</div>
             <p class="tool-guide-text" style="text-align: center; margin-bottom: 10px;">
-                Para gerar as barras originais da etiqueta e confrontar com a etiqueta vistoriada, insira a numeração puramente numérica (12 ou 14 dígitos - ETIQUETA ANTIGA, com MENOS barras), conforme imagem abaixo:
+                Para gerar as barras originais da etiqueta e confrontar com a etiqueta vistoriada, insira a numeração puramente numérica (12 ou 14 dígitos), conforme imagem abaixo:
             </p>
             <img src="assets/eta_vw_capa_correia_antiga.png" alt="Exemplo Etiqueta Antiga" style="max-width: 100%; height: auto; display: block; margin: 0 auto 15px auto; border-radius: 6px; border: 1px solid #444;">
             
             <p class="tool-guide-text" style="text-align: center; margin-bottom: 10px;">
-                <b>OU</b> a sequência alfanumérica completa de 16 caracteres - ETIQUETA MODERNA, com MAIS barras), conforme imagem abaixo:
+                <b>OU</b> a sequência alfanumérica completa de 16 caracteres, conforme imagem abaixo:
             </p>
             <img src="assets/eta_vw_capa_correia_moderna.png" alt="Exemplo Etiqueta Moderna" style="max-width: 100%; height: auto; display: block; margin: 0 auto 20px auto; border-radius: 6px; border: 1px solid #444;">
         </div>
@@ -939,6 +968,46 @@
             </div>
             
             <button class="btn-action" id="downloadBtnVW" onclick="baixarRelatorioVW()" style="margin-top: 15px; width: 100%; max-width: 300px;">💾 Baixar Relatório PNG</button>
+        </div>
+    </div>
+
+    <!-- FERRAMENTA 7: QUIZ IDV -->
+    <div id="areaQuiz" style="display: none; width: 100%; flex-direction: column; align-items: center; max-width: 900px;">
+        <button class="btn-voltar-menu" onclick="voltarDashboard()">⬅ Voltar ao Painel</button>
+        <div class="tool-title">Quiz: Inteligência em Identificação Veicular</div>
+
+        <div class="quiz-tabs">
+            <button class="btn-tab active" id="btnTabResponder" onclick="alternarAbaQuiz('responder')">Responder Quiz</button>
+            <button class="btn-tab" id="btnTabRanking" onclick="alternarAbaQuiz('ranking')">Ranking Global</button>
+        </div>
+
+        <div id="abaResponderQuiz" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+            <div class="quiz-stats" id="quizStatsDisplay">
+                <span>Respondidas: <span id="quizCountRespondidas">0</span>/50</span>
+                <span>Acertos: <span id="quizCountAcertos">0</span></span>
+            </div>
+            
+            <div id="quizContainer" style="width: 100%; max-width: 800px; margin-top: 15px;"></div>
+            
+            <button class="btn-action" onclick="salvarPontuacaoQuiz()" style="margin-top: 20px; max-width: 300px; font-size: 1.1rem; padding: 15px;">Salvar Minha Pontuação</button>
+        </div>
+
+        <div id="abaRankingQuiz" style="width: 100%; display: none; flex-direction: column; align-items: center;">
+            <h3 style="color: var(--accent); margin-bottom: 10px;">🏆 Melhores Agentes</h3>
+            <p style="color: #ccc; font-size: 0.85rem; margin-top: 0;">Pontuação baseada no número de acertos totais.</p>
+            
+            <table class="ranking-table" id="rankingTable">
+                <thead>
+                    <tr>
+                        <th width="15%">Posição</th>
+                        <th>Agente</th>
+                        <th width="20%">Acertos</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td colspan="3" style="text-align:center;">Carregando ranking...</td></tr>
+                </tbody>
+            </table>
         </div>
     </div>
 
@@ -10288,7 +10357,7 @@
             appId: "1:62938610049:web:653ea195c4d3afd576d080"
         };
 
-        let database, acessosRef, auth;
+        let database, acessosRef, auth, rankingRef;
         const terminalLogs = document.getElementById('terminalLogs');
         const gpsStatus = document.getElementById('gpsStatus');
         const ledCounter = document.getElementById('ledCounter');
@@ -10301,6 +10370,8 @@
         const areaVerificador = document.getElementById('areaVerificador');
         const areaGerador = document.getElementById('areaGerador');
         const areaValidadorVW = document.getElementById('areaValidadorVW');
+        const areaQuiz = document.getElementById('areaQuiz');
+        
         const modalAuth = document.getElementById('modalAuth');
         const formLogin = document.getElementById('formLogin');
         const formCadastro = document.getElementById('formCadastro');
@@ -10311,6 +10382,7 @@
             database = firebase.database();
             auth = firebase.auth();
             acessosRef = database.ref('acessos');
+            rankingRef = database.ref('ranking');
 
             acessosRef.on('value', (snapshot) => {
                 try {
@@ -10333,12 +10405,7 @@
                         if (userData && userData.status === 'aprovado') {
                             btnAcessoRestrito.style.display = 'none';
                             areaDashboard.style.display = 'flex';
-                            areaBuscador.style.display = 'none';
-                            areaEliminador.style.display = 'none';
-                            areaRecreador.style.display = 'none';
-                            areaVerificador.style.display = 'none';
-                            areaGerador.style.display = 'none';
-                            areaValidadorVW.style.display = 'none';
+                            esconderTudo(true); 
                             modalAuth.style.display = 'none';
                             modalPendente.style.display = 'none';
                             
@@ -10347,12 +10414,7 @@
                         } else {
                             btnAcessoRestrito.style.display = 'none';
                             areaDashboard.style.display = 'none';
-                            areaBuscador.style.display = 'none';
-                            areaEliminador.style.display = 'none';
-                            areaRecreador.style.display = 'none';
-                            areaVerificador.style.display = 'none';
-                            areaGerador.style.display = 'none';
-                            areaValidadorVW.style.display = 'none';
+                            esconderTudo();
                             modalAuth.style.display = 'none';
                             modalPendente.style.display = 'flex';
                         }
@@ -10363,12 +10425,7 @@
                 } else {
                     btnAcessoRestrito.style.display = 'block';
                     areaDashboard.style.display = 'none';
-                    areaBuscador.style.display = 'none';
-                    areaEliminador.style.display = 'none';
-                    areaRecreador.style.display = 'none';
-                    areaVerificador.style.display = 'none';
-                    areaGerador.style.display = 'none';
-                    areaValidadorVW.style.display = 'none';
+                    esconderTudo();
                     modalAuth.style.display = 'none';
                     modalPendente.style.display = 'none';
                 }
@@ -10737,14 +10794,17 @@
         function abrirModalRestricaoMobile() { document.getElementById('modalRestricaoMobile').style.display = 'flex'; }
         function fecharModalRestricaoMobile() { document.getElementById('modalRestricaoMobile').style.display = 'none'; }
 
-        function esconderTudo() {
-            areaDashboard.style.display = 'none'; 
+        function esconderTudo(irParaDashboard = false) {
             areaBuscador.style.display = 'none'; 
             areaEliminador.style.display = 'none'; 
             areaRecreador.style.display = 'none';
             areaVerificador.style.display = 'none';
             areaGerador.style.display = 'none';
             areaValidadorVW.style.display = 'none';
+            areaQuiz.style.display = 'none';
+            if (!irParaDashboard) {
+                areaDashboard.style.display = 'none';
+            }
         }
 
         function abrirBuscador() { esconderTudo(); areaBuscador.style.display = 'flex'; }
@@ -10762,7 +10822,235 @@
             esconderTudo(); areaRecreador.style.display = 'flex'; 
         }
 
-        function voltarDashboard() { esconderTudo(); areaDashboard.style.display = 'flex'; }
+        function voltarDashboard() { esconderTudo(true); areaDashboard.style.display = 'flex'; }
+
+        // =========================================================================================
+        // FERRAMENTA 7: QUIZ IDV
+        // =========================================================================================
+        const quizData = [
+            { pergunta: "01) De acordo com a Resolução CONTRAN nº 968/2022, qual dos seguintes veículos NÃO está excetuado da obrigatoriedade de identificação na forma da referida Resolução?", opcoes: ["A. Tratores.", "B. Veículos protótipos de competição.", "C. Reboques com PBT superior a 3.500 kg.", "D. Veículos de uso bélico."], correta: 2 },
+            { pergunta: "02) Como é definido o Número de Identificação do Veículo (VIN) pela Resolução?", opcoes: ["A. Combinação de 21 caracteres.", "B. Combinação de 11 caracteres.", "C. Combinação de 8 caracteres.", "D. Combinação de 17 caracteres."], correta: 3 },
+            { pergunta: "03) Qual é a função da seção WMI no Número de Identificação do Veículo?", opcoes: ["A. Fornecer características gerais.", "B. Distinguir veículos em produção.", "C. Identificar o fabricante do veículo.", "D. Identificar a carroceria montada."], correta: 2 },
+            { pergunta: "04) Quantos caracteres compõem a Seção Indicadora do Veículo (VIS)?", opcoes: ["A. Três caracteres.", "B. Seis caracteres.", "C. Dezessete caracteres.", "D. Oito caracteres."], correta: 3 },
+            { pergunta: "05) O Número de Identificação de Carroceria de Veículo (NICV) é composto por quantos caracteres?", opcoes: ["A. 8 caracteres.", "B. 6 caracteres.", "C. 17 caracteres.", "D. 21 caracteres."], correta: 3 },
+            { pergunta: "06) Qual é a principal característica física exigida para a Etiqueta Autocolante (ETA)?", opcoes: ["A. Ser magnética.", "B. Ser transparente.", "C. Ser destrutível.", "D. Ser fluorescente."], correta: 2 },
+            { pergunta: "07) Em veículos automotores, a partir de qual Peso Bruto Total (PBT) é obrigatória a identificação da caixa de câmbio?", opcoes: ["A. Igual ou superior a 6.000 kg.", "B. Igual ou superior a 3.500 kg.", "C. Qualquer Peso Bruto Total.", "D. Igual ou superior a 4.536 kg."], correta: 3 },
+            { pergunta: "08) Qual profundidade mínima é exigida para a gravação do VIN no monobloco ou chassi?", opcoes: ["A. 0,2 mm.", "B. 1,0 mm.", "C. 0,1 mm.", "D. 0,5 mm."], correta: 0 },
+            { pergunta: "09) Em relação ao processo de gravação do VIN, a punção manual é:", opcoes: ["A. Obrigatória.", "B. Sempre permitida.", "C. Totalmente proibida.", "D. Vedada, com exceções."], correta: 3 },
+            { pergunta: "10) Qual caractere do VIN deve corresponder obrigatoriamente à identificação do ano-modelo do veículo?", opcoes: ["A. O nono caractere.", "B. O décimo caractere.", "C. O décimo primeiro.", "D. O oitavo caractere."], correta: 1 },
+            { pergunta: "11) O ano-modelo de um veículo em relação ao seu ano de fabricação pode ser:", opcoes: ["A. Imediatamente anterior, igual ou posterior.", "B. Apenas o ano exato.", "C. Qualquer ano escolhido.", "D. Apenas igual ou posterior."], correta: 0 },
+            { pergunta: "12) Qual é a altura mínima dos caracteres do VIN gravados em motocicletas?", opcoes: ["A. 2 mm.", "B. 5 mm.", "C. 4 mm.", "D. 7 mm."], correta: 2 },
+            { pergunta: "13) Quais veículos estão isentos da segunda gravação do VIN?", opcoes: ["A. Reboques automotivos.", "B. Ciclomotores e motocicletas.", "C. Automóveis de passeio.", "D. Caminhonetes e furgões."], correta: 1 },
+            { pergunta: "14) Para reboques e semirreboques, a segunda gravação do VIN deve ser feita em qual local?", opcoes: ["A. Na longarina direita.", "B. No engate.", "C. No painel traseiro.", "D. Na longarina esquerda."], correta: 3 },
+            { pergunta: "15) Sobre o uso de Etiqueta Autocolante (ETA) como segunda gravação do VIN, é correto afirmar:", opcoes: ["A. É aceita para todos.", "B. É proibida.", "C. Apenas no para-brisa.", "D. Não é aceita para reboques."], correta: 3 },
+            { pergunta: "16) Onde o número de identificação do motor deve ser primeiramente gravado?", opcoes: ["A. No bloco do motor.", "B. No filtro de óleo.", "C. No cabeçote.", "D. No cárter."], correta: 0 },
+            { pergunta: "17) Para motores elétricos, como deve ser feita a gravação de identificação?", opcoes: ["A. No bloco ou carcaça.", "B. Em adesivo de papel.", "C. No painel do veículo.", "D. No banco de baterias."], correta: 0 },
+            { pergunta: "18) Quantas Etiquetas Autocolantes (ETA) com VIS devem ser afixadas na maioria dos veículos automotores (como automóveis)?", opcoes: ["A. Uma.", "B. Duas.", "C. Três.", "D. Quatro."], correta: 1 },
+            { pergunta: "19) Sobre a marcação do VIS nos vidros, é incorreto afirmar:", opcoes: ["A. Excluem-se quebra-ventos.", "B. Em um vidro traseiro.", "C. Em dois de cada lado.", "D. Apenas no para-brisa."], correta: 3 },
+            { pergunta: "20) De acordo com o art. 12 da Resolução, é obrigatória a gravação do:", opcoes: ["A. Ano de fabricação.", "B. Ano de licenciamento.", "C. Mês de fabricação.", "D. Cor do veículo."], correta: 0 },
+            { pergunta: "21) Qual caractere é acrescentado na regravação de um número de motor deteriorado que não sofreu adulteração proposital?", opcoes: ["A. Caractere R.", "B. Caractere A.", "C. Partícula RF.", "D. Caractere M."], correta: 0 },
+            { pergunta: "22) Como a anulação de um número identificador adulterado ou deteriorado deve ser feita fisicamente no metal?", opcoes: ["A. Pintando por cima.", "B. Lixando o local.", "C. Acrescentando A.", "D. Soldando uma chapa."], correta: 2 },
+            { pergunta: "23) O que significa a partícula RF acrescentada ao final do VIN?", opcoes: ["A. Registro Final.", "B. Regravado de Fábrica.", "C. Regravado Furtado.", "D. Registro Falso."], correta: 1 },
+            { pergunta: "24) Para obter autorização de substituição de uma plaqueta metálica, o proprietário do veículo deve:", opcoes: ["A. Comprar via internet.", "B. Submeter-se a vistoria.", "C. Ir a uma oficina comum.", "D. Apresentar apenas RG."], correta: 1 },
+            { pergunta: "25) Qual o prazo de validade da autorização expedida pelo Detran para a confecção de nova Etiqueta Autocolante?", opcoes: ["A. Noventa dias.", "B. Tempo indeterminado.", "C. Trinta dias.", "D. Sessenta dias."], correta: 3 },
+            { pergunta: "26) Quem deve fornecer a nova etiqueta destrutível (ETA) após a devida autorização do órgão de trânsito?", opcoes: ["A. O DETRAN diretamente.", "B. A oficina vistoriadora.", "C. O fabricante/importador.", "D. Qualquer gráfica."], correta: 2 },
+            { pergunta: "27) A instalação da nova plaqueta de identificação deve ser realizada por:", opcoes: ["A. Despachante.", "B. Proprietário do carro.", "C. Polícia Civil.", "D. DETRAN ou concessionária."], correta: 3 },
+            { pergunta: "28) Em até quantos dias o proprietário deve apresentar o veículo com motor substituído ao DETRAN para regularização?", opcoes: ["A. Noventa dias.", "B. Sessenta dias.", "C. Trinta dias.", "D. Dez dias."], correta: 1 },
+            { pergunta: "29) Como regularizar um motor usado ou recondicionado que perdeu sua numeração gravada em plaqueta?", opcoes: ["A. Por declaração licita.", "B. Usando o VIN.", "C. Não é regularizável.", "D. Remarcando na oficina."], correta: 0 },
+            { pergunta: "30) Na regularização de motores com erro ou numeração adulterada, o que significa a sigla DA/UF inserida no cadastro?", opcoes: ["A. Decisão Administrativa.", "B. Direito Autoral.", "C. Departamento Autorizado.", "D. Duplicidade Anulada."], correta: 0 },
+            { pergunta: "31) O que significa o diferencial DJ/UF no cadastro de um motor?", opcoes: ["A. Departamento Judicial.", "B. Decisão Judicial.", "C. Dublê Justificado.", "D. Despachante Jurídico."], correta: 1 },
+            { pergunta: "32) Onde deve ser feita a nova gravação de numeração fornecida pelo DETRAN para regularização de um bloco de motor virgem?", opcoes: ["A. Na tampa de válvulas.", "B. Por cima da velha.", "C. Em superfície virgem.", "D. No cárter inferior."], correta: 2 },
+            { pergunta: "33) A gravação do número do motor fornecida pelo DETRAN é composta por quantos dígitos?", opcoes: ["A. Nove dígitos.", "B. Sete dígitos.", "C. Oito dígitos.", "D. Dez dígitos."], correta: 0 },
+            { pergunta: "34) O que indica a partícula RM gravada num motor?", opcoes: ["A. Remarcado Múltiplo.", "B. Remanufaturado de fábrica.", "C. Registro Manual.", "D. Reparo Mecânico."], correta: 1 },
+            { pergunta: "35) Nos casos de duplicidade de chassi (veículos com mesmo VIN registrados em estados diferentes), qual providência ocorre nos sistemas após constatação firme?", opcoes: ["A. Emite-se novo VIN.", "B. Baixa permanente.", "C. Acrescenta-se DP.", "D. Acrescenta-se DB."], correta: 3 },
+            { pergunta: "36) Para inserir dados de chassi no sistema RENAVAM, é permitido o uso de espaços em branco ou símbolos?", opcoes: ["A. Sim, apenas espaços.", "B. Não, é vedado.", "C. Apenas o hífen.", "D. Sim, se constar na peça."], correta: 1 },
+            { pergunta: "37) Ao criar um novo VIN para veículos consulares/diplomáticos ou leiloados em que o chassi original foi perdido, o órgão máximo inicia os 3 primeiros caracteres do WMI com:", opcoes: ["A. BRZ.", "B. XXX.", "C. YYY.", "D. 9BR."], correta: 1 },
+            { pergunta: "38) Um veículo incorporado/doado ao órgão público que receba novo VIN (Anexo II) terá na 12ª à 14ª posição os caracteres:", opcoes: ["A. DET.", "B. GOV.", "C. PUB.", "D. DOA."], correta: 3 },
+            { pergunta: "39) Para a gravação dos caracteres alfanuméricos da Placa de Identificação Veicular (PIV) nos vidros, a resolução determina que:", opcoes: ["A. É proibida.", "B. Causa infração se não tiver.", "C. É opcional.", "D. É obrigatória."], correta: 2 },
+            { pergunta: "40) Se o proprietário alterar intencionalmente um sinal identificador, incidirá na sanção de qual artigo do CTB, segundo esta resolução?", opcoes: ["A. Art. 162.", "B. Art. 237.", "C. Art. 230, I.", "D. Art. 165."], correta: 2 },
+            { pergunta: "41) Qual caractere da Placa de Identificação Veicular, ou do VIN refeito para leilões, é utilizado da 12ª a 14ª posições (Anexo II)?", opcoes: ["A. VEN.", "B. LEI.", "C. VND.", "D. LE1."], correta: 3 },
+            { pergunta: "42) Ao consultar o RENAVAM, descobre-se que a numeração de um motor está adulterada pela raspagem física não autorizada. O que deve ser feito com o veículo no momento da vistoria?", opcoes: ["A. Encaminhamento policial.", "B. Liberação para uso.", "C. Emissão de novo motor.", "D. Remarcação imediata."], correta: 0 },
+            { pergunta: "43) Como a anulação de um VIN gravado incorretamente por erro do fabricante é feita na prática?", opcoes: ["A. Marcando com X.", "B. Furada com broca.", "C. Remoção térmica.", "D. Inserindo a letra A."], correta: 3 },
+            { pergunta: "44) Qual o significado da seção WMI em um veículo cujo VIN possui padrão internacional?", opcoes: ["A. Fabricante e país.", "B. Tipo de motor.", "C. Ano e fábrica.", "D. Peso bruto total."], correta: 0 },
+            { pergunta: "45) A gravação do VIS na superfície dos vidros traseiros (quando existirem) deve ocorrer:", opcoes: ["A. Em ambos.", "B. Apenas se pedido.", "C. Em um deles.", "D. No limpador."], correta: 2 },
+            { pergunta: "46) Veículos destinados à exportação e isentos de registro no Brasil necessitam ostentar o padrão VIN e ETA estritos descritos na norma brasileira?", opcoes: ["A. Não, são isentos.", "B. Apenas para o Mercosul.", "C. Sim, na fronteira.", "D. Sim, é internacional."], correta: 0 },
+            { pergunta: "47) No caso de ônibus e micro-ônibus (M2 e M3), quem é o responsável por atribuir o NICV?", opcoes: ["A. O DETRAN estadual.", "B. A fabricante do chassi.", "C. O encarroçador.", "D. A oficina."], correta: 2 },
+            { pergunta: "48) A plaqueta de identificação de peso/capacidade dos veículos de carga deve ser:", opcoes: ["A. Visível.", "B. De plástico fino.", "C. Apenas documental.", "D. Oculta."], correta: 0 },
+            { pergunta: "49) Qual componente em veículos inacabados (chassi-plataforma) é incumbido ao encarroçador implantar em relação às identificações?", opcoes: ["A. A suspensão.", "B. O motor base.", "C. Apenas o chassi.", "D. As etiquetas e vidros."], correta: 3 },
+            { pergunta: "50) Onde o ano de fabricação deve estar localizado, de acordo com o Anexo I?", opcoes: ["A. No pneu.", "B. Junto ao VIN.", "C. Na pintura.", "D. No tanque."], correta: 1 }
+        ];
+
+        let quizAcertos = 0;
+        let quizRespondidas = 0;
+
+        function abrirQuiz() {
+            esconderTudo();
+            areaQuiz.style.display = 'flex';
+            alternarAbaQuiz('responder');
+            renderizarQuiz();
+            carregarRankingQuiz();
+        }
+
+        function alternarAbaQuiz(aba) {
+            const btnResponder = document.getElementById('btnTabResponder');
+            const btnRanking = document.getElementById('btnTabRanking');
+            const abaResponder = document.getElementById('abaResponderQuiz');
+            const abaRanking = document.getElementById('abaRankingQuiz');
+
+            if (aba === 'responder') {
+                btnResponder.classList.add('active');
+                btnRanking.classList.remove('active');
+                abaResponder.style.display = 'flex';
+                abaRanking.style.display = 'none';
+            } else {
+                btnRanking.classList.add('active');
+                btnResponder.classList.remove('active');
+                abaRanking.style.display = 'flex';
+                abaResponder.style.display = 'none';
+                carregarRankingQuiz(); 
+            }
+        }
+
+        function renderizarQuiz() {
+            const container = document.getElementById('quizContainer');
+            container.innerHTML = '';
+            quizAcertos = 0;
+            quizRespondidas = 0;
+            atualizarPlacarQuiz();
+
+            quizData.forEach((q, index) => {
+                const card = document.createElement('div');
+                card.className = 'quiz-question-card';
+                
+                const title = document.createElement('div');
+                title.className = 'quiz-question-title';
+                title.innerText = q.pergunta;
+                card.appendChild(title);
+
+                const optionsDiv = document.createElement('div');
+                optionsDiv.className = 'quiz-options';
+                optionsDiv.id = `options-group-${index}`;
+
+                q.opcoes.forEach((optText, optIndex) => {
+                    const btn = document.createElement('div');
+                    btn.className = 'quiz-option';
+                    btn.innerText = optText;
+                    btn.onclick = () => verificarRespostaQuiz(index, optIndex, btn);
+                    optionsDiv.appendChild(btn);
+                });
+
+                card.appendChild(optionsDiv);
+                container.appendChild(card);
+            });
+        }
+
+        function verificarRespostaQuiz(qIndex, optIndex, btnElement) {
+            const questionData = quizData[qIndex];
+            const isCorrect = (optIndex === questionData.correta);
+            const parentDiv = document.getElementById(`options-group-${qIndex}`);
+            const allOptions = parentDiv.querySelectorAll('.quiz-option');
+
+            allOptions.forEach((opt, idx) => {
+                opt.classList.add('disabled');
+                if (idx === questionData.correta) {
+                    opt.classList.add('correct');
+                }
+            });
+
+            if (isCorrect) {
+                quizAcertos++;
+            } else {
+                btnElement.classList.add('incorrect');
+            }
+
+            quizRespondidas++;
+            atualizarPlacarQuiz();
+        }
+
+        function atualizarPlacarQuiz() {
+            document.getElementById('quizCountRespondidas').innerText = quizRespondidas;
+            document.getElementById('quizCountAcertos').innerText = quizAcertos;
+        }
+
+        async function salvarPontuacaoQuiz() {
+            if (!auth.currentUser) {
+                alert("Você precisa estar logado para salvar a pontuação.");
+                return;
+            }
+            if (quizRespondidas === 0) {
+                alert("Responda ao menos uma questão antes de salvar.");
+                return;
+            }
+
+            const btn = document.querySelector('#abaResponderQuiz .btn-action');
+            btn.innerText = "⏳ Salvando...";
+            btn.disabled = true;
+
+            try {
+                const userSnap = await database.ref('usuarios/' + auth.currentUser.uid).once('value');
+                let nomeUsuario = "Agente Não Identificado";
+                if (userSnap.exists() && userSnap.val().nome) {
+                    nomeUsuario = userSnap.val().nome.toUpperCase();
+                }
+
+                await rankingRef.child(auth.currentUser.uid).set({
+                    nome: nomeUsuario,
+                    score: quizAcertos,
+                    total: quizRespondidas,
+                    timestamp: firebase.database.ServerValue.TIMESTAMP
+                });
+
+                alert(`Pontuação salva com sucesso! Você acertou ${quizAcertos} de ${quizRespondidas}.`);
+                alternarAbaQuiz('ranking');
+            } catch (error) {
+                console.error("Erro ao salvar ranking:", error);
+                alert("Falha ao salvar a pontuação. Tente novamente.");
+            }
+
+            btn.innerText = "Salvar Minha Pontuação";
+            btn.disabled = false;
+        }
+
+        async function carregarRankingQuiz() {
+            const tbody = document.querySelector('#rankingTable tbody');
+            tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Carregando ranking...</td></tr>';
+            
+            try {
+                const snap = await rankingRef.once('value');
+                if (!snap.exists()) {
+                    tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Nenhuma pontuação registrada ainda.</td></tr>';
+                    return;
+                }
+
+                const rankingList = [];
+                snap.forEach(childSnap => {
+                    rankingList.push(childSnap.val());
+                });
+
+                rankingList.sort((a, b) => {
+                    if (b.score !== a.score) return b.score - a.score;
+                    return a.timestamp - b.timestamp;
+                });
+
+                tbody.innerHTML = '';
+                rankingList.forEach((r, index) => {
+                    let posText = `${index + 1}º`;
+                    if (index === 0) posText = "🥇 1º";
+                    if (index === 1) posText = "🥈 2º";
+                    if (index === 2) posText = "🥉 3º";
+
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${posText}</td>
+                        <td>${r.nome}</td>
+                        <td>${r.score} / 50</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (error) {
+                tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:#ff4444;">Erro ao carregar o ranking.</td></tr>';
+            }
+        }
 
         // =========================================================================================
         // FERRAMENTA 4: VERIFICADOR ETAS HONDA
