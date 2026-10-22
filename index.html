@@ -10988,13 +10988,33 @@
 
             try {
                 const userSnap = await database.ref('usuarios/' + auth.currentUser.uid).once('value');
-                let nomeUsuario = "Agente Não Identificado";
-                if (userSnap.exists() && userSnap.val().nome) {
-                    nomeUsuario = userSnap.val().nome.toUpperCase();
+                let nomeExibicao = "AGENTE";
+                
+                if (userSnap.exists()) {
+                    const dados = userSnap.val();
+                    
+                    // 1. Extrair apenas o primeiro nome
+                    let primeiroNome = "AGENTE";
+                    if (dados.nome) {
+                        primeiroNome = dados.nome.trim().split(" ")[0].toUpperCase();
+                    }
+
+                    // 2. Extrair e mascarar o CPF (Ex: 049.***.***-00)
+                    let cpfMascarado = "***.***.***-**";
+                    if (dados.cpf) {
+                        let cpfLimpo = dados.cpf.replace(/\D/g, ""); // Remove pontos e traços para garantir a contagem
+                        if (cpfLimpo.length === 11) {
+                            cpfMascarado = cpfLimpo.substring(0, 3) + ".***.***-" + cpfLimpo.substring(9, 11);
+                        }
+                    }
+
+                    // 3. Montar a identificação segura para o ranking
+                    nomeExibicao = `${primeiroNome} - ${cpfMascarado}`;
                 }
 
+                // Salva a pontuação com o nome já devidamente oculto
                 await rankingRef.child(auth.currentUser.uid).set({
-                    nome: nomeUsuario,
+                    nome: nomeExibicao,
                     score: quizAcertos,
                     total: quizRespondidas,
                     timestamp: firebase.database.ServerValue.TIMESTAMP
