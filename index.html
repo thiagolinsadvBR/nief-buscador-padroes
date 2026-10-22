@@ -438,7 +438,16 @@
         .vw-status { margin-top: 0; margin-bottom: 15px; text-align: center; padding: 10px; border-radius: 4px; font-weight: bold; }
         .vw-valid { background-color: rgba(124, 252, 0, 0.1); color: var(--accent); border: 1px solid var(--accent); }
         .vw-invalid { background-color: rgba(255, 68, 68, 0.15); color: #ff4444; border: 1px solid #ff4444; }
+        .vw-info-header { background-color: rgba(59, 130, 246, 0.15); color: #66b3ff; border: 1px solid #66b3ff; }
         
+        .vw-info-box { background-color: rgba(124, 252, 0, 0.1); color: var(--accent); border: 1px dashed var(--accent); margin-bottom: 15px; padding: 10px; border-radius: 4px; font-size: 0.95rem; text-align: center; }
+        .vw-info-box.alfanumerico { background-color: rgba(59, 130, 246, 0.15); border-color: #66b3ff; color: #66b3ff; }
+        
+        .vw-data-item { background: #252525; padding: 10px; border-radius: 4px; border: 1px solid #444; color: #ccc; }
+        .vw-data-item b { color: var(--accent); }
+        .vw-data-item.full-width { grid-column: 1 / -1; text-align: center; border-color: #66b3ff; color: #fff;} 
+        .vw-data-item.full-width b { color: #66b3ff; }
+
         /* Modal Giratório VW Tático */
         .vw-modal-wrapper { position: absolute; top: 50%; left: 50%; background-color: #ffffff; padding: 20px; border-radius: 8px; border: 4px solid var(--accent); text-align: center; box-sizing: border-box; transform: translate(-50%, -50%); width: 95vw; }
         @media screen and (orientation: portrait) {
@@ -718,7 +727,6 @@
             <button class="btn-ferramenta" onclick="abrirValidadorVW()">
                 <span>Validador de Etiqueta VW<br>Capa da Correia</span>
             </button>
-            <!-- NOVO BOTÃO DA FERRAMENTA DE QUIZ -->
             <button class="btn-ferramenta" onclick="abrirQuiz()">
                 <span>Quiz IDV<br>Teste seus Conhecimentos</span>
             </button>
@@ -10993,30 +11001,27 @@
                 if (userSnap.exists()) {
                     const dados = userSnap.val();
                     
-                    // 1. Extrair apenas o primeiro nome garantindo formato de texto
                     let primeiroNome = "AGENTE";
                     if (dados.nome) {
                         primeiroNome = String(dados.nome).trim().split(" ")[0].toUpperCase();
                     }
 
-                    // 2. Extrair e mascarar o CPF com filtro permissivo
-                    let cpfMascarado = "***.***.***-**";
-                    if (dados.cpf) {
+                    let cpfMascarado = "";
+                    if (dados.cpf && String(dados.cpf).trim() !== "") {
                         let cpfLimpo = String(dados.cpf).replace(/\D/g, ""); 
                         if (cpfLimpo.length >= 5) {
-                            // Pega os 3 primeiros e os 2 últimos dígitos, não importa o tamanho total
                             cpfMascarado = cpfLimpo.substring(0, 3) + ".***.***-" + cpfLimpo.substring(cpfLimpo.length - 2);
                         } else {
-                            // Backup caso o dado no banco seja muito curto
-                            cpfMascarado = String(dados.cpf);
+                            cpfMascarado = "***.***.***-**";
                         }
+                    } else {
+                        // Se cair aqui, a conta no banco de dados não tem a chave "cpf" salva.
+                        cpfMascarado = "CPF INEXISTENTE NO BANCO"; 
                     }
 
-                    // 3. Montar a identificação segura para o ranking
                     nomeExibicao = `${primeiroNome} - ${cpfMascarado}`;
                 }
 
-                // Salva a pontuação com o nome oculto
                 await rankingRef.child(auth.currentUser.uid).set({
                     nome: nomeExibicao,
                     score: quizAcertos,
