@@ -10993,18 +10993,22 @@
                 if (userSnap.exists()) {
                     const dados = userSnap.val();
                     
-                    // 1. Extrair apenas o primeiro nome
+                    // 1. Extrair apenas o primeiro nome garantindo formato de texto
                     let primeiroNome = "AGENTE";
                     if (dados.nome) {
-                        primeiroNome = dados.nome.trim().split(" ")[0].toUpperCase();
+                        primeiroNome = String(dados.nome).trim().split(" ")[0].toUpperCase();
                     }
 
-                    // 2. Extrair e mascarar o CPF (Ex: 049.***.***-00)
+                    // 2. Extrair e mascarar o CPF com filtro permissivo
                     let cpfMascarado = "***.***.***-**";
                     if (dados.cpf) {
-                        let cpfLimpo = dados.cpf.replace(/\D/g, ""); // Remove pontos e traços para garantir a contagem
-                        if (cpfLimpo.length === 11) {
-                            cpfMascarado = cpfLimpo.substring(0, 3) + ".***.***-" + cpfLimpo.substring(9, 11);
+                        let cpfLimpo = String(dados.cpf).replace(/\D/g, ""); 
+                        if (cpfLimpo.length >= 5) {
+                            // Pega os 3 primeiros e os 2 últimos dígitos, não importa o tamanho total
+                            cpfMascarado = cpfLimpo.substring(0, 3) + ".***.***-" + cpfLimpo.substring(cpfLimpo.length - 2);
+                        } else {
+                            // Backup caso o dado no banco seja muito curto
+                            cpfMascarado = String(dados.cpf);
                         }
                     }
 
@@ -11012,7 +11016,7 @@
                     nomeExibicao = `${primeiroNome} - ${cpfMascarado}`;
                 }
 
-                // Salva a pontuação com o nome já devidamente oculto
+                // Salva a pontuação com o nome oculto
                 await rankingRef.child(auth.currentUser.uid).set({
                     nome: nomeExibicao,
                     score: quizAcertos,
