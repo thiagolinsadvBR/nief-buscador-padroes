@@ -11001,25 +11001,23 @@
                 if (userSnap.exists()) {
                     const dados = userSnap.val();
                     
-                    let primeiroNome = "AGENTE";
-                    if (dados.nome) {
-                        primeiroNome = String(dados.nome).trim().split(" ")[0].toUpperCase();
-                    }
+                    if (dados.nome && String(dados.nome).trim() !== "") {
+                        // Separa o nome em pedaços e converte para maiúsculo
+                        let partesNome = String(dados.nome).trim().toUpperCase().split(/\s+/);
+                        let primeiroNome = partesNome.shift(); // Pega o primeiro nome
+                        
+                        // Filtra conectivos e pega a primeira letra do restante
+                        let iniciais = partesNome
+                            .filter(parte => !["DE", "DA", "DO", "DAS", "DOS", "E"].includes(parte))
+                            .map(parte => parte.charAt(0))
+                            .join(" ");
 
-                    let cpfMascarado = "";
-                    if (dados.cpf && String(dados.cpf).trim() !== "") {
-                        let cpfLimpo = String(dados.cpf).replace(/\D/g, ""); 
-                        if (cpfLimpo.length >= 5) {
-                            cpfMascarado = cpfLimpo.substring(0, 3) + ".***.***-" + cpfLimpo.substring(cpfLimpo.length - 2);
+                        if (iniciais.length > 0) {
+                            nomeExibicao = `${primeiroNome} ${iniciais}`;
                         } else {
-                            cpfMascarado = "***.***.***-**";
+                            nomeExibicao = primeiroNome;
                         }
-                    } else {
-                        // Se cair aqui, a conta no banco de dados não tem a chave "cpf" salva.
-                        cpfMascarado = "CPF INEXISTENTE NO BANCO"; 
                     }
-
-                    nomeExibicao = `${primeiroNome} - ${cpfMascarado}`;
                 }
 
                 await rankingRef.child(auth.currentUser.uid).set({
